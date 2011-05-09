@@ -1,0 +1,3 @@
+syntax: glob
+*.pyc
+bmm/settings_local.py
