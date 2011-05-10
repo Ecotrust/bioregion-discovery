@@ -1,5 +1,6 @@
 from django.db import models
 from lingcod.features.models import PolygonFeature, FeatureCollection
+from lingcod.analysistools.models import Analysis
 from lingcod.features import register
 
 @register
@@ -10,6 +11,10 @@ class MyBioregion(PolygonFeature):
     input_precip_weight = models.FloatField(verbose_name='Value given to Precipitation')
     input_biomass_weight = models.FloatField(verbose_name='Value given to Vegetation')
     description = models.TextField(null=True, blank=True)
+    
+    def run(self):
+        return True
+    
     class Options:
         verbose_name = 'Bioregion'
         form = 'mybioregions.forms.MyBioregionForm'

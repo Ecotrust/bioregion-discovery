@@ -114,63 +114,17 @@ lingcod.beforeDestroy(function() {
         <div id="results" class="tabs">
         <ul>
             <li><a href="#summary"><span>Summary</span></a></li>
-            <li><a href="#watersheds"><span>Watersheds</span></a></li>
-            <li><a href="#species"><span>Species</span></a></li>
-            <li><a href="#details"><span>Details</span></a></li>
+            <li><a href="#vulnerabilities"><span>Vulnerabilities</span></a></li>
         </ul>
 
         <div id="summary">
             <div class="box">
-                <p>This reserve scenario includes {{instance.marxan.num_units}} watersheds comprising a total of {{instance.marxan.area|floatformat:1|intcomma}} km<sup>2</sup>. </p>
-                <p>Habitat targets were met for {{instance.marxan.hit}} of {{instance.marxan.num_species}} focal species.</p>
-                <p>The analysis took {{instance.marxan.time}} to complete {{instance.marxan.runs}} runs.</p>
+                <p>This report will summarize characteristics such as population, poverty, and resource endowments.</p>
             </div>
         </div>
-        <div id="watersheds">
+        <div id="vulnerabilities">
             <div class="box">
-                <p>This reserve scenario includes {{instance.marxan.num_units}} watersheds comprising a total of {{instance.marxan.area|floatformat:1|intcomma}} km<sup>2</sup>. </p>
-                <ul>
-                {% for w in instance.marxan.watersheds %}
-                    <li>{{w.name}} ({{w.huc12}})</li>
-                {% endfor %}
-                </ul>
-            </div>
-        </div>
-        <div id="species">
-            <div class="box">
-                <h3> Habitat by Species (<em>meters</em>)</h3>
-                <table id="species_table" summary="Species Table">
-                <thead>
-                    <tr>
-                    <th scope="col"> Species </th>
-                    <th scope="col"> Total Habitat</th>
-                    <th scope="col"> Target Amount</th> 
-                    <th scope="col"> Current Reserve Amount</th>
-                    <th scope="col"> Occurences</th>
-                    <tr>
-                </thead>
-                <tbody>
-                {% for s in instance.marxan.species %}
-                <tr{% if s.miss %} class="miss"{% else %} class="hit"{% endif %}>
-                    <td> <strong>{{s.name}}</strong> </td>
-                    <td> {{s.total|floatformat:0|intcomma}} </td> 
-                    <td> {{s.target|floatformat:0|intcomma}} ({{s.pct|floatformat:2}})</td>
-                    <td> {{s.amount|floatformat:0|intcomma}} </td> 
-                    <td> {{s.occurences}} </td> 
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-
-            <img src="{{instance.marxan.chart_url}}"/>
-            </div>
-        </div>
-        <div id="details">
-            <h3> Marxan Log File output </h3>
-            <div class="box">
-                <pre class="log">
-                    {{instance.marxan.log}}
-                </pre>
+                <p>This report will summarize vulnerabilities to such factors as climate change, development pressure, water resource limitations, and food scarcity.</p>
             </div>
         </div>
         </div>
