@@ -1,0 +1,100 @@
+{% extends "common/panel.html" %}
+{% block title %}{{title}}{% endblock %}
+{% block panel %}
+<script type="text/javascript" charset="utf-8">
+    lingcod.onShow(function(){
+        lingcod.setupForm($('#featureform'));
+    });
+</script>
+
+{% if form.media %} {{ form.media }} {% endif %}
+<h1>{{title}} input parameters</h1>
+<form id="featureform" action="{{action}}" method="post"> 
+    {% for hidden in form.hidden_fields %}
+    <div style="display:none;">
+        {{ hidden.errors }}
+    </div>
+    {{ hidden }}
+    {% endfor %}
+
+
+<div class="tabs">
+    <ul>
+        <li>
+            <a href="#parameterstab">
+                <span>Parameters</span>
+            </a>
+        </li>
+        <li>
+            <a href="#descriptorstab">
+                <span>Descriptors</span>
+            </a>
+        </li>
+    </ul>
+
+
+
+    <div id="parameterstab">
+        <div class="box species" id="start">
+            <div class="field required">
+                {{ form.input_start_point.label_tag }}
+                {{ form.input_start_point.errors }}
+                {{ form.input_start_point }}            
+            </div>
+        </div>
+        <div class="box species" id="temp">
+            <div class="field required">
+                {{ form.input_temp_weight.label_tag }}
+                {{ form.input_temp_weight.errors }}
+                {{ form.input_temp_weight }}            
+            </div>
+        </div>
+        <div class="box species" id="temp">
+            <div class="field required">
+                {{ form.input_language_weight.label_tag }}
+                {{ form.input_language_weight.errors }}
+                {{ form.input_language_weight }}            
+            </div>
+        </div>
+        <div class="box species" id="temp">
+            <div class="field required">
+                {{ form.input_precip_weight.label_tag }}
+                {{ form.input_precip_weight.errors }}
+                {{ form.input_precip_weight }}            
+            </div>
+        </div>
+        <div class="box species" id="temp">
+            <div class="field required">
+                {{ form.input_biomass_weight.label_tag }}
+                {{ form.input_biomass_weight.errors }}
+                {{ form.input_biomass_weight }}            
+            </div>
+        </div>
+    </div>
+    <div id="descriptorstab">
+        <div class="field required">
+            {{ form.name.label_tag }}
+            {{ form.name.errors }}
+            {{ form.name }}            
+        </div>
+        <div class="field required">
+            {{ form.description.label_tag }}
+            {{ form.description.errors }}
+            {{ form.description }}            
+        </div>
+    </div>
+
+    <p><input type="submit" value="submit"></p>
+    </form>
+
+
+    <br class="clear" />
+    <div class="form_controls">
+        <a href="#" class="submit_button button" onclick="this.blur(); return false;"><span>Submit</span></a>
+        <a href="#" class="cancel_button button red" onclick="this.blur(); return false;"><span>Cancel</span></a>
+        <br class="clear" />
+    </div>
+
+    </div>    
+
+{% endblock %}

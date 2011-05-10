@@ -18,3 +18,7 @@ urlpatterns = patterns('',
     (r'', include('lingcod.common.urls')),
 
 )
+
+urlpatterns += patterns('',
+    (r'^analysistools/', include('lingcod.analysistools.urls')),
+)

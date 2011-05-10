@@ -1,0 +1,180 @@
+{% extends 'common/panel.html' %}
+{% load humanize %}
+{% block title %}{{instance.name}}{% endblock title %}
+{% block panel %}
+<h1>Bioregion result for {{instance.name}}</h1>
+
+<!-- formerly 'if not instance.done' -->
+{% if not instance.done %}
+{% block progress %}
+<h4 id="{{instance.uid}}_progress_html">{{ instance.status_html|safe }}</h4>
+<div id="{{instance.uid}}_progressbar" class="progressbar"></div> 
+<br/>
+
+<script>
+// Make sure this only gets run once; check if the function is undefined
+var {{instance.uid}}_running;
+var {{instance.uid}}_delay;
+var {{instance.uid}}_call_again;
+var update_progress_info_{{instance.uid}};
+var {{instance.uid}}_done_panel;
+
+lingcod.onShow(function(){
+    $(function() {
+        $( "#{{instance.uid}}_progressbar" ).progressbar({ value: 0 });
+    });
+
+    // This should only happen the first time the panel is loaded
+    if (typeof(update_progress_info_{{instance.uid}}) == "undefined") {
+        {{instance.uid}}_running = false;
+
+        update_progress_info_{{instance.uid}} = function() {
+            $.getJSON('{% url analysis-progress instance.uid %}' , function(data, status){
+                if (data) {
+                    var progress = parseInt(data.complete) / parseInt(data.total);
+                    var progress_html = data.html;
+                    $('#{{instance.uid}}_progressbar').progressbar( "option", "value", progress*100 );
+                    $('#{{instance.uid}}_progress_html').html(progress_html);
+                }
+                if (progress < 1.0) {
+                    {{instance.uid}}_running = true;
+                    if ({{instance.uid}}_call_again) {
+                        window.setTimeout(update_progress_info_{{instance.uid}}, {{instance.uid}}_delay);
+                    }
+                    {{instance.uid}}_call_again = true;
+                } else {
+                    {{instance.uid}}_running = false;
+                    {{instance.uid}}_done_panel = lingcod.panel({appendTo: $('#panel-holder'), 
+                        showCloseButton: true});
+                    {{instance.uid}}_done_panel.showUrl(
+                       '/analysistools/{{instance.uid}}/progress.html', { showClose: true });
+                }
+            });
+        };
+    }
+
+    {{instance.uid}}_delay = 5000; // ms
+    if (!{{instance.uid}}_running) {
+        {{instance.uid}}_call_again = true;
+    } else {
+        // This avoids calling off mulitple rounds of self-calling funcitons
+        {{instance.uid}}_call_again = false;
+    }
+    update_progress_info_{{instance.uid}}();
+
+});
+
+lingcod.beforeDestroy(function() {
+    {{instance.uid}}_delay = 10000;
+});
+</script>
+
+{% endblock progress %}
+{% endif %}
+
+    <div class="tabs">
+        <ul>
+            <li><a href="#Inputs"><span>Inputs</span></a></li>
+            {% if instance.done %}
+            <li><a href="#results"><span>Results</span></a></li>
+            {% endif %}
+        </ul>
+        <div id="Inputs">
+            <ul class="metadata">
+              {% if instance.user.first_name and instance.user.last_name %} 
+                <li class="creator">Created By {{instance.user.first_name}} {{instance.user.last_name}}</li>
+              {% else %}
+                <li class="creator">Created By {{instance.user.username}}</li>
+              {% endif %}
+                <li class="created">Created {{instance.date_created|date:"d M, Y P"}}</li>
+                <li class="modified">Modified {{instance.date_modified|date:"d M, Y P"}}</li>
+                <br class="clear" />
+            </ul>
+            <h2>Description</h2>
+                <p>{{instance.description}}</p>
+            <h2>Parameters</h2>
+                <div class="box species" id="temp">
+                    <p> Population Center: {{ instance.input_start_point }}</p>
+                </div>
+                <div class="box species" id="temp">
+                    <p> Temperature Valuation: {{ instance.input_temp_weight }}</p>
+                </div>
+                <div class="box species" id="temp">
+                    <p> Language Valuation: {{ instance.input_language_weight }}</p>
+                </div>
+                <div class="box species" id="temp">
+                    <p> Precipitation Valuation: {{ instance.input_precip_weight }}</p>
+                </div>
+                <div class="box species" id="temp">
+                    <p> Vegetation Valuation: {{ instance.input_biomass_weight }}</p>
+                </div>
+        </div>
+        
+        {% if instance.done %}
+        <div id="results" class="tabs">
+        <ul>
+            <li><a href="#summary"><span>Summary</span></a></li>
+            <li><a href="#watersheds"><span>Watersheds</span></a></li>
+            <li><a href="#species"><span>Species</span></a></li>
+            <li><a href="#details"><span>Details</span></a></li>
+        </ul>
+
+        <div id="summary">
+            <div class="box">
+                <p>This reserve scenario includes {{instance.marxan.num_units}} watersheds comprising a total of {{instance.marxan.area|floatformat:1|intcomma}} km<sup>2</sup>. </p>
+                <p>Habitat targets were met for {{instance.marxan.hit}} of {{instance.marxan.num_species}} focal species.</p>
+                <p>The analysis took {{instance.marxan.time}} to complete {{instance.marxan.runs}} runs.</p>
+            </div>
+        </div>
+        <div id="watersheds">
+            <div class="box">
+                <p>This reserve scenario includes {{instance.marxan.num_units}} watersheds comprising a total of {{instance.marxan.area|floatformat:1|intcomma}} km<sup>2</sup>. </p>
+                <ul>
+                {% for w in instance.marxan.watersheds %}
+                    <li>{{w.name}} ({{w.huc12}})</li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div id="species">
+            <div class="box">
+                <h3> Habitat by Species (<em>meters</em>)</h3>
+                <table id="species_table" summary="Species Table">
+                <thead>
+                    <tr>
+                    <th scope="col"> Species </th>
+                    <th scope="col"> Total Habitat</th>
+                    <th scope="col"> Target Amount</th> 
+                    <th scope="col"> Current Reserve Amount</th>
+                    <th scope="col"> Occurences</th>
+                    <tr>
+                </thead>
+                <tbody>
+                {% for s in instance.marxan.species %}
+                <tr{% if s.miss %} class="miss"{% else %} class="hit"{% endif %}>
+                    <td> <strong>{{s.name}}</strong> </td>
+                    <td> {{s.total|floatformat:0|intcomma}} </td> 
+                    <td> {{s.target|floatformat:0|intcomma}} ({{s.pct|floatformat:2}})</td>
+                    <td> {{s.amount|floatformat:0|intcomma}} </td> 
+                    <td> {{s.occurences}} </td> 
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <img src="{{instance.marxan.chart_url}}"/>
+            </div>
+        </div>
+        <div id="details">
+            <h3> Marxan Log File output </h3>
+            <div class="box">
+                <pre class="log">
+                    {{instance.marxan.log}}
+                </pre>
+            </div>
+        </div>
+        </div>
+        {% endif %}
+    </div>
+
+{% endblock panel %}

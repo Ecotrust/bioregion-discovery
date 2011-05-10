@@ -9,6 +9,9 @@ GEOMETRY_DB_SRID = 4326
 KML_SIMPLIFY_TOLERANCE = .0002 #overriding this setting to account for lat/lon db srid
 KML_ALTITUDEMODE_DEFAULT = 'clampToGround'
 
-INSTALLED_APPS += ( 'mybioregions', )
+INSTALLED_APPS += ( 'mybioregions', 
+                    'lingcod.analysistools', #necessary?
+                    'django.contrib.humanize'
+                  )
 
 from settings_local import *
