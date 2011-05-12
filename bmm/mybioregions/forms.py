@@ -8,8 +8,13 @@ class MyBioregionForm(FeatureForm):
     #might change the following to ModelChoiceField to pull city names from a model
     #also, might use different strategy altogether that allows users to simply select a point on a map as the starting point
     input_start_point = forms.ChoiceField(label="Population Center", 
-            choices=([('San Diego', 'San Diego'), ('Portland', 'Portland'), ('Denver', 'Denver')]), 
-            initial='Portland', required=True)
+            choices=([  ('beijing', 'Beijing, China'), 
+                        ('cairo', 'Cairo, Egypt'), 
+                        ('cape town', 'Cape Town, South Africa'), 
+                        ('portland', 'Portland, Oregon'),
+                        ('rio', 'Rio de Janeiro, Brazil'),
+                        ('sydney', 'Sydney, Australia')]), 
+            initial='portland', required=True)
     input_temp_weight = forms.FloatField(min_value=0, max_value=1.0, initial=0.5,
             widget=SliderWidget(min=0,max=1,step=0.01),
             label="Value given to Temperature")

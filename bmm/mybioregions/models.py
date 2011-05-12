@@ -24,7 +24,10 @@ class MyBioregion(Analysis):
             null=True, blank=True, verbose_name="Bioregion Geometry")
     
     def run(self):
-        placeholder = Placeholder.objects.get(name='portland placeholder')
+        import time
+        time.sleep(5);
+        placeholder_name = self.input_start_point + ' placeholder'
+        placeholder = Placeholder.objects.get(name=placeholder_name)
         self.output_geom = placeholder.geometry_final
         return True
         
