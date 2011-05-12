@@ -8,32 +8,26 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding field 'MyBioregion.input_start_point'
-        db.add_column('mybioregions_mybioregion', 'input_start_point', self.gf('django.db.models.fields.TextField')(default='Portland'), keep_default=False)
+        # Adding field 'MyBioregion.output_geom'
+        db.add_column('mybioregions_mybioregion', 'output_geom', self.gf('django.contrib.gis.db.models.fields.PolygonField')(null=True, blank=True), keep_default=False)
 
-        # Adding field 'MyBioregion.input_language_weight'
-        db.add_column('mybioregions_mybioregion', 'input_language_weight', self.gf('django.db.models.fields.FloatField')(default=0.5), keep_default=False)
+        # Changing field 'Placeholder.geometry_orig'
+        db.alter_column('mybioregions_placeholder', 'geometry_orig', self.gf('django.contrib.gis.db.models.fields.PolygonField')(null=True))
 
-        # Adding field 'MyBioregion.input_precip_weight'
-        db.add_column('mybioregions_mybioregion', 'input_precip_weight', self.gf('django.db.models.fields.FloatField')(default=0.5), keep_default=False)
-
-        # Adding field 'MyBioregion.input_biomass_weight'
-        db.add_column('mybioregions_mybioregion', 'input_biomass_weight', self.gf('django.db.models.fields.FloatField')(default=0.5), keep_default=False)
+        # Changing field 'Placeholder.geometry_final'
+        db.alter_column('mybioregions_placeholder', 'geometry_final', self.gf('django.contrib.gis.db.models.fields.PolygonField')(null=True))
 
 
     def backwards(self, orm):
         
-        # Deleting field 'MyBioregion.input_start_point'
-        db.delete_column('mybioregions_mybioregion', 'input_start_point')
+        # Deleting field 'MyBioregion.output_geom'
+        db.delete_column('mybioregions_mybioregion', 'output_geom')
 
-        # Deleting field 'MyBioregion.input_language_weight'
-        db.delete_column('mybioregions_mybioregion', 'input_language_weight')
+        # Changing field 'Placeholder.geometry_orig'
+        db.alter_column('mybioregions_placeholder', 'geometry_orig', self.gf('django.contrib.gis.db.models.fields.PolygonField')(srid=954009, null=True))
 
-        # Deleting field 'MyBioregion.input_precip_weight'
-        db.delete_column('mybioregions_mybioregion', 'input_precip_weight')
-
-        # Deleting field 'MyBioregion.input_biomass_weight'
-        db.delete_column('mybioregions_mybioregion', 'input_biomass_weight')
+        # Changing field 'Placeholder.geometry_final'
+        db.alter_column('mybioregions_placeholder', 'geometry_final', self.gf('django.contrib.gis.db.models.fields.PolygonField')(srid=954009, null=True))
 
 
     models = {
@@ -90,19 +84,32 @@ class Migration(SchemaMigration):
             'date_created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'date_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'geometry_final': ('django.contrib.gis.db.models.fields.PolygonField', [], {'null': 'True', 'blank': 'True'}),
-            'geometry_orig': ('django.contrib.gis.db.models.fields.PolygonField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'input_biomass_weight': ('django.db.models.fields.FloatField', [], {}),
             'input_language_weight': ('django.db.models.fields.FloatField', [], {}),
             'input_precip_weight': ('django.db.models.fields.FloatField', [], {}),
             'input_start_point': ('django.db.models.fields.TextField', [], {}),
             'input_temp_weight': ('django.db.models.fields.FloatField', [], {}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': "'255'"}),
+            'object_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'output_geom': ('django.contrib.gis.db.models.fields.PolygonField', [], {'null': 'True', 'blank': 'True'}),
+            'sharing_groups': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'mybioregions_mybioregion_related'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['auth.Group']"}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'mybioregions_mybioregion_related'", 'to': "orm['auth.User']"})
+        },
+        'mybioregions.placeholder': {
+            'Meta': {'object_name': 'Placeholder'},
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'mybioregions_placeholder_related'", 'null': 'True', 'to': "orm['contenttypes.ContentType']"}),
+            'date_created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'date_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'description': ('django.db.models.fields.TextField', [], {'default': "''", 'null': 'True', 'blank': 'True'}),
+            'geometry_final': ('django.contrib.gis.db.models.fields.PolygonField', [], {'null': 'True', 'blank': 'True'}),
+            'geometry_orig': ('django.contrib.gis.db.models.fields.PolygonField', [], {'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'manipulators': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': "'255'"}),
             'object_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'sharing_groups': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'mybioregions_mybioregion_related'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['auth.Group']"}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'mybioregions_mybioregion_related'", 'to': "orm['auth.User']"})
+            'sharing_groups': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'mybioregions_placeholder_related'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['auth.Group']"}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'mybioregions_placeholder_related'", 'to': "orm['auth.User']"})
         }
     }
 

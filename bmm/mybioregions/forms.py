@@ -4,7 +4,7 @@ from lingcod.analysistools.widgets import SliderWidget
 from django import forms
 from models import *
 
-class MyBioregionForm(SpatialFeatureForm):
+class MyBioregionForm(FeatureForm):
     #might change the following to ModelChoiceField to pull city names from a model
     #also, might use different strategy altogether that allows users to simply select a point on a map as the starting point
     input_start_point = forms.ChoiceField(label="Population Center", 
@@ -23,9 +23,16 @@ class MyBioregionForm(SpatialFeatureForm):
             widget=SliderWidget(min=0,max=1,step=0.01),
             label="Value given to Vegetation")
         
-    class Meta(SpatialFeatureForm.Meta):
+    class Meta(FeatureForm.Meta):
         model = MyBioregion
+        exclude = list(FeatureForm.Meta.exclude)
+        for f in model.output_fields():
+            exclude.append(f.attname)
 
 class FolderForm(FeatureForm):
     class Meta(FeatureForm.Meta):
         model = Folder
+    
+class PlaceholderForm(SpatialFeatureForm):
+    class Meta(SpatialFeatureForm.Meta):
+        model = Placeholder
