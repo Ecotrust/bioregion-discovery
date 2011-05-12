@@ -1,0 +1,11 @@
+{% extends 'common/map.html' %}
+
+{% block pagetitle %}Bioregion Discovery Tool Demo (alpha){% endblock pagetitle %}
+{% block title %}Bioregion Discovery Tool Demo (alpha){% endblock title %}
+
+{% block tabs %}
+    {% if user.is_authenticated %}
+    <li><a href="#MyShapes"><span>My Test</span></a></li>                
+    {% endif %}
+    <li><a href="#SharedShapes"><span>{% if user.is_authenticated %}Shared With Me{% else %}Public Proposals{% endif %}</span></a></li>
+{% endblock tabs %}
