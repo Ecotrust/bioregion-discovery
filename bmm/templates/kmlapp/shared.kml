@@ -9,14 +9,6 @@
 {% endblock %}
 {% block folders_and_placemarks %}
 
-    <NetworkLink>
-    <name>Public Proposal Test</name>
-    <open>0</open>
-    <visibility>0</visibility>
-    <Link>
-    <href>{% absurl kmlapp-publicshared-kmz session_key %}</href>
-    </Link>
-    </NetworkLink>
 
 {% for key, group_user in groups_users.items %}
  <Folder>

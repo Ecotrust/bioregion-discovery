@@ -94,7 +94,7 @@ class Folder(FeatureCollection):
             'bmm.mybioregions.models.Folder',
             'bmm.mybioregions.models.Placeholder',
         )
-
+              
 class Placeholder(PolygonFeature):
     description = models.TextField(default="", null=True, blank=True)
 
