@@ -2,6 +2,24 @@
 
 {% block title %}Bioregion Discovery Tool Demo (alpha){% endblock title %}
 
+{% block metanavigation %}
+    {% if user.is_authenticated %}
+    <li>{{user.username}} | </li>
+    {% endif %}
+    <li><a href="#" id="news">news</a> | </li>
+    <li><a href="#" id="about">about</a> | </li>
+    {% block meta_navigation_list_insert %}{% endblock %}
+    <li><a href="{% url help-main %}" target="_blank" id="help">help</a> | </li>
+    {% if user.is_authenticated %}
+    <li><a href="#" id="profile">my profile</a> | </li>
+    <li><a href="{% url user_signout %}">sign out</a></li>
+    {% else %}
+    <li><a href="#" id="register">register</a> | </li>
+    <!-- <li><a href="{% url user_signin %}" id="signin">sign in</a></li> -->
+    <li><a href="#" id="signin">sign in</a></li>
+    {% endif %}                
+{% endblock metanavigation %}
+            
 {% block tabs %}
     {% if user.is_authenticated %}
     <li><a href="#MyShapes"><span>My Bioregions</span></a></li>                
