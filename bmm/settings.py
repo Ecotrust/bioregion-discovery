@@ -12,9 +12,15 @@ KML_ALTITUDEMODE_DEFAULT = 'clampToGround'
 TEMPLATE_DIRS = ( os.path.realpath(os.path.join(os.path.dirname(__file__), 'templates').replace('\\','/')), )
 
 INSTALLED_APPS += ( 'mybioregions', 
+                    'analysis',
                     'lingcod.analysistools', #necessary?
-                    'django.contrib.humanize'
+                    'django.contrib.humanize',
+                    'lingcod.raster_stats'
                   )
+
+COMPRESS_CSS['application']['source_filenames'] += (
+    'bmm/css/analysis_report.css',
+)
 
 # bioregions.labs.ecotrust.org 
 GOOGLE_API_KEY = 'ABQIAAAAn9EXtJkKOlQBGEfk28CiahQkv7FNjWKr_TVFL7EgIFo2pXN1jRRz4grU7hzFNhpS8coxw1Dz219KfQ'

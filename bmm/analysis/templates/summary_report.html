@@ -1,0 +1,45 @@
+{% extends 'common/panel.html' %}
+
+{% block panel %}
+{% load humanize %}
+
+<h3>Summary Characteristics</h3>
+<div class='freetext'>
+<p>
+<table  style='width:450px' class='analysis_report_container'>
+    <tbody>
+        <tr class="grey">
+            <td style='width:225px'><b>Estimated Population</b></td>
+            <td style='width:225px'><b>Poverty</b></td>
+        </tr>
+        <tr>
+            <td style='width:225px'>{{population|intword}}</td>
+            <td style='width:225px'>{{poverty}}</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+<div class='freetext'>
+<p>
+<table  style='width:450px' class='analysis_report_container'>
+    <tbody>
+        <tr class="grey">
+            <td><b>Soil Suitability</b></td>
+            <td><b>Soil Moisture</b></td>
+            <td><b>Net Primary Production</b></td>
+        </tr>
+        <tr>
+            <td>{{soil_suitability}}</td>
+            <td>{{soil_moisture}}</td>
+            <td>{{npp}}</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+<style type="text/css">
+h3 { font-weight: bold; }
+</style>
+
+{% endblock panel %}

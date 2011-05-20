@@ -113,18 +113,14 @@ lingcod.beforeDestroy(function() {
         {% if instance.done %}
         <div id="results" class="tabs">
         <ul>
-            <li><a href="#summary"><span>Summary</span></a></li>
-            <li><a href="#vulnerabilities"><span>Vulnerabilities</span></a></li>
+            <li><a href="#intro"><span>Introduction</span></a></li>
+            <li><a href="{% url summary_analysis instance.pk %}"><span>Summary</span></a></li>
+            <li><a href="{% url vulnerability_analysis instance.pk %}"><span>Vulnerabilities</span></a></li>
         </ul>
-
-        <div id="summary">
+        <div id="intro">
             <div class="box">
-                <p>This report will summarize characteristics such as population, poverty, and resource endowments.</p>
-            </div>
-        </div>
-        <div id="vulnerabilities">
-            <div class="box">
-                <p>This report will summarize vulnerabilities to such factors as climate change, development pressure, water resource limitations, and food scarcity.</p>
+                <p>The Summary report provides information such as population, poverty, and resource endowments related to your bioregion.</p>
+                <p>The Vulnerabilites report provides information related to climate change, development pressure, water resource limitations, and food scarcity.</p>
             </div>
         </div>
         </div>

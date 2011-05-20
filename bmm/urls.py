@@ -5,8 +5,8 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Example:
-    # (r'^bmm/', include('bmm.foo.urls')),
+    # Include bioregions app urls
+    (r'^mybioregions/', include('mybioregions.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -21,4 +21,5 @@ urlpatterns = patterns('',
 
 urlpatterns += patterns('',
     (r'^analysistools/', include('lingcod.analysistools.urls')),
+    (r'^zonal/', include('lingcod.raster_stats.urls')),
 )
