@@ -87,8 +87,13 @@ class MyBioregion(Analysis):
 
 @register
 class Folder(FeatureCollection):
+    #name field is inherited from FeatureCollection
+    description = models.TextField(null=True, blank=True)
+    
     class Options:
         form = 'mybioregions.forms.FolderForm'
+        #form_template = 'folder/form.html'
+        show_template = 'folder/show.html'
         valid_children = (
             'bmm.mybioregions.models.MyBioregion',
             'bmm.mybioregions.models.Folder',

@@ -1,0 +1,31 @@
+{% extends 'common/panel.html' %}
+{% block title %}{{instance.name}}{% endblock title %}
+{% block panel %}
+    <h1>Folder '{{instance.name}}'</h1>
+    {% if instance.collection %}
+        <p>part of the <a class="myshapes-link" href="{{instance.collection.get_absolute_url}}">{{instance.collection.name}}</a>.</p>
+    {% endif %}
+    <div class="tabs">
+        <ul>
+            <li><a href="#Attributes"><span>Information</span></a></li>
+        </ul>
+        <div id="Attributes">
+            <ul class="metadata">
+              {% if instance.user.first_name and instance.user.last_name %} 
+                <li class="creator">Created By {{instance.user.first_name}} {{instance.user.last_name}}</li>
+              {% else %}
+                <li class="creator">Created By {{instance.user.username}}</li>
+              {% endif %}
+                <li class="created">Created {{instance.date_created|date:"d M, Y P"}}</li>
+                <li class="modified">Modified {{instance.date_modified|date:"d M, Y P"}}</li>
+                <br class="clear" />
+            </ul>
+            <h2>Description</h2>
+            <div>
+            <p style="word-wrap:break-word;width:400px;">{{instance.description}}</p>
+            </div>
+            <h2>Other Information</h2>
+            <p><strong>Folder ID:</strong> {{instance.pk}}</p>
+        </div>
+    </div>
+{% endblock panel %}

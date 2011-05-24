@@ -9,7 +9,7 @@
     <li><a href="#" id="news">news</a> | </li>
     <li><a href="#" id="about">about</a> | </li>
     {% block meta_navigation_list_insert %}{% endblock %}
-    <li><a href="{% url help-main %}" target="_blank" id="help">help</a> | </li>
+    <li><a href="#" id="help">help</a> | </li>
     {% if user.is_authenticated %}
     <li><a href="#" id="profile">my profile</a> | </li>
     <li><a href="{% url user_signout %}">sign out</a></li>
@@ -22,7 +22,7 @@
             
 {% block tabs %}
     {% if user.is_authenticated %}
-    <li><a href="#MyShapes"><span>My Bioregions</span></a></li>                
+    <li><a href="#MyShapes"><span>My Bioregions</span></a></li> 
+    <li><a href="#SharedShapes"><span>Shared With Me</span></a></li>               
     {% endif %}
-    <li><a href="#SharedShapes"><span>{% if user.is_authenticated %}Shared With Me{% else %}Public Proposals{% endif %}</span></a></li>
 {% endblock tabs %}
