@@ -31,5 +31,6 @@ LOG_FILE =  os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'bmm.
 #LOG_FILE = '/usr/local/apps/bioregions/bmm.log'
 LOGFILE =  os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'bmm.log'))
 
+APP_NAME = "The Bioregion Discovery Tool"
 
 from settings_local import *

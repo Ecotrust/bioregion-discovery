@@ -15,6 +15,7 @@ class MyBioregionForm(FeatureForm):
                         ('rio', 'Rio de Janeiro, Brazil'),
                         ('sydney', 'Sydney, Australia')]), 
             initial='portland', required=True)
+    #input_starting_point = forms.PointField(label="Starting Point")
     input_temp_weight = forms.FloatField(min_value=0, max_value=1.0, initial=0.5,
             widget=SliderWidget(min=0,max=1,step=0.01),
             label="Value given to Temperature")

@@ -11,6 +11,7 @@ class MyBioregion(Analysis):
     
     #Input Parameters
     input_start_point = models.TextField(verbose_name='Population Center')
+    #input_starting_point = models.PointField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Bioregion Starting Point")
     input_temp_weight = models.FloatField(verbose_name='Value given to Temperature')
     input_language_weight = models.FloatField(verbose_name='Value given to Spoken Language')
     input_precip_weight = models.FloatField(verbose_name='Value given to Precipitation')
