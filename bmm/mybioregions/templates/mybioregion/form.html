@@ -8,7 +8,7 @@
 </script>
 
 {% if form.media %} {{ form.media }} {% endif %}
-<h1>{{title}} input parameters</h1>
+<h1>{{title}}</h1>
 <form id="featureform" action="{{action}}" method="post"> 
     {% for hidden in form.hidden_fields %}
     <div style="display:none;">
@@ -17,6 +17,11 @@
     {{ hidden }}
     {% endfor %}
 
+<div class="field required">
+    {{ form.name.label_tag }}
+    {{ form.name.errors }}
+    {{ form.name }}            
+</div>
 
 <div class="tabs">
     <ul>
@@ -70,12 +75,7 @@
         </div>
     </div>
     <div id="descriptorstab">
-        <div class="field required">
-            {{ form.name.label_tag }}
-            {{ form.name.errors }}
-            {{ form.name }}            
-        </div>
-        <div class="field required">
+        <div>
             {{ form.description.label_tag }}
             {{ form.description.errors }}
             {{ form.description }}            

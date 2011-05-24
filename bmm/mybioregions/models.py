@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.contrib.gis.db import models
+from django.utils.html import escape
 from lingcod.features.models import PolygonFeature, FeatureCollection
 from lingcod.analysistools.models import Analysis
 from lingcod.features import register
@@ -39,7 +40,7 @@ class MyBioregion(Analysis):
             <visibility>0</visibility>
             <name>%s (WORKING)</name>
         </Placemark>
-        """ % (self.uid, self.name)
+        """ % (self.uid, escape(self.name))
 
     @property 
     def kml_done(self):
@@ -54,7 +55,7 @@ class MyBioregion(Analysis):
             %s
             </MultiGeometry>
         </Placemark>
-        """ % (self.kml_style, self.uid, self.name, self.model_uid(),
+        """ % (self.kml_style, self.uid, escape(self.name), self.model_uid(),
             asKml(self.output_geom.transform(
                     settings.GEOMETRY_CLIENT_SRID, clone=True)),
             asKml(self.output_geom.transform(
