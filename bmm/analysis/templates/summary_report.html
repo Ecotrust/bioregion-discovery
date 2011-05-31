@@ -2,6 +2,7 @@
 
 {% block panel %}
 {% load humanize %}
+{% load analysis_extras %}
 
 <h3>Summary Characteristics</h3>
 <div class='freetext'>
@@ -10,29 +11,25 @@
     <tbody>
         <tr class="grey">
             <td style='width:225px'><b>Estimated Population</b></td>
-            <td style='width:225px'><b>Poverty</b></td>
         </tr>
         <tr>
             <td style='width:225px'>{{population|intword}}</td>
-            <td style='width:225px'>{{poverty}}</td>
         </tr>
-    </tbody>
-</table>
-</div>
-
-<div class='freetext'>
-<p>
-<table  style='width:450px' class='analysis_report_container'>
-    <tbody>
+        <tr><td></td></tr>
+        <tr><td></td></tr>
         <tr class="grey">
-            <td><b>Soil Suitability</b></td>
-            <td><b>Soil Moisture</b></td>
-            <td><b>Net Primary Production</b></td>
+            <td><b>Proportion Suitable for Agriculture</b></td>
         </tr>
         <tr>
-            <td>{{soil_suitability}}</td>
-            <td>{{soil_moisture}}</td>
-            <td>{{npp}}</td>
+            <td>{{soil_suitability|percentage:2}}</td>
+        </tr>
+        <tr><td></td></tr>
+        <tr><td></td></tr>
+        <tr class="grey">
+            <td><b>Proportion of Global Terrestrial Net Primary Production</b></td>
+        </tr>
+        <tr>
+            <td>{{default_value}}</td>
         </tr>
     </tbody>
 </table>
