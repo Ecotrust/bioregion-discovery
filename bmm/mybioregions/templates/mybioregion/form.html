@@ -8,7 +8,7 @@
 </script>
 
 {% if form.media %} {{ form.media }} {% endif %}
-<h1>{{title}}</h1>
+<h1>{{ title }}</h1>
 <form id="featureform" action="{{action}}" method="post"> 
     {% for hidden in form.hidden_fields %}
     <div style="display:none;">
