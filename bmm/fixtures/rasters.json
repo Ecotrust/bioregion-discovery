@@ -1,0 +1,112 @@
+[
+  {
+    "pk": 1, 
+    "model": "raster_stats.rasterdataset", 
+    "fields": {
+      "type": "continuous", 
+      "name": "population", 
+      "full_name": "", 
+      "filepath": "/usr/local/apps/bioregions/data/reports/summary/pop15_mw"
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "raster_stats.rasterdataset", 
+    "fields": {
+      "type": "continuous", 
+      "name": "soil_suitability", 
+      "full_name": "", 
+      "filepath": "/usr/local/apps/bioregions/data/reports/summary/suit_mw"
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "raster_stats.rasterdataset", 
+    "fields": {
+      "type": "continuous", 
+      "name": "soil_moisture", 
+      "full_name": "", 
+      "filepath": "/usr/local/apps/bioregions/data/reports/summary/soilmoist_mw"
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "raster_stats.rasterdataset", 
+    "fields": {
+      "type": "continuous", 
+      "name": "npp", 
+      "full_name": "", 
+      "filepath": "/usr/local/apps/bioregions/data/reports/summary/npp_mw"
+    }
+  }, 
+  {
+    "pk": 5, 
+    "model": "raster_stats.rasterdataset", 
+    "fields": {
+      "type": "continuous", 
+      "name": "human_consumption", 
+      "full_name": "", 
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/hapctnpp_mw"
+    }
+  }, 
+  {
+    "pk": 6, 
+    "model": "raster_stats.rasterdataset", 
+    "fields": {
+      "type": "continuous", 
+      "name": "human_presence", 
+      "full_name": "", 
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/builtup_mw"
+    }
+  }, 
+  {
+    "pk": 7, 
+    "model": "raster_stats.rasterdataset", 
+    "fields": {
+      "type": "continuous", 
+      "name": "human_footprint", 
+      "full_name": "", 
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/hf_v2geo_mw"
+    }
+  }, 
+  {
+    "pk": 8, 
+    "model": "raster_stats.rasterdataset", 
+    "fields": {
+      "type": "continuous", 
+      "name": "human_influence_index", 
+      "full_name": "", 
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/hii_v2geo_mw"
+    }
+  }, 
+  {
+    "pk": 9, 
+    "model": "raster_stats.rasterdataset", 
+    "fields": {
+      "type": "continuous", 
+      "name": "underweight_children", 
+      "full_name": "", 
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/uw5pop_mw"
+    }
+  }, 
+  {
+    "pk": 10, 
+    "model": "raster_stats.rasterdataset", 
+    "fields": {
+      "type": "continuous", 
+      "name": "water_stress", 
+      "full_name": "", 
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/wtrstress_mw"
+    }
+  }, 
+  {
+    "pk": 11, 
+    "model": "raster_stats.rasterdataset", 
+    "fields": {
+      "type": "continuous", 
+      "name": "infant_deaths", 
+      "full_name": "", 
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/ideaths_mw"
+    }
+  }
+]

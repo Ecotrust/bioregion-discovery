@@ -2,3 +2,5 @@ syntax: glob
 *.pyc
 bmm/settings_local.py
 bmm.log
+data/reports/*
+data/*.zip
