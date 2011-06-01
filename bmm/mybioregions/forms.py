@@ -11,6 +11,7 @@ class MyBioregionForm(FeatureForm):
             choices=([  ('beijing', 'Beijing, China'), 
                         ('cairo', 'Cairo, Egypt'), 
                         ('cape town', 'Cape Town, South Africa'), 
+                        ('darwin', 'Darwin, Australia'),
                         ('portland', 'Portland, Oregon'),
                         ('rio', 'Rio de Janeiro, Brazil'),
                         ('sydney', 'Sydney, Australia')]), 
