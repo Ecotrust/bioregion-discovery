@@ -24,10 +24,10 @@ class Migration(SchemaMigration):
         db.delete_column('mybioregions_mybioregion', 'output_geom')
 
         # Changing field 'Placeholder.geometry_orig'
-        db.alter_column('mybioregions_placeholder', 'geometry_orig', self.gf('django.contrib.gis.db.models.fields.PolygonField')(srid=954009, null=True))
+        db.alter_column('mybioregions_placeholder', 'geometry_orig', self.gf('django.contrib.gis.db.models.fields.PolygonField')(srid=54009, null=True))
 
         # Changing field 'Placeholder.geometry_final'
-        db.alter_column('mybioregions_placeholder', 'geometry_final', self.gf('django.contrib.gis.db.models.fields.PolygonField')(srid=954009, null=True))
+        db.alter_column('mybioregions_placeholder', 'geometry_final', self.gf('django.contrib.gis.db.models.fields.PolygonField')(srid=54009, null=True))
 
 
     models = {

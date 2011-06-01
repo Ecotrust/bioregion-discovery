@@ -1,0 +1,14 @@
++proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs 
+
+OR see http://spatialreference.org/ref/esri/54009/ for other forms
+
+-----
+
+To add special projection to GeoDjango and to PostGIS
+
+* Set GEOMETRY_DB_SRID = 54009 in settings BEFORE you run syncdb
+* add the proj4 definition to the bottom of /usr/local/share/proj/epsg (might be in another location) with srid of 99997
+* then run the following command from django shell in order to add the projection to the spatial_ref_sys table:
+
+    from django.contrib.gis.utils import add_postgis_srs
+    add_postgis_srs(54009) 
