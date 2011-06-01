@@ -28,7 +28,11 @@ class MyBioregion(Analysis):
     def run(self):
         import time
         time.sleep(5);
-        placeholder_name = self.input_start_point + ' placeholder'
+        if self.input_start_point == 'portland' and self.input_temp_weight > .5:
+            start_point = 'portland temp'
+        else:
+            start_point = self.input_start_point
+        placeholder_name = start_point + ' placeholder'
         placeholder = Placeholder.objects.get(name=placeholder_name)
         self.output_geom = placeholder.geometry_final
         return True
