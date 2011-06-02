@@ -58,7 +58,7 @@ class MyBioregion(Analysis):
         """ % (self.kml_style, self.uid, escape(self.name), self.model_uid(),
             asKml(self.output_geom.transform(
                     settings.GEOMETRY_CLIENT_SRID, clone=True)),
-            asKml(self.output_geom.transform(
+            asKml(self.input_starting_point.transform(
                     settings.GEOMETRY_CLIENT_SRID, clone=True)))
     
     @property
