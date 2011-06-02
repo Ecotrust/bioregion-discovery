@@ -83,6 +83,7 @@ class MyBioregion(Analysis):
     
     class Options:
         verbose_name = 'Bioregion'
+        icon_url = 'bmm/img/regions.png'
         form = 'mybioregions.forms.MyBioregionForm'
         form_template = 'mybioregion/form.html'
         show_template = 'mybioregion/show.html'
