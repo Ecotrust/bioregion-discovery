@@ -11,8 +11,8 @@ from lingcod.common.utils import asKml
 class MyBioregion(Analysis):
     
     #Input Parameters
-    input_start_point = models.TextField(verbose_name='Population Center')
-    #input_starting_point = models.PointField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Bioregion Starting Point")
+    #input_start_point = models.TextField(verbose_name='Population Center')
+    input_starting_point = models.PointField(srid=settings.GEOMETRY_CLIENT_SRID, null=True, blank=True, verbose_name="Bioregion Starting Point")
     input_temp_weight = models.FloatField(verbose_name='Value given to Temperature')
     input_language_weight = models.FloatField(verbose_name='Value given to Spoken Language')
     input_precip_weight = models.FloatField(verbose_name='Value given to Precipitation')
@@ -28,7 +28,7 @@ class MyBioregion(Analysis):
     def run(self):
         import time
         time.sleep(5);
-        placeholder_name = self.input_start_point + ' placeholder'
+        placeholder_name = 'portland placeholder'
         placeholder = Placeholder.objects.get(name=placeholder_name)
         self.output_geom = placeholder.geometry_final
         return True
