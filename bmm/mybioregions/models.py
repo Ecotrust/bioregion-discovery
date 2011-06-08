@@ -32,7 +32,7 @@ class MyBioregion(Analysis):
         from lingcod.analysistools.grass import Grass
 
         coords = self.input_starting_point.transform(settings.GEOMETRY_DB_SRID, clone=True)
-        max_cost=1
+        max_cost=100
 
         g = Grass('world_moll', 
                 gisbase="/usr/local/grass-6.4.1RC2", 
@@ -64,6 +64,14 @@ class MyBioregion(Analysis):
         ds = DataSource(output)
         layer = ds[0]
         geom = layer[0].geom.geos
+
+        # Take the single polygon with the largest geometry 
+        # Assume the rest are slivers, etc
+        largest_area = geom.area
+        for feat in layer[1:]:
+            if feat.geom.area > largest_area:
+                geom = feat.geom.geos
+
         geom.srid = settings.GEOMETRY_DB_SRID 
 
         self.output_geom = geom #placeholder.geometry_final

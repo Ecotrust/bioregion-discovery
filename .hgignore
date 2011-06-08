@@ -3,4 +3,5 @@ syntax: glob
 bmm/settings_local.py
 bmm.log
 data/reports/*
+data/resamp_moll/*
 data/*.zip
