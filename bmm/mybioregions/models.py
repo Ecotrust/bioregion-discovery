@@ -6,6 +6,9 @@ from lingcod.features.models import PolygonFeature, FeatureCollection
 from lingcod.analysistools.models import Analysis
 from lingcod.features import register
 from lingcod.common.utils import asKml
+import os
+import time
+
 
 @register
 class MyBioregion(Analysis):
@@ -26,11 +29,46 @@ class MyBioregion(Analysis):
             null=True, blank=True, verbose_name="Bioregion Geometry")
     
     def run(self):
-        import time
-        time.sleep(5);
+        from lingcod.analysistools.grass import Grass
+
+        coords = self.input_starting_point.transform(settings.GEOMETRY_DB_SRID, clone=True)
+        max_cost=1
+
+        g = Grass('world_moll', 
+                gisbase="/usr/local/grass-6.4.1RC2", 
+                gisdbase="/home/grass",
+                autoclean=True)
+        g.verbose = True
+        g.run('g.region rast=soilmoist')
+        rasts = g.list()['rast']
+
+        outdir = '/tmp'
+        outbase = 'bioregion_%s' % str(time.time()).split('.')[0]
+        output = os.path.join(outdir,outbase+'.json')
+        if os.path.exists(output):
+            raise Exception(output + " already exists")
+
+        g.run('r.mapcalc "weighted_combined_slope = ' +
+                            '(%s * temp_slope) + ' % self.input_temp_weight  + 
+                            '(%s * lang_slope) + ' % self.input_language_weight  +
+                            '(%s * precip_slope) + ' % self.input_precip_weight +
+                            '(%s * biomass_slope)' % self.input_biomass_weight +
+                            '"')
+        g.run('r.cost input=weighted_combined_slope output=cost coordinate=%s,%s max_cost=%s' % \
+                (coords[0],coords[1],max_cost) )
+        g.run('r.mapcalc "bioregion=if(cost >= 0)"')
+        g.run('r.to.vect -s input=bioregion output=bioregion_poly feature=area')
+        g.run('v.out.ogr -c input=bioregion_poly type=area format=GeoJSON dsn=%s' % output)
+
+        from django.contrib.gis.gdal import DataSource
+        ds = DataSource(output)
+        layer = ds[0]
+        geom = layer[0].geom.geos
+        geom.srid = settings.GEOMETRY_DB_SRID 
+
+        self.output_geom = geom #placeholder.geometry_final
         placeholder_name = 'portland placeholder'
         placeholder = Placeholder.objects.get(name=placeholder_name)
-        self.output_geom = placeholder.geometry_final
         return True
         
     @property 
