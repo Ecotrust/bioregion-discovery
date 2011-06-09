@@ -7,6 +7,29 @@
     });
 </script>
 
+<style type="text/css">
+div .field > label { font-size: 12px; display: inline; }
+div .box { 
+    -moz-box-shadow: 5px 5px 5px #ddd;
+    -webkit-box-shadow: 5px 5px 5px #ddd;
+    box-shadow: 5px 5px 5px #ddd; 
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -khtml-border-radius: 6px;
+    border-radius: 6px;
+    border: 1px #ddd solid;
+    padding: 6px;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    background-color: white; 
+    background-repeat: no-repeat;
+    min-height: 54px;
+}
+div .inputfield { padding-bottom: 14px; padding-left: 66px; }
+span.form-image { float: left; margin-left: -66px; }
+span.form-image > img { width:46px; height:46px; }
+</style>
+
 {% if form.media %} {{ form.media }} {% endif %}
 <h1>{{ title }}</h1>
 <form id="featureform" action="{{action}}" method="post"> 
@@ -30,35 +53,36 @@
     </div>
 
 
-    <div class="box species" id="start">
+    <div id="start">
         <div class="field required">
             {{ form.input_starting_point.label_tag }}
             {{ form.input_starting_point.errors }}
             {{ form.input_starting_point }}            
         </div>
     </div>
-    <div class="box species" id="temp">
+
+    <div class="inputfield" id="temp">
         <div class="field required">
             {{ form.input_temp_weight.label_tag }}
             {{ form.input_temp_weight.errors }}
             {{ form.input_temp_weight }}            
         </div>
     </div>
-    <div class="box species" id="lang">
+    <div class="inputfield" id="lang">
         <div class="field required">
             {{ form.input_language_weight.label_tag }}
             {{ form.input_language_weight.errors }}
             {{ form.input_language_weight }}            
         </div>
     </div>
-    <div class="box species" id="precip">
+    <div class="inputfield" id="precip">
         <div class="field required">
             {{ form.input_precip_weight.label_tag }}
             {{ form.input_precip_weight.errors }}
             {{ form.input_precip_weight }}            
         </div>
     </div>
-    <div class="box species" id="veg">
+    <div class="inputfield" id="veg">
         <div class="field required">
             {{ form.input_biomass_weight.label_tag }}
             {{ form.input_biomass_weight.errors }}
