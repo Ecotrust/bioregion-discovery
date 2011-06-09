@@ -32,7 +32,8 @@ class MyBioregion(Analysis):
         from lingcod.analysistools.grass import Grass
 
         coords = self.input_starting_point.transform(settings.GEOMETRY_DB_SRID, clone=True)
-        max_cost=100
+        max_cost=100 * (self.input_temp_weight + self.input_language_weight + \
+                        self.input_precip_weight + self.input_biomass_weight)
 
         g = Grass('world_moll', 
                 gisbase="/usr/local/grass-6.4.1RC2", 
@@ -48,13 +49,14 @@ class MyBioregion(Analysis):
         if os.path.exists(output):
             raise Exception(output + " already exists")
 
-        g.run('r.mapcalc "weighted_combined_slope = ' +
+        g.run('r.mapcalc "weighted_combined_slope =  0.01 + ' +
                             '(%s * temp_slope) + ' % self.input_temp_weight  + 
                             '(%s * lang_slope) + ' % self.input_language_weight  +
                             '(%s * precip_slope) + ' % self.input_precip_weight +
                             '(%s * biomass_slope)' % self.input_biomass_weight +
                             '"')
-        g.run('r.cost input=weighted_combined_slope output=cost coordinate=%s,%s max_cost=%s' % \
+        g.run('r.rescale input=weighted_combined_slope output=wcr_slope to=0,100')
+        g.run('r.cost -k input=wcr_slope output=cost coordinate=%s,%s max_cost=%s' % \
                 (coords[0],coords[1],max_cost) )
         g.run('r.mapcalc "bioregion=if(cost >= 0)"')
         g.run('r.to.vect -s input=bioregion output=bioregion_poly feature=area')
@@ -70,6 +72,7 @@ class MyBioregion(Analysis):
         largest_area = geom.area
         for feat in layer[1:]:
             if feat.geom.area > largest_area:
+                largest_area = feat.geom.area
                 geom = feat.geom.geos
 
         geom.srid = settings.GEOMETRY_DB_SRID 
@@ -79,6 +82,19 @@ class MyBioregion(Analysis):
         placeholder = Placeholder.objects.get(name=placeholder_name)
         return True
         
+    def save(self, *args, **kwargs):
+        rerun = False
+        # only rerun the analysis if any of the input_ fields have changed
+        # ie if name and description change no need to rerun the full analysis
+        if self.pk is not None:
+            orig = MyBioregion.objects.get(pk=self.pk)
+            for f in MyBioregion.input_fields():
+                # Is original value different from form value?
+                if orig._get_FIELD_display(f) != getattr(self,f.name):
+                    rerun = True
+                    break
+        super(MyBioregion, self).save(rerun=rerun, *args, **kwargs) 
+
     @property 
     def kml_working(self):
         return """
