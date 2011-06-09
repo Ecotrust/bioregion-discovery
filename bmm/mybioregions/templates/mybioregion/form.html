@@ -23,76 +23,59 @@
     {{ form.name }}            
 </div>
 
-<div class="tabs">
-    <ul>
-        <li>
-            <a href="#parameterstab">
-                <span>Parameters</span>
-            </a>
-        </li>
-        <li>
-            <a href="#descriptorstab">
-                <span>Descriptors</span>
-            </a>
-        </li>
-    </ul>
+    <div>
+        {{ form.description.label_tag }}
+        {{ form.description.errors }}
+        {{ form.description }}            
+    </div>
 
-    <div id="parameterstab">
-        <div class="box species" id="start">
-            <div class="field required">
-                {{ form.input_starting_point.label_tag }}
-                {{ form.input_starting_point.errors }}
-                {{ form.input_starting_point }}            
-            </div>
-        </div>
-        <div class="box species" id="temp">
-            <div class="field required">
-                {{ form.input_temp_weight.label_tag }}
-                {{ form.input_temp_weight.errors }}
-                {{ form.input_temp_weight }}            
-            </div>
-        </div>
-        <div class="box species" id="lang">
-            <div class="field required">
-                {{ form.input_language_weight.label_tag }}
-                {{ form.input_language_weight.errors }}
-                {{ form.input_language_weight }}            
-            </div>
-        </div>
-        <div class="box species" id="precip">
-            <div class="field required">
-                {{ form.input_precip_weight.label_tag }}
-                {{ form.input_precip_weight.errors }}
-                {{ form.input_precip_weight }}            
-            </div>
-        </div>
-        <div class="box species" id="veg">
-            <div class="field required">
-                {{ form.input_biomass_weight.label_tag }}
-                {{ form.input_biomass_weight.errors }}
-                {{ form.input_biomass_weight }}            
-            </div>
+
+    <div class="box species" id="start">
+        <div class="field required">
+            {{ form.input_starting_point.label_tag }}
+            {{ form.input_starting_point.errors }}
+            {{ form.input_starting_point }}            
         </div>
     </div>
-    <div id="descriptorstab">
-        <div>
-            {{ form.description.label_tag }}
-            {{ form.description.errors }}
-            {{ form.description }}            
+    <div class="box species" id="temp">
+        <div class="field required">
+            {{ form.input_temp_weight.label_tag }}
+            {{ form.input_temp_weight.errors }}
+            {{ form.input_temp_weight }}            
+        </div>
+    </div>
+    <div class="box species" id="lang">
+        <div class="field required">
+            {{ form.input_language_weight.label_tag }}
+            {{ form.input_language_weight.errors }}
+            {{ form.input_language_weight }}            
+        </div>
+    </div>
+    <div class="box species" id="precip">
+        <div class="field required">
+            {{ form.input_precip_weight.label_tag }}
+            {{ form.input_precip_weight.errors }}
+            {{ form.input_precip_weight }}            
+        </div>
+    </div>
+    <div class="box species" id="veg">
+        <div class="field required">
+            {{ form.input_biomass_weight.label_tag }}
+            {{ form.input_biomass_weight.errors }}
+            {{ form.input_biomass_weight }}            
         </div>
     </div>
 
-    <p><input type="submit" value="submit"></p>
-    </form>
+<p><input type="submit" value="submit"></p>
+</form>
 
 
+<br class="clear" />
+<div class="form_controls">
+    <a href="#" class="submit_button button" onclick="this.blur(); return false;"><span>Submit</span></a>
+    <a href="#" class="cancel_button button red" onclick="this.blur(); return false;"><span>Cancel</span></a>
     <br class="clear" />
-    <div class="form_controls">
-        <a href="#" class="submit_button button" onclick="this.blur(); return false;"><span>Submit</span></a>
-        <a href="#" class="cancel_button button red" onclick="this.blur(); return false;"><span>Cancel</span></a>
-        <br class="clear" />
-    </div>
+</div>
 
-    </div>    
 
 {% endblock %}
