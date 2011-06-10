@@ -76,17 +76,19 @@ class MyBioregion(Analysis):
                 geom = feat.geom.geos
 
         geom.srid = settings.GEOMETRY_DB_SRID 
-
-        self.output_geom = geom #placeholder.geometry_final
-        placeholder_name = 'portland placeholder'
-        placeholder = Placeholder.objects.get(name=placeholder_name)
+        if geom:
+            os.remove(output)
+            del g
+        self.output_geom = geom
         return True
         
     def save(self, *args, **kwargs):
         rerun = False
         # only rerun the analysis if any of the input_ fields have changed
         # ie if name and description change no need to rerun the full analysis
-        if self.pk is not None:
+        if self.pk is None:
+            rerun = True
+        else:
             orig = MyBioregion.objects.get(pk=self.pk)
             for f in MyBioregion.input_fields():
                 # Is original value different from form value?
