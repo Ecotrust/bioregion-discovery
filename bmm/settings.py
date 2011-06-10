@@ -33,4 +33,6 @@ LOGFILE =  os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'bmm.l
 
 APP_NAME = "The Bioregion Discovery Tool"
 
+STATICMAP_AUTOZOOM = False
+
 from settings_local import *

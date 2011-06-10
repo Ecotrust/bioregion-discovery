@@ -76,7 +76,9 @@ class MyBioregion(Analysis):
                 geom = feat.geom.geos
 
         geom.srid = settings.GEOMETRY_DB_SRID 
-        if geom:
+        g2 = geom.buffer(20000)
+        geom = g2.buffer(-20000)
+        if geom and not settings.DEBUG:
             os.remove(output)
             del g
         self.output_geom = geom
@@ -96,6 +98,24 @@ class MyBioregion(Analysis):
                     rerun = True
                     break
         super(MyBioregion, self).save(rerun=rerun, *args, **kwargs) 
+
+    @classmethod
+    def mapnik_geomfield(self):
+        return "output_geom"
+
+    @classmethod
+    def mapnik_style(self):
+        import mapnik
+        polygon_style = mapnik.Style()
+        ps = mapnik.PolygonSymbolizer(mapnik.Color('#ffffff'))
+        ps.fill_opacity = 0.5
+        ls = mapnik.LineSymbolizer(mapnik.Color('#555555'),0.75)
+        ls.stroke_opacity = 0.5
+        r = mapnik.Rule()
+        r.symbols.append(ps)
+        r.symbols.append(ls)
+        polygon_style.rules.append(r)
+        return polygon_style
 
     @property 
     def kml_working(self):

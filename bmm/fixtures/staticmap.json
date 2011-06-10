@@ -1,0 +1,17 @@
+[
+  {
+    "pk": 1, 
+    "model": "staticmap.mapconfig", 
+    "fields": {
+      "mapfile": "staticmap/world.xml", 
+      "mapname": "default",
+      "default_x1": -180.0,
+      "default_y1": -90.0,
+      "default_x2": 180.0,
+      "default_y2": 90.0,
+      "default_height": 400,
+      "default_width": 800,
+      "default_srid": 4326
+    }
+  }
+]
