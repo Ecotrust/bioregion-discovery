@@ -5,3 +5,4 @@ bmm.log
 data/reports/*
 data/resamp_moll/*
 data/*.zip
+*.orig

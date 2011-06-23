@@ -15,9 +15,32 @@
 
 <div class="about">
 <h2>Bioregion Discovery Tool</h2>
-<p>This Ecotrust project will enable users to generate, display, and collaborate on bioregions through a selection/prioritization of biophysical and cultural parameters that reflect the users' notions of the place they call home.</p>
 <p>
+    This Ecotrust project will enable users to generate, display, and collaborate on bioregions through a selection/prioritization of biophysical and cultural parameters that reflect the users' notions of the place they call home.
 </p>
+
+<div>
+<h3> Already have an account? </h3>
+<a href="#" class="button" id="signin2"><span>Sign In</span></a>
+<br/>
+<h3> Or register for a new account. </h3>
+<a href="#" class="button" id="register2"><span>Register</span></a>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+
+    lingcod.onShow(function(){
+        $('#signin2').click(function(){
+            $('#signin').click();
+        });
+
+        $('#register2').click(function(){
+            $('#register').click();
+        });
+    });
+
+</script>
+<!-- 
 <h2> Using the Demo </h2>
 <p>
 <ul class="about">
@@ -44,7 +67,9 @@
     </ul>
     <li> <strong>View Reports</strong>. </li>
     <li> <strong>View Data Layers</strong>. </li>
-  <!--<li>The process will run in the background; you can continue to use the application and will be notified when the processing is completed. At that time you can click the 'refresh' button to view the results of the analysis. Selecting the analysis and clicking 'Attributes' will provide the details of the analysis and the resulting reserve scenario. </li>-->
+    <li>The process will run in the background; you can continue to use the application and will be notified when the processing is completed. At that time you can click the 'refresh' button to view the results of the analysis. Selecting the analysis and clicking 'Attributes' will provide the details of the analysis and the resulting reserve scenario. </li>
+    
+    -->
   
 </ul>
 </p>

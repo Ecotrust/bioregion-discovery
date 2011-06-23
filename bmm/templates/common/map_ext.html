@@ -27,7 +27,13 @@
     {% endif %}
 {% endblock tabs %}
 
-{% block addToOptions %} options.show_panel='about'; {% endblock addToOptions %}
+{% block addToOptions %} 
+{% if user.is_authenticated %}
+// options.show_panel='about'; 
+{% else %}
+options.show_panel='about'; 
+{% endif %}                
+{% endblock addToOptions %}
 
 {% block before_myshapes %}
       <br/>
