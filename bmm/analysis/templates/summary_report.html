@@ -13,7 +13,11 @@
             <td style='width:225px'><b>Estimated Population</b></td>
         </tr>
         <tr>
+            {% if population < 1000000 %}
+            <td style='width:225px'>{{population|intcomma}}</td>
+            {% else %}
             <td style='width:225px'>{{population|intword}}</td>
+            {% endif %}
         </tr>
         <tr><td></td></tr>
         <tr><td></td></tr>
