@@ -62,7 +62,7 @@ def get_size(bioregion):
     return area
            
 def get_population(bioregion):
-    pop_geom = RasterDataset.objects.get(name='population')
+    pop_geom = RasterDataset.objects.get(name='population_2010')
     pop_stats = zonal_stats(bioregion.output_geom, pop_geom)
     return int(pop_stats.sum)
    
