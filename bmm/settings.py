@@ -6,6 +6,7 @@ TIME_ZONE = 'America/Vancouver'
 ROOT_URLCONF = 'bmm.urls'
 
 GEOMETRY_DB_SRID = 54009
+DISPLAY_AREA_UNITS = 'sq_km'
 #KML_SIMPLIFY_TOLERANCE = .0002 #overriding this setting to account for lat/lon db srid
 KML_ALTITUDEMODE_DEFAULT = 'clampToGround'
 

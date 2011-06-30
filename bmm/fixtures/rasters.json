@@ -4,7 +4,7 @@
     "model": "raster_stats.rasterdataset", 
     "fields": {
       "type": "continuous", 
-      "name": "population", 
+      "name": "population_2015", 
       "full_name": "", 
       "filepath": "/usr/local/apps/bioregions/data/reports/summary/pop15_mw"
     }
@@ -108,5 +108,66 @@
       "full_name": "", 
       "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/ideaths_mw"
     }
+  },
+  {
+    "pk": 12,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "climate_impact",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/clmtimpct_mw"
+    }
+  },
+  {
+    "pk": 13,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "annual_precipitation",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/summary/ann_prec_mw"
+    }
+  },
+  {
+    "pk": 14,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "annual_temperature",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/summary/ann_temp_mw"
+    }
+  },
+  {
+    "pk": 15,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "max_temp",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/summary/max_temp_mw"
+    }
+  },
+  {
+    "pk": 16,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "min_temp",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/summary/min_temp_mw"
+    }
+  },
+  {
+    "pk": 17,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "population_2010",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/summary/pop10_mw"
+    }
   }
+
 ]

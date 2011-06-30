@@ -165,6 +165,15 @@ class MyBioregion(Analysis):
         </Style>
         """ % (self.model_uid(),)
     
+    @property
+    def hash(self):
+        """"
+        We are only concerned with the geometry here
+        """
+        geom_wkt = "%s" % (self.output_geom.wkt)
+        return geom_wkt.__hash__()        
+        
+    
     class Options:
         verbose_name = 'Bioregion'
         icon_url = 'bmm/img/regions.png'
