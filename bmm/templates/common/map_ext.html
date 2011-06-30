@@ -28,11 +28,40 @@
 {% endblock tabs %}
 
 {% block addToOptions %} 
-{% if user.is_authenticated %}
-// options.show_panel='about'; 
-{% else %}
-options.show_panel='about'; 
-{% endif %}                
+    {% if user.is_authenticated %}
+    // options.show_panel='about'; 
+    {% else %}
+    options.show_panel='about'; 
+    {% endif %}                
+
+            $(function() {
+             $('#myshapestree').qtip({
+                content: 'Click <strong>Create New</strong> then <strong>Bioregion</strong> to begin.', 
+                show: { 
+                    ready: true, 
+                    when: { event: 'load' } 
+                },
+                hide: { when: {event: 'unfocus'} },
+                style: {
+                    width: 205,
+                    padding: 7,
+                    color: 'black',
+                    textAlign: 'center',
+                    border: {
+                        width: 1,
+                        radius: 3,
+                    },
+                    tip: 'leftMiddle',
+                    name: 'cream'
+                },
+                position: {
+                    corner: {
+                        target: 'topMiddle',
+                        tooltip: 'bottomMiddle'
+                    }
+                }
+             });
+            });
 {% endblock addToOptions %}
 
 {% block before_myshapes %}
@@ -44,7 +73,7 @@ options.show_panel='about';
             <input type="submit" style="display:none;" />
             <br style="clear:both;" />
         </form>
-      <br/>
+        <div id="tip" style="height: 10px;"></div>
 {% endblock before_myshapes %}
 
 {% block flyto %}{% endblock flyto %}

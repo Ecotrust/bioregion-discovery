@@ -22,6 +22,10 @@ COMPRESS_CSS['application']['source_filenames'] += (
     'bmm/css/analysis_report.css',
 )
 
+COMPRESS_JS['application']['source_filenames'] += (
+    'bmm/js/jquery.qtip-1.0.0-rc3.min.js',
+)
+
 # bioregions.labs.ecotrust.org 
 GOOGLE_API_KEY = 'ABQIAAAAn9EXtJkKOlQBGEfk28CiahQkv7FNjWKr_TVFL7EgIFo2pXN1jRRz4grU7hzFNhpS8coxw1Dz219KfQ'
 # bioregions.labs.ecotrust.org:8000
