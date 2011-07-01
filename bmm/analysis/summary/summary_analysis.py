@@ -40,6 +40,8 @@ def run_summary_analysis(bioregion):
     min_temp_c, min_temp_f = get_min_temp(bioregion)
     #get mean annual temperature
     annual_temp_c, annual_temp_f = get_annual_temp(bioregion)
+    #get mean annual temperature range
+    annual_temp_range_c, annual_temp_range_f = get_annual_temp_range(bioregion)
     #get mean annual precipitation
     annual_precip = get_annual_precip(bioregion)
     #get existing eco-regions
@@ -53,7 +55,7 @@ def run_summary_analysis(bioregion):
     #get soil suitability
     soil_suitability = get_soil_suitability(bioregion)    
     #compile context
-    context = {'bioregion': bioregion, 'default_value': default_value, 'area': area, 'population': population, 'population_2015': population_2015, 'languages': languages, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_precip': annual_precip, 'ecoregions': ecoregions, 'landmass_perc': landmass_perc, 'soil_suitability': soil_suitability, 'avg_npp': avg_npp, 'npp_perc': npp_perc}
+    context = {'bioregion': bioregion, 'default_value': default_value, 'area': area, 'population': population, 'population_2015': population_2015, 'languages': languages, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip': annual_precip, 'ecoregions': ecoregions, 'landmass_perc': landmass_perc, 'soil_suitability': soil_suitability, 'avg_npp': avg_npp, 'npp_perc': npp_perc}
     return context
     #get average poverty index
     #poverty = get_poverty(bioregion)
@@ -114,6 +116,13 @@ def get_annual_temp(bioregion):
     temp_c = temp_stats.avg / 10
     temp_f = temp_c * 9 / 5. + 32
     return temp_c, temp_f
+    
+def get_annual_temp_range(bioregion):
+    temp_range_geom = RasterDataset.objects.get(name='temp_range')
+    temp_range_stats = zonal_stats(bioregion.output_geom, temp_range_geom)
+    temp_range_c = temp_range_stats.avg / 10
+    temp_range_f = temp_range_c * 9 / 5. + 32
+    return temp_range_c, temp_range_f
     
 def get_annual_precip(bioregion):
     precip_geom = RasterDataset.objects.get(name='annual_precipitation')

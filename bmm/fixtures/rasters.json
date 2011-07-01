@@ -168,6 +168,16 @@
       "full_name": "",
       "filepath": "/usr/local/apps/bioregions/data/reports/summary/pop10_mw"
     }
+  },
+  {
+    "pk": 18,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "temp_range",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/summary/temp_rng_mw"
+    }
   }
 
 ]
