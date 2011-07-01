@@ -21,7 +21,7 @@ class ReportCache(models.Model):
 
 class Languages(models.Model):
     nam_label = models.CharField(max_length=40)
-    name_prop = models.CharField(max_length=40)
+    name_prop = models.CharField(max_length=40, null=True, blank=True)
     name2 = models.CharField(max_length=40)
     nam_ansi = models.CharField(max_length=40)
     cnt = models.CharField(max_length=8)
