@@ -5,7 +5,7 @@ from lingcod.raster_stats.models import RasterDataset, zonal_stats
 #from analysis.models import *
 #from settings import *
 from lingcod.unit_converter.models import geometry_area_in_display_units, convert_float_to_area_display_units
-from analysis.models import Languages, EcoRegions
+from analysis.models import Languages, EcoRegions, LastWild
 from analysis.caching.report_caching import *
 from lingcod.common.utils import clean_geometry
 
@@ -48,7 +48,7 @@ def run_summary_analysis(bioregion):
     #get existing eco-regions
     ecoregions = get_ecoregions(bioregion)
     #get last of the wild ecoregions 
-    lastwild = get_last_wild(bioregion)
+    wild_regions = get_last_wild(bioregion)
     #get land mass proportion
     landmass_perc = get_landmass_proportion(area)
     #get npp proportion
@@ -58,7 +58,7 @@ def run_summary_analysis(bioregion):
     #get soil suitability
     soil_suitability = get_soil_suitability(bioregion)    
     #compile context
-    context = {'bioregion': bioregion, 'default_value': default_value, 'area': area, 'population': population, 'population_2015': population_2015, 'languages': languages, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip': annual_precip, 'ecoregions': ecoregions, 'landmass_perc': landmass_perc, 'soil_suitability': soil_suitability, 'avg_npp': avg_npp, 'npp_perc': npp_perc}
+    context = {'bioregion': bioregion, 'default_value': default_value, 'area': area, 'population': population, 'population_2015': population_2015, 'languages': languages, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip': annual_precip, 'ecoregions': ecoregions, 'wild_regions': wild_regions, 'landmass_perc': landmass_perc, 'soil_suitability': soil_suitability, 'avg_npp': avg_npp, 'npp_perc': npp_perc}
     return context
     #get average poverty index
     #poverty = get_poverty(bioregion)
@@ -168,7 +168,22 @@ def get_ecoregions(bioregion):
         return ecoregion_tuples    
     
 def get_last_wild(bioregion):
-    pass
+    if report_cache_exists(bioregion, 'wild_regions'):
+        lastwild_tuples = get_report_cache(bioregion, 'wild_regions')
+        return lastwild_tuples
+    else:
+        wild_regions = LastWild.objects.all()
+        wild_region_tuples = [(wild_region.geometry.intersection(bioregion.output_geom).area, wild_region.eco_name) for wild_region in wild_regions if wild_region.geometry.intersects(bioregion.output_geom)]
+        wild_region_dict = {}
+        for area,name in wild_region_tuples:
+            if name in wild_region_dict.keys():
+                wild_region_dict[name] += area
+            else:
+                wild_region_dict[name] = area
+        wild_region_tuples = [(name, convert_float_to_area_display_units(area)) for name,area in wild_region_dict.items()]
+        wild_region_tuples.sort()
+        create_report_cache(bioregion, dict(wild_regions=wild_region_tuples))
+        return wild_region_tuples  
     
 def get_landmass_proportion(area):
     perc = area / global_landmass
