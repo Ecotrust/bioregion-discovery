@@ -50,13 +50,21 @@
             <td><b>Median Min Temperature</b></td>
         </tr>
         <tr>
-            <td>{{max_temp|floatformat:0}}&deg; Celsius</td>
-            <td>{{min_temp|floatformat:0}}&deg; Celsius</td>
+            <td>{{max_temp_c|floatformat:0}}&deg; Celsius / {{max_temp_f|floatformat:0}}&deg; Fahrenheit</td>
+            <td>{{min_temp_c|floatformat:0}}&deg; Celsius / {{min_temp_f|floatformat:0}}&deg; Fahrenheit</td>
         </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
-            <td colspan='2'><b>Median Annual Precipitation</b></td>
+            <td colspan='2'><b>Mean Annual Temperature</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{annual_temp_c|floatformat:0}}&deg; Celsius / {{annual_temp_f|floatformat:0}}&deg; Fahrenheit</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Mean Annual Precipitation</b></td>
         </tr>
         <tr>
             <td colspan='2'>{{annual_precip|floatformat:0}} cm</td>
