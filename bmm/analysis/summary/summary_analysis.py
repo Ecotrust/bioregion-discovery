@@ -28,8 +28,10 @@ Run the analysis, create the cache, and return the results as a context dictiona
 def run_summary_analysis(bioregion):
     #get size of bioregion
     area = get_size(bioregion)
-    #get total population 
+    #get current population (for 2010)
     population = get_population(bioregion)
+    #get projected population (for 2015)
+    population_2015 = get_projected_population(bioregion)
     #get list of spoken languages
     languages = get_languages(bioregion)
     #get median max temperature
@@ -49,7 +51,7 @@ def run_summary_analysis(bioregion):
     #get soil suitability
     soil_suitability = get_soil_suitability(bioregion)    
     #compile context
-    context = {'bioregion': bioregion, 'default_value': default_value, 'area': area, 'population': population, 'languages': languages, 'max_temp': max_temp, 'min_temp': min_temp, 'annual_precip': annual_precip, 'ecoregions': ecoregions, 'landmass_perc': landmass_perc, 'soil_suitability': soil_suitability, 'avg_npp': avg_npp, 'npp_perc': npp_perc}
+    context = {'bioregion': bioregion, 'default_value': default_value, 'area': area, 'population': population, 'population_2015': population_2015, 'languages': languages, 'max_temp': max_temp, 'min_temp': min_temp, 'annual_precip': annual_precip, 'ecoregions': ecoregions, 'landmass_perc': landmass_perc, 'soil_suitability': soil_suitability, 'avg_npp': avg_npp, 'npp_perc': npp_perc}
     return context
     #get average poverty index
     #poverty = get_poverty(bioregion)
@@ -63,6 +65,11 @@ def get_size(bioregion):
            
 def get_population(bioregion):
     pop_geom = RasterDataset.objects.get(name='population_2010')
+    pop_stats = zonal_stats(bioregion.output_geom, pop_geom)
+    return int(pop_stats.sum)
+
+def get_projected_population(bioregion):
+    pop_geom = RasterDataset.objects.get(name='population_2015')
     pop_stats = zonal_stats(bioregion.output_geom, pop_geom)
     return int(pop_stats.sum)
    

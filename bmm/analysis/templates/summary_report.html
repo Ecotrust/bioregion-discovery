@@ -11,7 +11,7 @@
     <tbody>
         <tr class="grey">
             <td><b>Size of Bioregion</b></td>
-            <td><b>Estimated Population</b></td>
+            <td><b>Estimated Population (2010)</b></td>
         </tr>
         <tr>
             <td>{{area|intcomma}} square kilometers</td>
@@ -19,6 +19,18 @@
             <td style='width:225px'>{{population|intcomma}}</td>
             {% else %}
             <td style='width:225px'>{{population|intword}}</td>
+            {% endif %}
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Projected Population (for 2015)</b></td>
+        </tr>
+        <tr>
+            {% if population_2015 < 1000000 %}
+            <td colspan='2' style='width:225px'>{{population_2015|intcomma}}</td>
+            {% else %}
+            <td colspan='2' style='width:225px'>{{population_2015|intword}}</td>
             {% endif %}
         </tr>
         <tr><td></td><td></td></tr>
