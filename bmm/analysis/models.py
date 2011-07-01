@@ -23,7 +23,7 @@ class Languages(models.Model):
     nam_label = models.CharField(max_length=40)
     name_prop = models.CharField(max_length=40, null=True, blank=True)
     name2 = models.CharField(max_length=40, null=True, blank=True)
-    nam_ansi = models.CharField(max_length=40)
+    nam_ansi = models.CharField(max_length=40, null=True, blank=True)
     cnt = models.CharField(max_length=8, null=True, blank=True)
     c1 = models.CharField(max_length=33, null=True, blank=True)
     pop = models.CharField(max_length=86, null=True, blank=True)
