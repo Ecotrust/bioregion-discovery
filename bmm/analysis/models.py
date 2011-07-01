@@ -45,4 +45,14 @@ class EcoRegions(models.Model):
     eco_code = models.CharField(max_length=50)
     rangeland = models.CharField(max_length=50, null=True, blank=True)
     geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="WWF Eco-Regions")
+    objects = models.GeoManager()  
+
+class LastWild(models.Model):
+    eco_name = models.CharField(max_length=99, null=True, blank=True)
+    realm = models.CharField(max_length=3, null=True, blank=True)
+    g200_regio = models.CharField(max_length=99, null=True, blank=True)
+    shape_leng = models.FloatField()
+    shape_area = models.FloatField()
+    eco_code = models.CharField(max_length=50, null=True, blank=True)
+    geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Last of the Wild")
     objects = models.GeoManager()    

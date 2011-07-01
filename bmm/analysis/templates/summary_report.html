@@ -78,7 +78,7 @@
         </tr>
         {% for ecoregion in ecoregions %}
         <tr>
-            <td colspan='2'>{{ecoregion}}</td>
+            <td colspan='2'>{{ecoregion.0}} ({{ecoregion.1|floatformat:0|intcomma}} km<sup>2</sup>)</td>
         </tr>
         {% endfor %}
         <tr><td></td><td></td></tr>

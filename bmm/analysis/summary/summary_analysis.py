@@ -4,9 +4,10 @@ from django.template import RequestContext
 from lingcod.raster_stats.models import RasterDataset, zonal_stats
 #from analysis.models import *
 #from settings import *
-from lingcod.unit_converter.models import geometry_area_in_display_units
+from lingcod.unit_converter.models import geometry_area_in_display_units, convert_float_to_area_display_units
 from analysis.models import Languages, EcoRegions
 from analysis.caching.report_caching import *
+from lingcod.common.utils import clean_geometry
 
 default_value = '---'
 global_landmass = 148940000. #sq km -- see table at http://en.wikipedia.org/wiki/Earth
@@ -46,6 +47,8 @@ def run_summary_analysis(bioregion):
     annual_precip = get_annual_precip(bioregion)
     #get existing eco-regions
     ecoregions = get_ecoregions(bioregion)
+    #get last of the wild ecoregions 
+    lastwild = get_last_wild(bioregion)
     #get land mass proportion
     landmass_perc = get_landmass_proportion(area)
     #get npp proportion
@@ -83,13 +86,27 @@ def get_languages(bioregion):
         return language_names
     else:
         languages = Languages.objects.all()
-        language_tuples = [(language.geometry.intersection(bioregion.output_geom).area, language.nam_ansi) for language in languages if language.geometry.intersects(bioregion.output_geom)]
         language_dict = {}
-        for area,name in language_tuples:
-            if name in language_dict.keys():
-                language_dict[name] += area
-            else:
-                language_dict[name] = area
+        for language in languages:
+            try:
+                does_intersect = language.geometry.intersects(bioregion.output_geom)
+                if does_intersect:
+                    name = language.nam_ansi
+                    area = geometry_area_in_display_units(language.geometry.intersection(bioregion.output_geom))
+                    if name in language_dict.keys():
+                        language_dict[name] += area
+                    else:
+                        language_dict[name] = area
+            except:
+                #does_intersect = clean_geometry(language.geometry).intersects(bioregion.output_geom)
+                pass
+        #language_tuples = [(language.geometry.intersection(bioregion.output_geom).area, language.nam_ansi) for language in languages if clean_geometry(language.geometry).intersects(bioregion.output_geom)]
+        #language_dict = {}
+        #for area,name in language_tuples:
+        #    if name in language_dict.keys():
+        #        language_dict[name] += area
+        #    else:
+        #        language_dict[name] = area
         language_tuples = [(area, name) for name,area in language_dict.items()]
         language_tuples.sort(reverse=True)
         language_names = [name for (area, name) in language_tuples]
@@ -131,8 +148,8 @@ def get_annual_precip(bioregion):
     
 def get_ecoregions(bioregion):
     if report_cache_exists(bioregion, 'ecoregions'):
-        ecoregion_names = get_report_cache(bioregion, 'ecoregions')
-        return ecoregion_names
+        ecoregion_tuples = get_report_cache(bioregion, 'ecoregions')
+        return ecoregion_tuples
     else:
         ecoregions = EcoRegions.objects.all()
         ecoregion_tuples = [(ecoregion.geometry.intersection(bioregion.output_geom).area, ecoregion.eco_name) for ecoregion in ecoregions if ecoregion.geometry.intersects(bioregion.output_geom)]
@@ -142,13 +159,16 @@ def get_ecoregions(bioregion):
                 ecoregion_dict[name] += area
             else:
                 ecoregion_dict[name] = area
-        ecoregion_tuples = [(area, name) for name,area in ecoregion_dict.items()]
-        ecoregion_tuples.sort(reverse=True)
-        ecoregion_names = [name for (area, name) in ecoregion_tuples]
-        create_report_cache(bioregion, dict(ecoregions=ecoregion_names))
+        ecoregion_tuples = [(name, convert_float_to_area_display_units(area)) for name,area in ecoregion_dict.items()]
+        ecoregion_tuples.sort()
+        #ecoregion_names = [name for (area, name) in ecoregion_tuples]
+        create_report_cache(bioregion, dict(ecoregions=ecoregion_tuples))
         #just return the following for now (until we get caching in place)
         #ecoregion_names = ['Central and Southern Cascades forests', 'Central Pacific coastal forests', 'Willamette Valley forests', 'Puget lowland forests', 'Eastern Cascades forests', 'Klamath-Siskiyou forests', 'Snake-Columbia shrub steppe', 'Blue Mountains forests']
-        return ecoregion_names    
+        return ecoregion_tuples    
+    
+def get_last_wild(bioregion):
+    pass
     
 def get_landmass_proportion(area):
     perc = area / global_landmass
