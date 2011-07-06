@@ -35,3 +35,4 @@
 {% endfor %}
 
 {% endblock %}
+{% block docname %}Bioregions{% endblock %}

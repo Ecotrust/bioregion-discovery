@@ -4,19 +4,18 @@
 
 {% block metanavigation %}
     {% if user.is_authenticated %}
-    <li>{{user.username}} | </li>
+    <li><a href="#" id="profile">{{user.username}}</a> | </li>
     {% endif %}
-    <li><a href="#" id="news">news</a> | </li>
-    <li><a href="#" id="about">about</a> | </li>
+
+    <li style="display:none;"><a href="#" id="news">news</a> | </li>
+    <li style="display:none;"><a href="#" id="about">about</a> | </li>
     {% block meta_navigation_list_insert %}{% endblock %}
     <li><a href="#" id="help">help</a> | </li>
     {% if user.is_authenticated %}
-    <li><a href="#" id="profile">my profile</a> | </li>
-    <li><a href="{% url user_signout %}">sign out</a></li>
+        <li><a href="{% url user_signout %}">sign out</a></li>
     {% else %}
-    <li><a href="#" id="register">register</a> | </li>
-    <!-- <li><a href="{% url user_signin %}" id="signin">sign in</a></li> -->
-    <li><a href="#" id="signin">sign in</a></li>
+        <li><a href="#" id="register">register</a> | </li>
+        <li><a href="#" id="signin">sign in</a></li>
     {% endif %}                
 {% endblock metanavigation %}
             
@@ -33,36 +32,39 @@
     {% else %}
     options.show_panel='about'; 
     {% endif %}                
-
-            $(function() {
-             $('#myshapestree').qtip({
-                content: 'Click <strong>Create New</strong> then <strong>Bioregion</strong> to begin.', 
-                show: { 
-                    ready: true, 
-                    when: { event: 'load' } 
-                },
-                hide: { when: {event: 'unfocus'} },
-                style: {
-                    width: 205,
-                    padding: 7,
-                    color: 'black',
-                    textAlign: 'center',
-                    border: {
-                        width: 1,
-                        radius: 3,
-                    },
-                    tip: 'leftMiddle',
-                    name: 'cream'
-                },
-                position: {
-                    corner: {
-                        target: 'topMiddle',
-                        tooltip: 'bottomMiddle'
-                    }
-                }
-             });
-            });
 {% endblock addToOptions %}
+
+{% block js_ready %} 
+              var myshapes_visible = $('#SharedShapes').hasClass('ui-tabs-hide');
+              if (myshapes_visible) {
+                $('#myshapestree').qtip({
+                    content: 'Click to create a new Bioregion.', 
+                    show: { 
+                        ready: true, 
+                        when: { event: 'load' } 
+                    },
+                    hide: { when: {event: 'unfocus'} },
+                    style: {
+                        width: 205,
+                        padding: 7,
+                        color: 'black',
+                        textAlign: 'center',
+                        border: {
+                            width: 1,
+                            radius: 3,
+                        },
+                        tip: 'leftMiddle',
+                        name: 'cream'
+                    },
+                    position: {
+                        corner: {
+                            target: 'topMiddle',
+                            tooltip: 'topMiddle'
+                        }
+                    }
+                });
+            }
+{% endblock js_ready %}
 
 {% block before_myshapes %}
       <br/>
@@ -106,6 +108,8 @@
             min-height: 55px;
             padding: 6px;
         }
+        #earthOptions li { margin: 0px 0 !important; }
+        #earthOptions ul { padding-left: 18px; }
     </style>
     <div class="box">
     <h4 class="kmltree-title"> Shared Bioregions </h4>
@@ -113,8 +117,36 @@
 
 {% block after_sharedshapes %}
     </div>
-        <div class="box" id="datalayerstree"></div>
+        <div class="box">
+            <div id="datalayerstree"></div>
+            <div id="earthOptions">
+                <h4 class="kmltree-title">Display Options</h4>
+                <ul>
+                <li id="overview" class="kmltree-item"><span class="toggler">
+                    <img width="16" height="16" src="{{MEDIA_URL}}common/images/transparent.gif" /></span>
+                    <span class="name">Overview Map</span>
+                </li>
+                <li id="scale" class="kmltree-item"><span class="toggler">
+                    <img width="16" height="16" src="{{MEDIA_URL}}common/images/transparent.gif" /></span>
+                    <span class="name">Scale Legend</span>
+                </li>
+                <li class="visible kmltree-item" id="nav"><span class="toggler">
+                    <img width="16" height="16" src="{{MEDIA_URL}}common/images/transparent.gif" /></span>
+                    <span class="name">Navigation Controls</span>
+                </li>
+                <li id="terrain" class="kmltree-item"><span class="toggler">
+                    <img width="16" height="16" src="{{MEDIA_URL}}common/images/transparent.gif" /></span>
+                    <span class="name"> 3d Terrain and Ocean Surface</span>
+                </li>
+                <li class="visible kmltree-item" id="atm"><span class="toggler">
+                    <img width="16" height="16" src="{{MEDIA_URL}}common/images/transparent.gif" /></span>
+                    <span class="name">Atmosphere</span>
+                </li>
+                </ul>
+            </div>
+        </div>
 
+        <!--
         <div class="box">
         <h4 class="kmltree-title"> Measurement Tools </h4>
         <br/>
@@ -124,11 +156,9 @@
             <a id="measure_area" href="#" class="button" onclick="this.blur(); return false;"><span><img src="{{MEDIA_URL}}common/images/ruler_square.png">Measure Area</span></a>
             <a id="measure_clear" href="#" class="button red disabled" onclick="this.blur(); return false;"><span>Clear</span></a>
             <p style="clear:both;"></p>
-            <!-- 
             <p style="clear:both;">
                 Choose to measure distance or area and then draw a shape on the map. Double-click when finished drawing.
             </p>
-             -->
             <div id="measureAmountHolder">
                 <span id="measureAmount"></span>
                 <select id="measure_units">
@@ -139,20 +169,7 @@
             </div>
         </div>
         </div>
+        -->
 
-
-        <div id="earthOptions" class="box">
-            <h4 class="kmltree-title">Display Options</h4>
-            <!--
-            <p>Toggle the various options below and your choices will be remembered the next time you use the tool.</p>
-            -->
-            <ul>
-                <li id="overview"><span class="toggler"><img width="16" height="16" src="{{MEDIA_URL}}common/images/transparent.gif" /></span>Overview Map</li>
-                <li id="scale"><span class="toggler"><img width="16" height="16" src="{{MEDIA_URL}}common/images/transparent.gif" /></span>Scale Legend</li>
-                <li class="visible" id="nav"><span class="toggler"><img width="16" height="16" src="{{MEDIA_URL}}common/images/transparent.gif" /></span>Navigation Controls</li>
-                <li id="terrain"><span class="toggler"><img width="16" height="16" src="{{MEDIA_URL}}common/images/transparent.gif" /></span>3d Terrain and Ocean Surface</li>
-                <li class="visible" id="atm"><span class="toggler"><img width="16" height="16" src="{{MEDIA_URL}}common/images/transparent.gif" /></span>Atmosphere</li>
-            </ul>
-        </div>
     </div>
 {% endblock after_sharedshapes %}
