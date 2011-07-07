@@ -44,13 +44,27 @@ def create_report_cache(bioregion, context):
 '''
 Remove a single geometry from the cache table
 '''    
-def remove_report_cache(bioregion=None):
-    if bioregion is None:
+def remove_report_cache(bioregion=None, data_layer=None):
+    if bioregion is None and data_layer is None:
         raise Exception("For clearing all cached data, use clear_report_cache instead.")
-    entries = ReportCache.objects.filter(wkt_hash=bioregion.hash)
-    #remove entries from ReportCache
-    for entry in entries:
-        ReportCache.delete(entry)
+    elif bioregion is None:
+        entries = ReportCache.objects.all()
+        for entry in entries:
+            if data_layer in entry.context.keys():
+                del entry.context[data_layer]
+                entry.save()
+    elif data_layer is None:
+        entries = ReportCache.objects.filter(wkt_hash=bioregion.hash)
+        #remove entries from ReportCache
+        for entry in entries:
+            ReportCache.delete(entry)
+    else:
+        entries = ReportCache.objects.filter(wkt_hash=bioregion.hash)
+        for entry in entries:
+            if data_layer in entry.context.keys():
+                del entry.context[data_layer]
+                entry.save()
+        
        
 '''
 Clear all entries from cache table

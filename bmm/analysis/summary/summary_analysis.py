@@ -30,7 +30,7 @@ def run_summary_analysis(bioregion):
     #get size of bioregion
     area = get_size(bioregion)
     #get current population (for 2010)
-    population = get_population(bioregion)
+    population_2005 = get_population(bioregion)
     #get projected population (for 2015)
     population_2015 = get_projected_population(bioregion)
     #get list of spoken languages
@@ -58,7 +58,7 @@ def run_summary_analysis(bioregion):
     #get soil suitability
     soil_suitability = get_soil_suitability(bioregion)    
     #compile context
-    context = {'bioregion': bioregion, 'default_value': default_value, 'area': area, 'population': population, 'population_2015': population_2015, 'languages': languages, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip': annual_precip, 'ecoregions': ecoregions, 'wild_regions': wild_regions, 'landmass_perc': landmass_perc, 'soil_suitability': soil_suitability, 'avg_npp': avg_npp, 'npp_perc': npp_perc}
+    context = {'bioregion': bioregion, 'default_value': default_value, 'area': area, 'population_2005': population_2005, 'population_2015': population_2015, 'languages': languages, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip': annual_precip, 'ecoregions': ecoregions, 'wild_regions': wild_regions, 'landmass_perc': landmass_perc, 'soil_suitability': soil_suitability, 'avg_npp': avg_npp, 'npp_perc': npp_perc}
     return context
     #get average poverty index
     #poverty = get_poverty(bioregion)
@@ -72,7 +72,7 @@ def get_size(bioregion):
            
 def get_population(bioregion):
     #this may have changed to 2005 -- see Analisa and update ninkasi
-    pop_geom = RasterDataset.objects.get(name='population_2010')
+    pop_geom = RasterDataset.objects.get(name='population_2005')
     pop_stats = zonal_stats(bioregion.output_geom, pop_geom)
     return int(pop_stats.sum)
 
@@ -104,13 +104,6 @@ def get_languages(bioregion):
             except:
                 #does_intersect = clean_geometry(language.geometry).intersects(bioregion.output_geom)
                 pass
-        #language_tuples = [(language.geometry.intersection(bioregion.output_geom).area, language.nam_ansi) for language in languages if clean_geometry(language.geometry).intersects(bioregion.output_geom)]
-        #language_dict = {}
-        #for area,name in language_tuples:
-        #    if name in language_dict.keys():
-        #        language_dict[name] += area
-        #    else:
-        #        language_dict[name] = area
         language_tuples = [(area, name) for name,area in language_dict.items()]
         language_tuples.sort(reverse=True)
         language_names = [name for (area, name) in language_tuples]
@@ -180,10 +173,11 @@ def get_last_wild(bioregion):
         wild_region_tuples = [(wild_region.geometry.intersection(bioregion.output_geom).area, wild_region.eco_name) for wild_region in wild_regions if wild_region.geometry.intersects(bioregion.output_geom)]
         wild_region_dict = {}
         for area,name in wild_region_tuples:
-            if name in wild_region_dict.keys():
-                wild_region_dict[name] += area
-            else:
-                wild_region_dict[name] = area
+            if name is not None:
+                if name in wild_region_dict.keys():
+                    wild_region_dict[name] += area
+                else:
+                    wild_region_dict[name] = area
         wild_region_tuples = [(name, convert_float_to_area_display_units(area)) for name,area in wild_region_dict.items()]
         wild_region_tuples.sort()
         create_report_cache(bioregion, dict(wild_regions=wild_region_tuples))
