@@ -100,6 +100,16 @@
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
+            <td colspan='2'><b>Marine Eco-Regions</b></td>
+        </tr>
+        {% for marineregion in marine_ecoregions %}
+        <tr>
+            <td colspan='2'>{{marineregion.0}} ({{marineregion.1|floatformat:0|intcomma}} km<sup>2</sup>)</td>
+        </tr>
+        {% endfor %}
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
             <td colspan='2'><b>Proportion of Global Terrestrial Land Mass</b></td>
         </tr>
         <tr>
