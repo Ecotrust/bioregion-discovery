@@ -89,13 +89,13 @@ def get_languages(bioregion):
         languages = Languages.objects.all()
         language_dict = {}
         for language in languages:
-            if language.nam_ansi is None:
-                import pdb
-                pdb.set_trace()
             try:
                 does_intersect = language.geometry.intersects(bioregion.output_geom)
                 if does_intersect:
-                    name = language.nam_ansi
+                    if language.nam_ansi is None:
+                        name = 'Areas of No Data'
+                    else:
+                        name = language.nam_ansi
                     area = geometry_area_in_display_units(language.geometry.intersection(bioregion.output_geom))
                     if name in language_dict.keys():
                         language_dict[name] += area
