@@ -190,7 +190,7 @@ class MyBioregion(Analysis):
             #units based on the settings variable DISPLAY_AREA_UNITS (currently sq miles)
             bsf.area_sq_mi = area_in_display_units(self.output_geom)
             bsf.author = self.user.username
-            bsf.aoi_modification_date = self.date_modified
+            bsf.bio_modification_date = self.date_modified
             bsf.save()
         return bsf
     
