@@ -4,8 +4,9 @@ from django.contrib.gis.db import models
 from django.utils.html import escape
 from lingcod.features.models import PolygonFeature, FeatureCollection
 from lingcod.analysistools.models import Analysis
-from lingcod.features import register
+from lingcod.features import register, alternate
 from lingcod.common.utils import asKml
+from lingcod.unit_converter.models import area_in_display_units
 import os
 import time
 
@@ -171,8 +172,27 @@ class MyBioregion(Analysis):
         We are only concerned with the geometry here
         """
         geom_wkt = "%s" % (self.output_geom.wkt)
-        return geom_wkt.__hash__()        
-        
+        return geom_wkt.__hash__()                
+    
+    def convert_to_shp(self):
+        '''
+        Port the Bioregion attributes over to the BioregionShapefile model so we can export the shapefile.
+        '''
+        bsf, created = BioregionShapefile.objects.get_or_create(bioregion=self)
+        if created or bsf.date_modified < self.date_modified:
+            bsf.name = self.name
+            bsf.bio_id_num = self.pk
+            bsf.geometry = self.output_geom
+            #short_name = self.name
+            if self.collection:
+                bsf.group = self.collection
+                bsf.group_name = self.collection.name
+            #units based on the settings variable DISPLAY_AREA_UNITS (currently sq miles)
+            bsf.area_sq_mi = area_in_display_units(self.output_geom)
+            bsf.author = self.user.username
+            bsf.aoi_modification_date = self.date_modified
+            bsf.save()
+        return bsf
     
     class Options:
         verbose_name = 'Bioregion'
@@ -180,6 +200,13 @@ class MyBioregion(Analysis):
         form = 'mybioregions.forms.MyBioregionForm'
         form_template = 'mybioregion/form.html'
         show_template = 'mybioregion/show.html'
+        links = (
+            alternate('Shapefile',
+                'mybioregions.views.bmm_shapefile',
+                select='multiple single',
+                type='application/zip',
+            ),
+        )
 
 @register
 class Folder(FeatureCollection):
@@ -195,6 +222,13 @@ class Folder(FeatureCollection):
             'bmm.mybioregions.models.Folder',
             'bmm.mybioregions.models.Placeholder',
         )
+        links = (
+            alternate('Shapefile',
+                'mybioregions.views.bmm_shapefile',
+                select='multiple single',
+                type='application/zip',
+            ),
+        )
        
 class Placeholder(PolygonFeature):
     description = models.TextField(default="", null=True, blank=True)
@@ -205,3 +239,19 @@ class Placeholder(PolygonFeature):
         form = 'mybioregions.forms.PlaceholderForm'
         show_template = 'placeholder/show.html'
       
+
+class BioregionShapefile(models.Model):
+    """
+    This model will provide the correct fields for the export of shapefiles using the django-shapes app.
+    """
+    geometry = models.PolygonField(srid=settings.GEOMETRY_DB_SRID,blank=True,null=True)
+    name = models.CharField(max_length=255)
+    bio_id_num = models.IntegerField(blank=True, null=True)
+    group = models.ForeignKey(Folder, null=True, blank=True)
+    group_name = models.CharField(blank=True, max_length=255, null=True)
+    area_sq_mi = models.FloatField(blank=True,null=True)
+    author = models.CharField(blank=True, max_length=255,null=True)
+    bioregion = models.OneToOneField(MyBioregion, related_name="bioregion")
+    bio_modification_date = models.DateTimeField(blank=True, null=True)
+    date_modified = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    objects = models.GeoManager()      

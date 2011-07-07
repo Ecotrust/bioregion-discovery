@@ -71,6 +71,7 @@ def get_size(bioregion):
     return area
            
 def get_population(bioregion):
+    #this may have changed to 2005 -- see Analisa and update ninkasi
     pop_geom = RasterDataset.objects.get(name='population_2010')
     pop_stats = zonal_stats(bioregion.output_geom, pop_geom)
     return int(pop_stats.sum)
@@ -88,6 +89,9 @@ def get_languages(bioregion):
         languages = Languages.objects.all()
         language_dict = {}
         for language in languages:
+            if language.nam_ansi is None:
+                import pdb
+                pdb.set_trace()
             try:
                 does_intersect = language.geometry.intersects(bioregion.output_geom)
                 if does_intersect:
