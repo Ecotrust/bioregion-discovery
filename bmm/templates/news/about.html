@@ -44,7 +44,7 @@
 <div>
 <br><br>
 <p>
-<h3><a id="displayText" href="javascript:toggle();">Learn More</a></h3>
+<h3><a id="displayText" href="javascript:toggleDiv('toggleText');">Learn More</a></h3>
 <div id="toggleText" style="display: none">
 <p>
 The Bioregion Discovery Tool was created to help you visualize the bioregion in which you live.  
@@ -58,19 +58,11 @@ You may also run reports on your bioregion that provide analysis on natural, hum
 as well as vulnerabilities to human impacts and potential climate change scenarios.
 </div>
 </p>
-<script language="javascript"> 
-function toggle() {
-	var ele = document.getElementById("toggleText");
-	var text = document.getElementById("displayText");
-	if(ele.style.display == "block") {
-    		ele.style.display = "none";
-		text.innerHTML = "Learn More";
-  	}
-	else {
-		ele.style.display = "block";
-		text.innerHTML = "Learn More";
-	}
-} 
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+<script type="text/javascript">
+function toggleDiv(divId) {
+   $("#"+divId).toggle();
+}
 </script>
 </div>
 <!-- 
