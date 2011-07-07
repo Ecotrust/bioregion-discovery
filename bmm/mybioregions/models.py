@@ -86,7 +86,11 @@ class MyBioregion(Analysis):
         return True
         
     def save(self, *args, **kwargs):
-        rerun = False
+        if 'rerun' in kwargs.keys():
+            rerun = kwargs['rerun']
+            del kwargs['rerun']
+        else:
+            rerun = False
         # only rerun the analysis if any of the input_ fields have changed
         # ie if name and description change no need to rerun the full analysis
         if self.pk is None:
