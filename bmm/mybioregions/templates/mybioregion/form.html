@@ -46,11 +46,6 @@ span.form-image > img { width:46px; height:46px; }
     {{ form.name }}            
 </div>
 
-    <div>
-        {{ form.description.label_tag }}
-        {{ form.description.errors }}
-        {{ form.description }}            
-    </div>
 
 
     <div id="start">
@@ -90,6 +85,11 @@ span.form-image > img { width:46px; height:46px; }
         </div>
     </div>
 
+    <div>
+        {{ form.description.label_tag }}
+        {{ form.description.errors }}
+        {{ form.description }}            
+    </div>
 <p><input type="submit" value="submit"></p>
 </form>
 
