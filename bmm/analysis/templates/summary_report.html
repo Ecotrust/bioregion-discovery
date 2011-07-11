@@ -11,14 +11,14 @@
     <tbody>
         <tr class="grey">
             <td><b>Size of Bioregion</b></td>
-            <td><b>Estimated Population (2010)</b></td>
+            <td><b>Estimated Population (2005)</b></td>
         </tr>
         <tr>
             <td>{{area|intcomma}} square kilometers</td>
-            {% if population < 1000000 %}
-            <td style='width:225px'>{{population|intcomma}}</td>
+            {% if population_2005 < 1000000 %}
+            <td style='width:225px'>{{population_2005|intcomma}}</td>
             {% else %}
-            <td style='width:225px'>{{population|intword}}</td>
+            <td style='width:225px'>{{population_2005|intword}}</td>
             {% endif %}
         </tr>
         <tr><td></td><td></td></tr>
@@ -86,9 +86,25 @@
         <tr class="grey">
             <td colspan='2'><b>Last Remaining Wild Regions</b></td>
         </tr>
-        {% for wild_region in wild_regions %}
+        {% if wild_regions %}
+            {% for wild_region in wild_regions %}
+            <tr>
+                <td colspan='2'>{{wild_region.0}} ({{wild_region.1|floatformat:0|intcomma}} km<sup>2</sup>)</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan='2'>None found</td>
+            </tr>
+        {% endif %}
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Marine Eco-Regions</b></td>
+        </tr>
+        {% for marineregion in marine_ecoregions %}
         <tr>
-            <td colspan='2'>{{wild_region.0}} ({{wild_region.1|floatformat:0|intcomma}} km<sup>2</sup>)</td>
+            <td colspan='2'>{{marineregion.0}} ({{marineregion.1|floatformat:0|intcomma}} km<sup>2</sup>)</td>
         </tr>
         {% endfor %}
         <tr><td></td><td></td></tr>

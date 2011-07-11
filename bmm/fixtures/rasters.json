@@ -164,9 +164,9 @@
     "model": "raster_stats.rasterdataset",
     "fields": {
       "type": "continuous",
-      "name": "population_2010",
+      "name": "population_2005",
       "full_name": "",
-      "filepath": "/usr/local/apps/bioregions/data/reports/summary/pop10_mw"
+      "filepath": "/usr/local/apps/bioregions/data/reports/summary/pop05_mw"
     }
   },
   {

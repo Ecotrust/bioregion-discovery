@@ -40,6 +40,31 @@
     });
 
 </script>
+
+<div>
+<br><br>
+<p>
+<h3><a id="displayText" href="javascript:toggleDiv('toggleText');">Learn More</a></h3>
+<div id="toggleText" style="display: none">
+<p>
+The Bioregion Discovery Tool was created to help you visualize the bioregion in which you live.  
+<p>
+By prioritizing a list of biophysical and cultural parameters and selecting the place you call home on the globe, 
+you will seed an analysis process that will determine a bioregion using a cost distance strategy.  
+The result will be displayed on the map in the right panel.  
+<p>
+The resulting representation of your bioregion can be exported for use outside the tool and shared with other users within the tool.  
+You may also run reports on your bioregion that provide analysis on natural, human, and social aspects of your bioregion, 
+as well as vulnerabilities to human impacts and potential climate change scenarios.
+</div>
+</p>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+<script type="text/javascript">
+function toggleDiv(divId) {
+   $("#"+divId).toggle();
+}
+</script>
+</div>
 <!-- 
 <h2> Using the Demo </h2>
 <p>
@@ -69,9 +94,9 @@
     <li> <strong>View Data Layers</strong>. </li>
     <li>The process will run in the background; you can continue to use the application and will be notified when the processing is completed. At that time you can click the 'refresh' button to view the results of the analysis. Selecting the analysis and clicking 'Attributes' will provide the details of the analysis and the resulting reserve scenario. </li>
     
-    -->
-  
 </ul>
 </p>
+    -->
+  
 </div>
 {% endblock panel %}

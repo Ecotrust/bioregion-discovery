@@ -46,6 +46,14 @@ class EcoRegions(models.Model):
     rangeland = models.CharField(max_length=50, null=True, blank=True)
     geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="WWF Eco-Regions")
     objects = models.GeoManager()  
+    
+class MarineRegions(models.Model):
+    ecoregion = models.CharField(max_length=50)
+    province = models.CharField(max_length=40)
+    realm = models.CharField(max_length=40)
+    lat_zone = models.CharField(max_length=10)
+    geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Marine Eco-Regions")
+    objects = models.GeoManager()    
 
 class LastWild(models.Model):
     eco_name = models.CharField(max_length=99, null=True, blank=True)
