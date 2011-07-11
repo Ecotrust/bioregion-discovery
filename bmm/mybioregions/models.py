@@ -75,7 +75,6 @@ class MyBioregion(Analysis):
 
         # set initial region
         g.run('g.region rast=soilmoist')
-        print 'g.region w=%d s=%d e=%d n=%d' % buff.extent 
         g.run('g.region w=%d s=%d e=%d n=%d' % buff.extent )
         g.run('r.mapcalc "weighted_combined_slope = 0.5 + ' +
                             '(%s * temp_slope)*100 + ' % p_temp  + 
@@ -95,7 +94,7 @@ class MyBioregion(Analysis):
         overs = []
         unders = []
         while ratio < (1-tolerance) or ratio > (1+tolerance):
-            g.run('g.region n=7078485 s=3660936 e=-7024061 w=-10560592')
+            g.run('g.region w=%d s=%d e=%d n=%d' % buff.extent )
             g.run('r.cost -k input=weighted_combined_slope output=cost1 coordinate=%s,%s max_cost=%s' % \
                     (coords[0],coords[1],max_cost) )
             g.run('r.mapcalc "bioregion1=if(cost1 >= 0)"')

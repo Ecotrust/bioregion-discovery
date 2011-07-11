@@ -20,8 +20,8 @@ def main():
             i.delete()
 
     #g = GEOSGeometry('SRID=4326;POINT(-122.5 45.5)')
-    g = GEOSGeometry('SRID=4326;POINT(-95.0 40.0)')
-    #g = GEOSGeometry('SRID=4326;POINT(-71.57054901123047 -31.20147705078125)')
+    #g = GEOSGeometry('SRID=4326;POINT(-95.0 40.0)')
+    g = GEOSGeometry('SRID=4326;POINT(-71.57054901123047 -31.20147705078125)')
 
     bio1 = MyBioregion(user=user, name="bio1", 
             input_temp_weight = 0,
