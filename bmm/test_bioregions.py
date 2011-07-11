@@ -19,23 +19,26 @@ def main():
         for i in a:
             i.delete()
 
-    g = GEOSGeometry('SRID=4326;POINT(-122.5 45.5)')
+    #g = GEOSGeometry('SRID=4326;POINT(-122.5 45.5)')
+    g = GEOSGeometry('SRID=4326;POINT(-95.0 40.0)')
 
     bio1 = MyBioregion(user=user, name="bio1", 
             input_temp_weight = 0,
             input_language_weight = 0,
             input_precip_weight = 0,
             input_biomass_weight = 0,
-            input_starting_point = g
+            input_starting_point = g,
+            input_bioregion_size= 50
             ) 
     bio1.save()
 
     bio2 = MyBioregion(user=user, name="bio2", 
-            input_temp_weight = 50,
+            input_temp_weight = 0,
             input_language_weight = 0,
-            input_precip_weight = 0,
+            input_precip_weight = 90,
             input_biomass_weight = 0,
-            input_starting_point = g
+            input_starting_point = g,
+            input_bioregion_size= 50
             ) 
     bio2.save()
 

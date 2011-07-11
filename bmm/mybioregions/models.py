@@ -9,7 +9,15 @@ from lingcod.common.utils import asKml
 from lingcod.unit_converter.models import area_in_display_units
 import os
 import time
+import math
 
+BIOREGION_SIZES = ( # in millions of Hectares
+    (4, 'Very Small'),
+    (20, 'Small'),
+    (50, 'Medium'),
+    (100, 'Large'),
+    (250, 'Very Large'),
+)
 
 @register
 class MyBioregion(Analysis):
@@ -21,6 +29,7 @@ class MyBioregion(Analysis):
     input_language_weight = models.FloatField(verbose_name='Value given to Spoken Language')
     input_precip_weight = models.FloatField(verbose_name='Value given to Precipitation')
     input_biomass_weight = models.FloatField(verbose_name='Value given to Vegetation')
+    input_bioregion_size = models.FloatField(choices=BIOREGION_SIZES)
     
     #Descriptors (name field is inherited from Analysis)
     description = models.TextField(null=True, blank=True)
@@ -55,27 +64,35 @@ class MyBioregion(Analysis):
         # Guess seed value
         x = (p_temp + p_language + p_precip + p_biomass + 0.5) 
         t_weight = ((14.7965 * x ) ** 0.7146) 
-        const1 = 2000
+        const1 = 20000
         max_cost = x * const1 / t_weight
 
-        desired_size_mHa = 100 #million Hectares
+        desired_size_mHa = self.input_bioregion_size #million Hectares
         desired_size = 10000000000 * desired_size_mHa
+        radius = math.sqrt(desired_size/math.pi) 
+        buff = coords.buffer(radius*3) # x3 to be safe against long skinny bioregions
 
         # set initial region
         g.run('g.region rast=soilmoist')
+        g.run('g.region w=%d s=%d e=%d n=%d' % buff.extent )
         g.run('r.mapcalc "weighted_combined_slope = 0.5 + ' +
-                            '(%s * temp_slope) + ' % p_temp  + 
-                            '(%s * lang_slope) + ' % p_language +
-                            '(%s * precip_slope) + ' % p_precip +
-                            '(%s * biomass_slope)' % p_biomass +
+                            '(%s * temp_slope)*100 + ' % p_temp  + 
+                            '(%s * lang_slope)*100 + ' % p_language +
+                            '(%s * precip_slope)*100 + ' % p_precip +
+                            '(%s * biomass_slope)*100' % p_biomass +
                             '"')
 
         ################# Run #2 - adjusted cost #####################
+        tolerance = 0.1
         ratio = 0.0
+        seed_low = True
+        seed_high = True
+        seed = True
         i = 0
+        largest_area = desired_size
         overs = []
         unders = []
-        while ratio < 0.9 or ratio > 1.1:
+        while ratio < (1-tolerance) or ratio > (1+tolerance):
             g.run('g.region n=7078485 s=3660936 e=-7024061 w=-10560592')
             g.run('r.cost -k input=weighted_combined_slope output=cost1 coordinate=%s,%s max_cost=%s' % \
                     (coords[0],coords[1],max_cost) )
@@ -84,7 +101,9 @@ class MyBioregion(Analysis):
             if os.path.exists(output):
                 os.remove(output)
             g.run('v.out.ogr -c input=bioregion1_poly type=area format=GeoJSON dsn=%s' % output)
+            old_area = largest_area
             largest_area, geom = get_largest_from_json(output)
+            delta_area = largest_area - old_area
 
             ratio = desired_size/largest_area
             if ratio < 1.0 : 
@@ -92,17 +111,37 @@ class MyBioregion(Analysis):
             else:
                 unders.append(max_cost)
 
-            print "# run #", i, "ratio", int(ratio*100),"%", "max cost", int(max_cost)
-            print "   # actual size", int((largest_area/10000.0)/1000000.0)
-            print "   # desired_size", int((desired_size/10000.0)/1000000.0)
+            print "# run #", i, "ratio", int(ratio*100),"%", "max cost", max_cost, "actual size", int((largest_area/10000.0)/1000000.0),  "desired_size", int((desired_size/10000.0)/1000000.0)
+
             try:
+                # take the average of the highest underestimate and the lowest overestimate
                 max_cost = (max(unders) + min(overs))/2.0
             except ValueError:
                 max_cost = max_cost * (ratio ** 0.5)
+
+            if seed and ratio < 0.15 and seed_low: # we are WAY overestimating max_cost, try a very low cost 
+                seed_low = False
+                max_cost = max_cost / 5.0
+                print "Seeding low"
+
+            if seed and ratio > 20 and seed_high: # we are WAY underestimating max_cost, try a very high cost 
+                seed_high = False
+                max_cost = max_cost * 10.0
+                print "Seeding high"
+
+            # avoid getting stuck if tolerance is too tight
+            if delta_area == 0 and ratio > (1-tolerance*2) and ratio < (1+tolerance*2) :
+                break
+
             i = i+1
+            # If we haven't gotten it by a hundred iterations, just call it good 
+            if i>100:
+                break
 
 
         geom.srid = settings.GEOMETRY_DB_SRID 
+        g2 = geom.buffer(20000)
+        geom = g2.buffer(-20000)
         if geom and not settings.DEBUG:
             os.remove(output)
             del g
