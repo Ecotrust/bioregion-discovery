@@ -14,9 +14,6 @@ class MyBioregionForm(FeatureForm):
     input_temp_weight = forms.FloatField(min_value=0, max_value=100.0, initial=25,
             widget=SliderWidget(min=0,max=100,step=1,image='bmm/img/sun.png'),
             label="Value given to Temperature")
-    input_language_weight = forms.FloatField(min_value=0, max_value=100.0, initial=25,
-            widget=SliderWidget(min=0,max=100,step=1,image='bmm/img/lang.png'),
-            label="Value given to Spoken Language")
     input_precip_weight = forms.FloatField(min_value=0, max_value=100.0, initial=25,
             widget=SliderWidget(min=0,max=100,step=1,image='bmm/img/rain.png'),
             label="Value given to Precipitation")

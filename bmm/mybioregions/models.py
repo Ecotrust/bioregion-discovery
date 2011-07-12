@@ -35,7 +35,6 @@ class MyBioregion(Analysis):
     #input_start_point = models.TextField(verbose_name='Population Center')
     input_starting_point = models.PointField(srid=settings.GEOMETRY_CLIENT_SRID, null=True, blank=True, verbose_name="Bioregion Starting Point")
     input_temp_weight = models.FloatField(verbose_name='Value given to Temperature')
-    input_language_weight = models.FloatField(verbose_name='Value given to Spoken Language')
     input_precip_weight = models.FloatField(verbose_name='Value given to Precipitation')
     input_biomass_weight = models.FloatField(verbose_name='Value given to Vegetation')
     input_bioregion_size = models.CharField(choices=BIOREGION_SIZES, max_length=3,
@@ -54,7 +53,6 @@ class MyBioregion(Analysis):
         coords = self.input_starting_point.transform(settings.GEOMETRY_DB_SRID, clone=True)
         p_temp = self.input_temp_weight
         p_precip = self.input_precip_weight
-        p_language = self.input_language_weight
         p_biomass = self.input_biomass_weight
 
         g = Grass('world_moll', 
@@ -72,7 +70,7 @@ class MyBioregion(Analysis):
 
 
         # Guess seed value
-        x = (p_temp + p_language + p_precip + p_biomass + 0.5) 
+        x = (p_temp + p_precip + p_biomass + 0.5) 
         t_weight = ((14.7965 * x ) ** 0.7146) 
         const1 = 20000
         max_cost = x * const1 / t_weight
@@ -87,7 +85,6 @@ class MyBioregion(Analysis):
         g.run('g.region w=%d s=%d e=%d n=%d' % buff.extent )
         g.run('r.mapcalc "weighted_combined_slope = 0.5 + ' +
                             '(%s * temp_slope)*100 + ' % p_temp  + 
-                            '(%s * lang_slope)*100 + ' % p_language +
                             '(%s * precip_slope)*100 + ' % p_precip +
                             '(%s * biomass_slope)*100' % p_biomass +
                             '"')

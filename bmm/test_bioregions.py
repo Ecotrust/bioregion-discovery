@@ -25,7 +25,6 @@ def main():
 
     bio1 = MyBioregion(user=user, name="bio1", 
             input_temp_weight = 0,
-            input_language_weight = 0,
             input_precip_weight = 0,
             input_biomass_weight = 0,
             input_starting_point = g,
@@ -35,7 +34,6 @@ def main():
 
     bio2 = MyBioregion(user=user, name="bio2", 
             input_temp_weight = 0,
-            input_language_weight = 0,
             input_precip_weight = 90,
             input_biomass_weight = 0,
             input_starting_point = g,
