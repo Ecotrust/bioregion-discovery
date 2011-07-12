@@ -71,7 +71,7 @@ class MyBioregion(Analysis):
         desired_size_mHa = self.input_bioregion_size #million Hectares
         desired_size = 10000000000 * desired_size_mHa
         radius = math.sqrt(desired_size/math.pi) 
-        buff = coords.buffer(radius*3) # x3 to be safe against long skinny bioregions
+        buff = coords.buffer(radius*5) # to be safe against long skinny bioregions
 
         # set initial region
         g.run('g.region rast=soilmoist')
