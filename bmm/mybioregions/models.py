@@ -5,11 +5,13 @@ from django.utils.html import escape
 from lingcod.features.models import PolygonFeature, FeatureCollection
 from lingcod.analysistools.models import Analysis
 from lingcod.features import register, alternate
-from lingcod.common.utils import asKml
+from lingcod.common.utils import asKml, get_logger
 from lingcod.unit_converter.models import area_in_display_units
 import os
 import time
 import math
+
+logger = get_logger()
 
 BIOREGION_SIZES = ( # in millions of Hectares
     (4, 'Very Small'),
@@ -112,11 +114,11 @@ class MyBioregion(Analysis):
             else:
                 unders.append(max_cost)
 
-            print "* run %s ratio %s max_cost %s actual_size %s desired_size %s" % (i, 
+            logger.debug("* run %s ratio %s max_cost %s actual_size %s desired_size %s" % (i, 
                     ratio,
                     max_cost, 
                     int((largest_area/10000.0)/1000000.0),  
-                    int((desired_size/10000.0)/1000000.0))
+                    int((desired_size/10000.0)/1000000.0)))
 
             try:
                 # take the average of the highest underestimate and the lowest overestimate
@@ -128,13 +130,13 @@ class MyBioregion(Analysis):
                 # we are WAY overestimating max_cost, try a very low cost 
                 seed_low = False
                 max_cost = max_cost / 5.0
-                print "Seeding low"
+                logger.debug("Seeding low")
 
             if seed and ratio > 20 and seed_high: 
                 # we are WAY underestimating max_cost, try a very high cost 
                 seed_high = False
                 max_cost = max_cost * 10.0
-                print "Seeding high"
+                logger.debug("Seeding high")
 
             # avoid getting stuck if tolerance is too tight
             if delta_area == 0 and ratio > (1-tolerance*2) and ratio < (1+tolerance*2) :
