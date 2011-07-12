@@ -13,14 +13,21 @@ import math
 
 logger = get_logger()
 
-BIOREGION_SIZES = ( # in millions of Hectares
-    (4, 'Very Small'),
-    (20, 'Small'),
-    (50, 'Medium'),
-    (100, 'Large'),
-    (250, 'Very Large'),
+BIOREGION_SIZES = (
+    ('VS', 'Very Small'),
+    ('S', 'Small'),
+    ('M', 'Medium'),
+    ('L', 'Large'),
+    ('VL', 'Very Large'),
 )
 
+SIZE_LOOKUP = { # in millions of Hectares
+    'VS': 4, 
+    'S': 20, 
+    'M': 50,
+    'L': 100,
+    'VL': 250
+}
 @register
 class MyBioregion(Analysis):
     
@@ -31,8 +38,8 @@ class MyBioregion(Analysis):
     input_language_weight = models.FloatField(verbose_name='Value given to Spoken Language')
     input_precip_weight = models.FloatField(verbose_name='Value given to Precipitation')
     input_biomass_weight = models.FloatField(verbose_name='Value given to Vegetation')
-    input_bioregion_size = models.FloatField(choices=BIOREGION_SIZES, 
-            verbose_name='Relative size of Bioregion', default=50)
+    input_bioregion_size = models.CharField(choices=BIOREGION_SIZES, max_length=3,
+            verbose_name='Relative size of Bioregion', default='M')
     
     #Descriptors (name field is inherited from Analysis)
     description = models.TextField(null=True, blank=True)
@@ -70,7 +77,7 @@ class MyBioregion(Analysis):
         const1 = 20000
         max_cost = x * const1 / t_weight
 
-        desired_size_mHa = self.input_bioregion_size #million Hectares
+        desired_size_mHa = SIZE_LOOKUP[self.input_bioregion_size] #million Hectares
         desired_size = 10000000000 * desired_size_mHa
         radius = math.sqrt(desired_size/math.pi) 
         buff = coords.buffer(radius*5) # to be safe against long skinny bioregions

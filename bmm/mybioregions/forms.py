@@ -4,6 +4,7 @@ from lingcod.analysistools.widgets import SliderWidget, SimplePoint
 from django import forms
 from django.utils.safestring import mark_safe
 from django.contrib.gis.geos import fromstr
+#from django.forms.widgets import RadioSelect
 from models import *
 
 class MyBioregionForm(FeatureForm):
@@ -22,6 +23,7 @@ class MyBioregionForm(FeatureForm):
     input_biomass_weight = forms.FloatField(min_value=0, max_value=100.0, initial=25,
             widget=SliderWidget(min=0,max=100,step=1,image='bmm/img/veg.png'),
             label="Value given to Vegetation")
+    #input_bioregion_size = forms.ChoiceField(widget=RadioSelect,choices=BIOREGION_SIZES)
         
     class Meta(FeatureForm.Meta):
         model = MyBioregion

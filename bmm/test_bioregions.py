@@ -29,7 +29,7 @@ def main():
             input_precip_weight = 0,
             input_biomass_weight = 0,
             input_starting_point = g,
-            input_bioregion_size= 50
+            input_bioregion_size= 'M'
             ) 
     bio1.save()
 
@@ -39,8 +39,8 @@ def main():
             input_precip_weight = 90,
             input_biomass_weight = 0,
             input_starting_point = g,
-            input_bioregion_size= 50
-            ) 
+            input_bioregion_size= 'M'
+            )
     bio2.save()
 
     area1 = (bio1.output_geom.area) / 10000.
