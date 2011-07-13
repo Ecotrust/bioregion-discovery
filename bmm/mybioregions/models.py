@@ -5,11 +5,13 @@ from django.utils.html import escape
 from lingcod.features.models import PolygonFeature, FeatureCollection
 from lingcod.analysistools.models import Analysis
 from lingcod.features import register, alternate
-from lingcod.common.utils import asKml
+from lingcod.common.utils import asKml, get_logger
 from lingcod.unit_converter.models import area_in_display_units
 import os
 import time
 import math
+
+logger = get_logger()
 
 BIOREGION_SIZES = ( # in millions of Hectares
     (4, 'Very Small'),
@@ -29,7 +31,8 @@ class MyBioregion(Analysis):
     input_language_weight = models.FloatField(verbose_name='Value given to Spoken Language')
     input_precip_weight = models.FloatField(verbose_name='Value given to Precipitation')
     input_biomass_weight = models.FloatField(verbose_name='Value given to Vegetation')
-    input_bioregion_size = models.FloatField(choices=BIOREGION_SIZES)
+    input_bioregion_size = models.FloatField(choices=BIOREGION_SIZES, 
+            verbose_name='Relative size of Bioregion', default=50)
     
     #Descriptors (name field is inherited from Analysis)
     description = models.TextField(null=True, blank=True)
@@ -70,7 +73,7 @@ class MyBioregion(Analysis):
         desired_size_mHa = self.input_bioregion_size #million Hectares
         desired_size = 10000000000 * desired_size_mHa
         radius = math.sqrt(desired_size/math.pi) 
-        buff = coords.buffer(radius*3) # x3 to be safe against long skinny bioregions
+        buff = coords.buffer(radius*5) # to be safe against long skinny bioregions
 
         # set initial region
         g.run('g.region rast=soilmoist')
@@ -93,7 +96,7 @@ class MyBioregion(Analysis):
         overs = []
         unders = []
         while ratio < (1-tolerance) or ratio > (1+tolerance):
-            g.run('g.region n=7078485 s=3660936 e=-7024061 w=-10560592')
+            g.run('g.region w=%d s=%d e=%d n=%d' % buff.extent )
             g.run('r.cost -k input=weighted_combined_slope output=cost1 coordinate=%s,%s max_cost=%s' % \
                     (coords[0],coords[1],max_cost) )
             g.run('r.mapcalc "bioregion1=if(cost1 >= 0)"')
@@ -111,7 +114,11 @@ class MyBioregion(Analysis):
             else:
                 unders.append(max_cost)
 
-            print "# run #", i, "ratio", int(ratio*100),"%", "max cost", max_cost, "actual size", int((largest_area/10000.0)/1000000.0),  "desired_size", int((desired_size/10000.0)/1000000.0)
+            logger.debug("* run %s ratio %s max_cost %s actual_size %s desired_size %s" % (i, 
+                    ratio,
+                    max_cost, 
+                    int((largest_area/10000.0)/1000000.0),  
+                    int((desired_size/10000.0)/1000000.0)))
 
             try:
                 # take the average of the highest underestimate and the lowest overestimate
@@ -119,29 +126,31 @@ class MyBioregion(Analysis):
             except ValueError:
                 max_cost = max_cost * (ratio ** 0.5)
 
-            if seed and ratio < 0.15 and seed_low: # we are WAY overestimating max_cost, try a very low cost 
+            if seed and ratio < 0.15 and seed_low: 
+                # we are WAY overestimating max_cost, try a very low cost 
                 seed_low = False
                 max_cost = max_cost / 5.0
-                print "Seeding low"
+                logger.debug("Seeding low")
 
-            if seed and ratio > 20 and seed_high: # we are WAY underestimating max_cost, try a very high cost 
+            if seed and ratio > 20 and seed_high: 
+                # we are WAY underestimating max_cost, try a very high cost 
                 seed_high = False
                 max_cost = max_cost * 10.0
-                print "Seeding high"
+                logger.debug("Seeding high")
 
             # avoid getting stuck if tolerance is too tight
             if delta_area == 0 and ratio > (1-tolerance*2) and ratio < (1+tolerance*2) :
-                break
+                tolerance = tolerance * 2
 
             i = i+1
-            # If we haven't gotten it by a hundred iterations, just call it good 
-            if i>100:
+            # If we haven't gotten it by 25 iterations, just call it good 
+            if i>25:
                 break
 
 
         geom.srid = settings.GEOMETRY_DB_SRID 
-        g2 = geom.buffer(20000)
-        geom = g2.buffer(-20000)
+        g2 = geom.buffer(-17000) # rougly 2x cellsize
+        geom = g2.buffer(17000)
         if geom and not settings.DEBUG:
             os.remove(output)
             del g
@@ -162,7 +171,7 @@ class MyBioregion(Analysis):
             orig = MyBioregion.objects.get(pk=self.pk)
             for f in MyBioregion.input_fields():
                 # Is original value different from form value?
-                if orig._get_FIELD_display(f) != getattr(self,f.name):
+                if orig._get_FIELD_display(f) != self._get_FIELD_display(f):
                     rerun = True
                     break
         super(MyBioregion, self).save(rerun=rerun)
