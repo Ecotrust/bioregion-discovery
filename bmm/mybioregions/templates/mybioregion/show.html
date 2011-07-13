@@ -90,24 +90,19 @@ lingcod.beforeDestroy(function() {
                 <li class="modified">Modified {{instance.date_modified|date:"d M, Y P"}}</li>
                 <br class="clear" />
             </ul>
+
             <h2>Description</h2>
+            <div class="box">
                 <p>{{instance.description}}</p>
+            </div>
+
             <h2>Parameters</h2>
-                <div class="box species" id="temp">
-                    <p> Population Center: {{ instance.input_start_point }}</p>
-                </div>
-                <div class="box species" id="temp">
-                    <p> Temperature Valuation: {{ instance.input_temp_weight }}</p>
-                </div>
-                <div class="box species" id="temp">
-                    <p> Language Valuation: {{ instance.input_language_weight }}</p>
-                </div>
-                <div class="box species" id="temp">
-                    <p> Precipitation Valuation: {{ instance.input_precip_weight }}</p>
-                </div>
-                <div class="box species" id="temp">
-                    <p> Vegetation Valuation: {{ instance.input_biomass_weight }}</p>
-                </div>
+            <div class="box">
+                    <p> Starting Point (lat, lon): {{ instance.input_starting_point.1|floatformat:3 }}, {{ instance.input_starting_point.0|floatformat:3 }}</p>
+                    <p> Temperature Valuation: {{ instance.input_temp_weight }} / 100</p>
+                    <p> Precipitation Valuation: {{ instance.input_precip_weight }} / 100</p>
+                    <p> Vegetation Valuation: {{ instance.input_biomass_weight }} / 100</p>
+            </div>
         </div>
         
         {% if instance.done %}
