@@ -57,9 +57,9 @@ class MyBioregion(Analysis):
         p_precip = self.input_precip_weight
         p_biomass = self.input_biomass_weight
 
-        g = Grass('world_moll2', 
-                gisbase="/usr/local/grass-6.4.1RC2", 
-                gisdbase="/home/grass",
+        g = Grass(settings.GRASS_LOCATION,
+                gisbase=settings.GRASS_GISBASE,
+                gisdbase=settings.GRASS_GISDBASE,
                 autoclean=True)
         g.verbose = False
         rasts = g.list()['rast']

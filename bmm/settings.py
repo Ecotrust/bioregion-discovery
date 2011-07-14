@@ -40,4 +40,8 @@ APP_NAME = "The Bioregion Discovery Tool"
 
 STATICMAP_AUTOZOOM = False
 
+GRASS_LOCATION = 'world_moll2'
+GRASS_GISBASE = '/usr/local/grass-6.4.1RC2'
+GRASS_GISDBASE = '/home/grass'
+
 from settings_local import *
