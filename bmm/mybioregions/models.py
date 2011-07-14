@@ -22,11 +22,11 @@ BIOREGION_SIZES = (
 )
 
 SIZE_LOOKUP = { # in millions of Hectares
-    'VS': 4, 
-    'S': 20, 
-    'M': 50,
-    'L': 100,
-    'VL': 250
+    'VS': 2, 
+    'S': 5, 
+    'M': 20,
+    'L': 50,
+    'VL': 100
 }
 SAVE_MAPSET = False
 
@@ -72,10 +72,14 @@ class MyBioregion(Analysis):
 
 
         # Guess seed value
-        x = (p_temp + p_precip + p_biomass + 0.5) 
-        t_weight = ((14.7965 * x ) ** 0.7146) 
+        x = p_temp + p_precip + p_biomass 
+        dist_constant = 0.0
         const1 = 20000
-        max_cost = x * const1 / t_weight
+        const2 = 0.5
+        t_weight = ((14.7965 * (x + const2)) ** 0.7146) 
+        max_cost = (x + const2) * const1 / t_weight
+        if x < 1:
+            dist_constant = 1.0
 
         desired_size_mHa = SIZE_LOOKUP[self.input_bioregion_size] #million Hectares
         desired_size = 10000000000 * desired_size_mHa
@@ -85,11 +89,11 @@ class MyBioregion(Analysis):
         # set initial region
         g.run('g.region rast=biomass_slope')
         g.run('g.region w=%d s=%d e=%d n=%d' % buff.extent )
-        g.run('r.mapcalc "weighted_combined_slope = 0.1 + ' +
+        g.run('r.mapcalc "weighted_combined_slope = %s + ' % dist_constant +
                             '(%d * ocean_mask) +' % 10.0**12 +
-                            '(%s * (temp_slope-0.9))*100 + ' % p_temp  + 
-                            '(%s * (precip_slope-0.9))*100 + ' % p_precip +
-                            '(%s * (biomass_slope-0.9))*100' % p_biomass +
+                            '(%s * (temp_slope-0.99))*100 + ' % p_temp  + 
+                            '(%s * (precip_slope-0.99))*100 + ' % p_precip +
+                            '(%s * (biomass_slope-0.99))*100' % p_biomass +
                             '"')
 
         ################# Run #2 - adjusted cost #####################
@@ -165,12 +169,18 @@ class MyBioregion(Analysis):
 
 
         geom.srid = settings.GEOMETRY_DB_SRID 
-        #g2 = geom.buffer(-17000) # rougly 2x cellsize
-        #geom = g2.buffer(17000)
         if geom and not SAVE_MAPSET: 
             os.remove(output)
             del g
-        self.output_geom = geom
+
+        if not geom.valid:
+            geom = geom.buffer(0)
+            
+        if geom.valid:
+            self.output_geom = geom
+        else:
+            logger.debug("%s is not a valid geometry!" % self.name)
+            
         return True
         
     def save(self, *args, **kwargs):
