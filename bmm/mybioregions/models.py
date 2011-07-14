@@ -28,6 +28,8 @@ SIZE_LOOKUP = { # in millions of Hectares
     'L': 100,
     'VL': 250
 }
+SAVE_MAPSET = False
+
 @register
 class MyBioregion(Analysis):
     
@@ -55,7 +57,7 @@ class MyBioregion(Analysis):
         p_precip = self.input_precip_weight
         p_biomass = self.input_biomass_weight
 
-        g = Grass('world_moll', 
+        g = Grass('world_moll2', 
                 gisbase="/usr/local/grass-6.4.1RC2", 
                 gisdbase="/home/grass",
                 autoclean=True)
@@ -81,21 +83,23 @@ class MyBioregion(Analysis):
         buff = coords.buffer(radius*5) # to be safe against long skinny bioregions
 
         # set initial region
-        g.run('g.region rast=soilmoist')
+        g.run('g.region rast=biomass_slope')
         g.run('g.region w=%d s=%d e=%d n=%d' % buff.extent )
-        g.run('r.mapcalc "weighted_combined_slope = 0.5 + ' +
-                            '(%s * temp_slope)*100 + ' % p_temp  + 
-                            '(%s * precip_slope)*100 + ' % p_precip +
-                            '(%s * biomass_slope)*100' % p_biomass +
+        g.run('r.mapcalc "weighted_combined_slope = 0.1 + ' +
+                            '(%d * ocean_mask) +' % 10.0**12 +
+                            '(%s * (temp_slope-0.9))*100 + ' % p_temp  + 
+                            '(%s * (precip_slope-0.9))*100 + ' % p_precip +
+                            '(%s * (biomass_slope-0.9))*100' % p_biomass +
                             '"')
 
         ################# Run #2 - adjusted cost #####################
-        tolerance = 0.1
+        tolerance = 0.15
         ratio = 0.0
         seed_low = True
         seed_high = True
         seed = True
         i = 0
+        delta_zero_count = 0
         largest_area = desired_size
         overs = []
         unders = []
@@ -104,7 +108,7 @@ class MyBioregion(Analysis):
             g.run('r.cost -k input=weighted_combined_slope output=cost1 coordinate=%s,%s max_cost=%s' % \
                     (coords[0],coords[1],max_cost) )
             g.run('r.mapcalc "bioregion1=if(cost1 >= 0)"')
-            g.run('r.to.vect input=bioregion1 output=bioregion1_poly feature=area') # -s
+            g.run('r.to.vect -s input=bioregion1 output=bioregion1_poly feature=area') # -s
             if os.path.exists(output):
                 os.remove(output)
             g.run('v.out.ogr -c input=bioregion1_poly type=area format=GeoJSON dsn=%s' % output)
@@ -124,11 +128,13 @@ class MyBioregion(Analysis):
                     int((largest_area/10000.0)/1000000.0),  
                     int((desired_size/10000.0)/1000000.0)))
 
+            max_cost = max_cost * (ratio ** 0.5)
             try:
                 # take the average of the highest underestimate and the lowest overestimate
-                max_cost = (max(unders) + min(overs))/2.0
+                if max_cost < max(unders) or max_cost > min(overs):
+                    max_cost = (max(unders) + min(overs))/2.0
             except ValueError:
-                max_cost = max_cost * (ratio ** 0.5)
+                pass
 
             if seed and ratio < 0.15 and seed_low: 
                 # we are WAY overestimating max_cost, try a very low cost 
@@ -139,23 +145,29 @@ class MyBioregion(Analysis):
             if seed and ratio > 20 and seed_high: 
                 # we are WAY underestimating max_cost, try a very high cost 
                 seed_high = False
-                max_cost = max_cost * 10.0
+                max_cost = max_cost * 5.0
                 logger.debug("Seeding high")
 
             # avoid getting stuck if tolerance is too tight
-            if delta_area == 0 and ratio > (1-tolerance*2) and ratio < (1+tolerance*2) :
-                tolerance = tolerance * 2
+            if delta_area == 0:
+                delta_zero_count += 1
+            else:
+                delta_zero_count = 0
 
-            i = i+1
-            # If we haven't gotten it by 25 iterations, just call it good 
-            if i>25:
+            if delta_zero_count > 2 and (ratio > (1-tolerance*2) or ratio < (1+tolerance*2)) :
+                tolerance = tolerance * 1.25
+                logger.debug("Expanding tolerance to %s " % tolerance)
+                break
+
+            i += 1
+            if i>16 or delta_zero_count > 5:
                 break
 
 
         geom.srid = settings.GEOMETRY_DB_SRID 
-        g2 = geom.buffer(-17000) # rougly 2x cellsize
-        geom = g2.buffer(17000)
-        if geom and not settings.DEBUG:
+        #g2 = geom.buffer(-17000) # rougly 2x cellsize
+        #geom = g2.buffer(17000)
+        if geom and not SAVE_MAPSET: 
             os.remove(output)
             del g
         self.output_geom = geom
