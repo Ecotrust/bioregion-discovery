@@ -165,12 +165,18 @@ class MyBioregion(Analysis):
 
 
         geom.srid = settings.GEOMETRY_DB_SRID 
-        #g2 = geom.buffer(-17000) # rougly 2x cellsize
-        #geom = g2.buffer(17000)
         if geom and not SAVE_MAPSET: 
             os.remove(output)
             del g
-        self.output_geom = geom
+
+        if not geom.valid:
+            geom = geom.buffer(0)
+            
+        if geom.valid:
+            self.output_geom = geom
+        else:
+            logger.debug("%s is not a valid geometry!" % self.name)
+            
         return True
         
     def save(self, *args, **kwargs):
