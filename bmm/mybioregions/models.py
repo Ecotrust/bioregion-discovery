@@ -22,11 +22,11 @@ BIOREGION_SIZES = (
 )
 
 SIZE_LOOKUP = { # in millions of Hectares
-    'VS': 4, 
-    'S': 20, 
-    'M': 50,
-    'L': 100,
-    'VL': 250
+    'VS': 2, 
+    'S': 5, 
+    'M': 20,
+    'L': 50,
+    'VL': 100
 }
 SAVE_MAPSET = False
 
