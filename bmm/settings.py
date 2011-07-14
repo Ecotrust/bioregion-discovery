@@ -38,7 +38,7 @@ LOGFILE =  os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'bmm.l
 
 APP_NAME = "The Bioregion Discovery Tool"
 
-GROUP_REGISTERED_BY_WEB = 'Attendees'
+GROUP_REGISTERED_BY_WEB = 'Beta Testers'
 
 STATICMAP_AUTOZOOM = False
 
