@@ -42,7 +42,7 @@ GROUP_REGISTERED_BY_WEB = 'Beta Testers'
 
 STATICMAP_AUTOZOOM = False
 
-GRASS_LOCATION = 'world_moll2'
+GRASS_LOCATION = 'world_moll3'
 GRASS_GISBASE = '/usr/local/grass-6.4.1RC2'
 GRASS_GISDBASE = '/home/grass'
 

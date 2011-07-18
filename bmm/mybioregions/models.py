@@ -74,12 +74,12 @@ class MyBioregion(Analysis):
         # Guess seed value
         x = p_temp + p_precip + p_biomass 
         dist_constant = 0.0
-        const1 = 20000
+        const1 = 2000
         const2 = 0.5
         t_weight = ((14.7965 * (x + const2)) ** 0.7146) 
         max_cost = (x + const2) * const1 / t_weight
         if x < 1:
-            dist_constant = 1.0
+            dist_constant = 2.0
 
         desired_size_mHa = SIZE_LOOKUP[self.input_bioregion_size] #million Hectares
         desired_size = 10000000000 * desired_size_mHa
@@ -89,11 +89,20 @@ class MyBioregion(Analysis):
         # set initial region
         g.run('g.region rast=biomass_slope')
         g.run('g.region w=%d s=%d e=%d n=%d' % buff.extent )
+        #rasts = ['biomass_slope','temp_slope','precip_slope']
+        start_values = get_raster_values(g, rasts, coords)
+        
+        #g.run('r.mapcalc "weighted_combined_slope = %s + ' % dist_constant +
+        #                    '(%d * ocean_mask) +' % 10.0**12 +
+        #                    '(%s * (temp_slope-0.99))*100 + ' % p_temp  + 
+        #                    '(%s * (precip_slope-0.99))*100 + ' % p_precip +
+        #                    '(%s * (biomass_slope-0.99))*100' % p_biomass +
+        #                    '"')
         g.run('r.mapcalc "weighted_combined_slope = %s + ' % dist_constant +
                             '(%d * ocean_mask) +' % 10.0**12 +
-                            '(%s * (temp_slope-0.99))*100 + ' % p_temp  + 
-                            '(%s * (precip_slope-0.99))*100 + ' % p_precip +
-                            '(%s * (biomass_slope-0.99))*100' % p_biomass +
+                            '(%s * pow(abs(%s - temp_slope),2))*10 + ' % (p_temp,start_values['temp_slope'])  + 
+                            '(%s * pow(abs(%s - precip_slope),2))*10 + ' % (p_precip,start_values['precip_slope'])  + 
+                            '(%s * pow(abs(%s - biomass_slope),2))*10' % (p_biomass,start_values['biomass_slope'])  + 
                             '"')
 
         ################# Run #2 - adjusted cost #####################
@@ -133,6 +142,7 @@ class MyBioregion(Analysis):
                     int((desired_size/10000.0)/1000000.0)))
 
             max_cost = max_cost * (ratio ** 0.5)
+            max_cost = max_cost * (ratio)
             try:
                 # take the average of the highest underestimate and the lowest overestimate
                 if max_cost < max(unders) or max_cost > min(overs):
@@ -371,3 +381,18 @@ def get_largest_from_json(output):
             largest_area = feat.geom.area
             geom = feat.geom.geos
     return largest_area, geom
+
+def get_raster_values(g, rasts, coords):
+        what = g.run('r.what input=%s east_north=%s,%s' % (','.join(rasts), coords[0], coords[1]))
+        startvals = {}
+        vals = what.strip().split('|')[3:]
+        assert len(vals) == len(rasts)
+        for i in range(len(vals)):
+            val = vals[i]
+            rast = rasts[i]
+            try:
+                realval = float(val)
+            except:
+                realval = None
+            startvals[rast] = realval
+        return startvals
