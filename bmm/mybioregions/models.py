@@ -48,6 +48,10 @@ class MyBioregion(Analysis):
     # All output fields should be allowed to be Null/Blank
     output_geom = models.PolygonField(srid=settings.GEOMETRY_DB_SRID,
             null=True, blank=True, verbose_name="Bioregion Geometry")
+    output_numruns = models.IntegerField(null=True, blank=True)
+    output_initcost = models.FloatField(null=True, blank=True)
+    output_finalcost = models.FloatField(null=True, blank=True)
+
     
     def run(self):
         from lingcod.analysistools.grass import Grass
@@ -72,19 +76,20 @@ class MyBioregion(Analysis):
 
 
         # Guess seed value
-        x = p_temp + p_precip + p_biomass 
-        dist_constant = 0.0
-        const1 = 2000
-        const2 = 0.5
-        t_weight = ((14.7965 * (x + const2)) ** 0.7146) 
-        max_cost = (x + const2) * const1 / t_weight
-        if x < 1:
-            dist_constant = 2.0
-
         desired_size_mHa = SIZE_LOOKUP[self.input_bioregion_size] #million Hectares
         desired_size = 10000000000 * desired_size_mHa
         radius = math.sqrt(desired_size/math.pi) 
         buff = coords.buffer(radius*5) # to be safe against long skinny bioregions
+
+        x = p_temp + p_precip + p_biomass 
+        dist_constant = 0.0
+        # regression, R^2 ~ 0.43 for 250 random samples
+        max_cost = math.fabs((4283 * x * (desired_size_mHa ** 0.5))+122119)
+
+        self.output_initcost = max_cost
+        if x < 1:
+            dist_constant = 2.0
+
 
         # set initial region
         g.run('g.region rast=biomass_slope')
@@ -93,14 +98,8 @@ class MyBioregion(Analysis):
         start_values = get_raster_values(g, rasts, coords)
         start_values['ocean_slope'] = get_nearest_ocean_value(g, coords)
         
-        #g.run('r.mapcalc "weighted_combined_slope = %s + ' % dist_constant +
-        #                    '(%d * ocean_mask) +' % 10.0**12 +
-        #                    '(%s * (temp_slope-0.99))*100 + ' % p_temp  + 
-        #                    '(%s * (precip_slope-0.99))*100 + ' % p_precip +
-        #                    '(%s * (biomass_slope-0.99))*100' % p_biomass +
-        #                    '"')
         g.run('r.mapcalc "weighted_combined_slope = %s + ' % dist_constant +
-                            '(%d * ocean_mask) +' % 10.0**12 +
+                            #'(%d * ocean_mask) +' % 10.0**12 +
                             '(%s * pow(abs(%s - temp_slope),2))*10 + ' % (p_temp,start_values['temp_slope'])  + 
                             '(%s * pow(abs(%s - precip_slope),2))*10 + ' % (p_precip,start_values['precip_slope'])  + 
                             '(%s * pow(abs(%s - biomass_slope),2))*10' % (p_biomass,start_values['biomass_slope'])  + 
@@ -142,14 +141,12 @@ class MyBioregion(Analysis):
                     int((largest_area/10000.0)/1000000.0),  
                     int((desired_size/10000.0)/1000000.0)))
 
-            max_cost = max_cost * (ratio ** 0.5)
-            max_cost = max_cost * (ratio)
             try:
-                # take the average of the highest underestimate and the lowest overestimate
-                if max_cost < max(unders) or max_cost > min(overs):
-                    max_cost = (max(unders) + min(overs))/2.0
+                # always try to take the average of the 
+                # highest underestimate and the lowest overestimate
+                max_cost = (max(unders) + min(overs))/2.0
             except ValueError:
-                pass
+                max_cost = max_cost * (ratio ** 0.67)
 
             if seed and ratio < 0.15 and seed_low: 
                 # we are WAY overestimating max_cost, try a very low cost 
@@ -189,6 +186,8 @@ class MyBioregion(Analysis):
             
         if geom.valid:
             self.output_geom = geom
+            self.output_numruns = i
+            self.output_finalcost = max_cost
         else:
             logger.debug("%s is not a valid geometry!" % self.name)
             
@@ -394,7 +393,7 @@ def get_raster_values(g, rasts, coords):
         try:
             realval = float(val)
         except:
-            realval = None
+            realval = 0
         startvals[rast] = realval
     return startvals
 
@@ -407,11 +406,14 @@ def get_nearest_ocean_value(g, coords):
     lines = output.strip().split("\n")
     for line in lines:
         d = line.strip().split(",")
-        dist = float(d[2])
-        #coords = (d[5],d[6])
-        if dist < min_dist:
-            min_dist = dist
-            ocean_val = float(d[1])
+        try:
+            dist = float(d[2])
+            #coords = (d[5],d[6])
+            if dist < min_dist:
+                min_dist = dist
+                ocean_val = float(d[1])
+        except:
+            pass
     if ocean_val is None:
         ocean_val = 1.0
     return ocean_val
