@@ -91,6 +91,7 @@ class MyBioregion(Analysis):
         g.run('g.region w=%d s=%d e=%d n=%d' % buff.extent )
         #rasts = ['biomass_slope','temp_slope','precip_slope']
         start_values = get_raster_values(g, rasts, coords)
+        start_values['ocean_slope'] = get_nearest_ocean_value(g, coords)
         
         #g.run('r.mapcalc "weighted_combined_slope = %s + ' % dist_constant +
         #                    '(%d * ocean_mask) +' % 10.0**12 +
@@ -383,16 +384,35 @@ def get_largest_from_json(output):
     return largest_area, geom
 
 def get_raster_values(g, rasts, coords):
-        what = g.run('r.what input=%s east_north=%s,%s' % (','.join(rasts), coords[0], coords[1]))
-        startvals = {}
-        vals = what.strip().split('|')[3:]
-        assert len(vals) == len(rasts)
-        for i in range(len(vals)):
-            val = vals[i]
-            rast = rasts[i]
-            try:
-                realval = float(val)
-            except:
-                realval = None
-            startvals[rast] = realval
-        return startvals
+    what = g.run('r.what input=%s east_north=%s,%s' % (','.join(rasts), coords[0], coords[1]))
+    startvals = {}
+    vals = what.strip().split('|')[3:]
+    assert len(vals) == len(rasts)
+    for i in range(len(vals)):
+        val = vals[i]
+        rast = rasts[i]
+        try:
+            realval = float(val)
+        except:
+            realval = None
+        startvals[rast] = realval
+    return startvals
+
+def get_nearest_ocean_value(g, coords):
+    g.run('echo "%s|%s|1" | v.in.ascii output=start_pnt' % (coords[0],coords[1]))
+    g.run('v.to.rast type=point use=cat input=start_pnt output=start_rast')
+    output = g.run('r.distance maps=start_rast,ocean_slope fs=","')
+    min_dist = 999999999
+    ocean_val = None
+    lines = output.strip().split("\n")
+    for line in lines:
+        d = line.strip().split(",")
+        dist = float(d[2])
+        #coords = (d[5],d[6])
+        if dist < min_dist:
+            min_dist = dist
+            ocean_val = float(d[1])
+    if ocean_val is None:
+        ocean_val = 1.0
+    return ocean_val
+
