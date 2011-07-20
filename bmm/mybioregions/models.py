@@ -256,7 +256,7 @@ class MyBioregion(Analysis):
     @property
     def done(self):
         # For now just check that the geom is complete 
-        if self.outputs['output_geom'] is None:
+        if self.output_geom is None:
             return False
         return True
 
