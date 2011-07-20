@@ -46,4 +46,6 @@ GRASS_LOCATION = 'world_moll3'
 GRASS_GISBASE = '/usr/local/grass-6.4.1RC2'
 GRASS_GISDBASE = '/home/grass'
 
+HELP_EMAIL = 'bioregions@ecotrust.org'
+
 from settings_local import *
