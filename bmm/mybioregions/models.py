@@ -34,8 +34,8 @@ SAVE_MAPSET = False
 class MyBioregion(Analysis):
     
     #Input Parameters
-    #input_start_point = models.TextField(verbose_name='Population Center')
-    input_starting_point = models.PointField(srid=settings.GEOMETRY_CLIENT_SRID, null=True, blank=True, verbose_name="Bioregion Starting Point")
+    input_starting_point = models.PointField(srid=settings.GEOMETRY_CLIENT_SRID, null=True, 
+            blank=True, verbose_name="Bioregion Starting Point")
     input_temp_weight = models.FloatField(verbose_name='Value given to Temperature')
     input_precip_weight = models.FloatField(verbose_name='Value given to Precipitation')
     input_biomass_weight = models.FloatField(verbose_name='Value given to Vegetation')
@@ -74,7 +74,6 @@ class MyBioregion(Analysis):
         if os.path.exists(output):
             raise Exception(output + " already exists")
 
-
         # Guess seed value
         desired_size_mHa = SIZE_LOOKUP[self.input_bioregion_size] #million Hectares
         desired_size = 10000000000 * desired_size_mHa
@@ -90,7 +89,6 @@ class MyBioregion(Analysis):
         if x < 1:
             dist_constant = 2.0
 
-
         # set initial region
         g.run('g.region rast=biomass_slope')
         g.run('g.region w=%d s=%d e=%d n=%d' % buff.extent )
@@ -105,7 +103,7 @@ class MyBioregion(Analysis):
                             '(%s * pow(abs(%s - biomass_slope),2))*10' % (p_biomass,start_values['biomass_slope'])  + 
                             '"')
 
-        ################# Run #2 - adjusted cost #####################
+        # iterate over cost_distance analysis until we converge on a reasonable size
         tolerance = 0.15
         ratio = 0.0
         seed_low = True
@@ -121,7 +119,7 @@ class MyBioregion(Analysis):
             g.run('r.cost -k input=weighted_combined_slope output=cost1 coordinate=%s,%s max_cost=%s' % \
                     (coords[0],coords[1],max_cost) )
             g.run('r.mapcalc "bioregion1=if(cost1 >= 0)"')
-            g.run('r.to.vect -s input=bioregion1 output=bioregion1_poly feature=area') # -s
+            g.run('r.to.vect -s input=bioregion1 output=bioregion1_poly feature=area') 
             if os.path.exists(output):
                 os.remove(output)
             g.run('v.out.ogr -c input=bioregion1_poly type=area format=GeoJSON dsn=%s' % output)
@@ -165,15 +163,14 @@ class MyBioregion(Analysis):
                 delta_zero_count += 1
             else:
                 delta_zero_count = 0
-
             if delta_zero_count > 2 and (ratio > (1-tolerance*2) or ratio < (1+tolerance*2)) :
                 tolerance = tolerance * 1.25
                 logger.debug("Expanding tolerance to %s " % tolerance)
                 continue
-
-            i += 1
             if i>16 or delta_zero_count > 4:
                 break
+
+            i += 1
 
 
         geom.srid = settings.GEOMETRY_DB_SRID 
@@ -220,10 +217,10 @@ class MyBioregion(Analysis):
     def mapnik_style(self):
         import mapnik
         polygon_style = mapnik.Style()
-        ps = mapnik.PolygonSymbolizer(mapnik.Color('#ffffff'))
-        ps.fill_opacity = 0.5
-        ls = mapnik.LineSymbolizer(mapnik.Color('#555555'),0.75)
-        ls.stroke_opacity = 0.5
+        ps = mapnik.PolygonSymbolizer(mapnik.Color('#551A8B'))
+        ps.fill_opacity = 0.9
+        ls = mapnik.LineSymbolizer(mapnik.Color('#ffffff'),0.75)
+        ls.stroke_opacity = 0.9
         r = mapnik.Rule()
         r.symbols.append(ps)
         r.symbols.append(ls)
