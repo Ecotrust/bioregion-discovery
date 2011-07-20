@@ -1,5 +1,5 @@
 <!DOCTYPE Map>
-<Map bgcolor="steelblue" srs="+proj=latlong +datum=WGS84">
+<Map bgcolor="lightblue" srs="+proj=latlong +datum=WGS84">
 
 <Style name="land_style">
 <Rule>

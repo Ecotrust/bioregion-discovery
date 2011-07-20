@@ -221,9 +221,15 @@ class MyBioregion(Analysis):
         ps.fill_opacity = 0.9
         ls = mapnik.LineSymbolizer(mapnik.Color('#ffffff'),0.75)
         ls.stroke_opacity = 0.9
+        ts = mapnik.TextSymbolizer('name','DejaVu Sans Bold',11,mapnik.Color('#555555'))
+        ts.displacement(15,15)
+        ts.halo_fill = mapnik.Color('white')
+        ts.halo_radius = 1
+        ts.opacity = 0.5
         r = mapnik.Rule()
         r.symbols.append(ps)
         r.symbols.append(ls)
+        r.symbols.append(ts)
         polygon_style.rules.append(r)
         return polygon_style
 
