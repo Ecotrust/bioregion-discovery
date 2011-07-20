@@ -169,10 +169,10 @@ class MyBioregion(Analysis):
             if delta_zero_count > 2 and (ratio > (1-tolerance*2) or ratio < (1+tolerance*2)) :
                 tolerance = tolerance * 1.25
                 logger.debug("Expanding tolerance to %s " % tolerance)
-                break
+                continue
 
             i += 1
-            if i>16 or delta_zero_count > 5:
+            if i>16 or delta_zero_count > 4:
                 break
 
 
