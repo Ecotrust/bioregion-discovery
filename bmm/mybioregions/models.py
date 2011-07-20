@@ -253,6 +253,13 @@ class MyBioregion(Analysis):
         </Placemark>
         """ % (self.uid, escape(self.name))
 
+    @property
+    def done(self):
+        # For now just check that the geom is complete 
+        if self.outputs['output_geom'] is None:
+            return False
+        return True
+
     @property 
     def kml_done(self):
         return """
