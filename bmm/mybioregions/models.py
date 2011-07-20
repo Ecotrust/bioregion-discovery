@@ -106,15 +106,14 @@ class MyBioregion(Analysis):
         # iterate over cost_distance analysis until we converge on a reasonable size
         tolerance = 0.15
         ratio = 0.0
-        seed_low = True
-        seed_high = True
-        seed = True
         i = 0
         delta_zero_count = 0
         largest_area = desired_size
         overs = []
+        overs_sizes = []
         unders = []
-        while ratio < (1-tolerance) or ratio > (1+tolerance):
+        unders_sizes = []
+        while True:
             g.run('g.region w=%d s=%d e=%d n=%d' % buff.extent )
             g.run('r.cost -k input=weighted_combined_slope output=cost1 coordinate=%s,%s max_cost=%s' % \
                     (coords[0],coords[1],max_cost) )
@@ -128,50 +127,62 @@ class MyBioregion(Analysis):
             delta_area = largest_area - old_area
 
             ratio = desired_size/largest_area
-            if ratio < 1.0 : 
-                overs.append(max_cost)
-            else:
-                unders.append(max_cost)
-
-            logger.debug("* run %s ratio %s max_cost %s actual_size %s desired_size %s" % (i, 
+            logger.debug("#%s ratio %s max_cost %s actual %s desired %s" % (i, 
                     ratio,
                     max_cost, 
                     int((largest_area/10000.0)/1000000.0),  
                     int((desired_size/10000.0)/1000000.0)))
+            if ratio > (1-tolerance) and ratio < (1+tolerance):
+                break 
+
+            if ratio < 1.0 : 
+                overs.append(max_cost)
+                overs_sizes.append(largest_area)
+            else:
+                unders.append(max_cost)
+                unders_sizes.append(largest_area)
+
 
             try:
-                # always try to take the average of the 
-                # highest underestimate and the lowest overestimate
-                max_cost = (max(unders) + min(overs))/2.0
+                #estimate the placement between
+                #highest underestimate and the lowest overestimate
+                usd = desired_size - max(unders_sizes)
+                osd = min(overs_sizes) - desired_size
+                tsd = float(usd + osd)
+                max_cost = max(unders) * osd/tsd + min(overs) * usd/tsd
+                #simple average method 
+                #avgc = (max(unders) + min(overs))/2.0
+                #logger.debug("Estimating between high and low... %s (or %s using simple average)" % (max_cost, avgc))
             except ValueError:
                 max_cost = max_cost * (ratio ** 0.67)
 
-            if seed and ratio < 0.15 and seed_low: 
-                # we are WAY overestimating max_cost, try a very low cost 
-                seed_low = False
-                max_cost = max_cost / 5.0
-                logger.debug("Seeding low")
+            if ratio < 0.99 and len(unders)==0: 
+                # we are overestimating max_cost, try a very low cost 
+                try:
+                    max_cost = min(overs) / 10.0
+                except:
+                    max_cost = max_cost / 10.0
 
-            if seed and ratio > 20 and seed_high: 
-                # we are WAY underestimating max_cost, try a very high cost 
-                seed_high = False
-                max_cost = max_cost * 5.0
-                logger.debug("Seeding high")
+            if ratio > 1.01 and len(overs)==0: 
+                # we are underestimating max_cost, try a very high cost 
+                try:
+                    max_cost = max(unders) * 10.0
+                except:
+                    max_cost = max_cost * 10.0
 
             # avoid getting stuck if tolerance is too tight
             if delta_area == 0:
                 delta_zero_count += 1
             else:
                 delta_zero_count = 0
-            if delta_zero_count > 2 and (ratio > (1-tolerance*2) or ratio < (1+tolerance*2)) :
+            if i>16 or delta_zero_count > 3:
+                break
+            if delta_zero_count > 1 and (ratio > (1-tolerance*2) or ratio < (1+tolerance*2)) :
                 tolerance = tolerance * 1.25
                 logger.debug("Expanding tolerance to %s " % tolerance)
                 continue
-            if i>16 or delta_zero_count > 4:
-                break
 
             i += 1
-
 
         geom.srid = settings.GEOMETRY_DB_SRID 
         if geom and not SAVE_MAPSET: 
