@@ -12,7 +12,7 @@ from lingcod.common.utils import clean_geometry
 default_value = '---'
 global_landmass = 148940000. #sq km -- see table at http://en.wikipedia.org/wiki/Earth
 npp_grid_cell_size = 676000000. #sq m -- approximated via measurement tool in arcmap 
-global_npp = 62000000000000000
+global_npp = 62000000000000000 #need to re-figure this value (don't seem to have the equation/sources any longer...
 
 
 '''
