@@ -14,11 +14,11 @@ import math
 logger = get_logger()
 
 BIOREGION_SIZES = (
-    ('VS', 'Very Small'),
-    ('S', 'Small'),
-    ('M', 'Medium'),
-    ('L', 'Large'),
-    ('VL', 'Very Large'),
+    ('VS', 'Very Small (2m Hectares)'),
+    ('S', 'Small (5m Hectares)'),
+    ('M', 'Medium (20m Hectares)'),
+    ('L', 'Large (50m Hectares)'),
+    ('VL', 'Very Large (100m Hectares)'),
 )
 
 SIZE_LOOKUP = { # in millions of Hectares
@@ -39,6 +39,9 @@ class MyBioregion(Analysis):
     input_temp_weight = models.FloatField(verbose_name='Value given to Temperature')
     input_precip_weight = models.FloatField(verbose_name='Value given to Precipitation')
     input_biomass_weight = models.FloatField(verbose_name='Value given to Vegetation')
+    input_lang_weight = models.FloatField(verbose_name='Value given to Language')
+    input_elev_weight = models.FloatField(verbose_name='Value given to Elevation')
+    input_marine_weight = models.FloatField(verbose_name='Value given to Marine Environment')
     input_bioregion_size = models.CharField(choices=BIOREGION_SIZES, max_length=3,
             verbose_name='Relative size of Bioregion', default='M')
     
