@@ -1,43 +1,4 @@
-div.kmltree {
-  font-family: sans-serif;
-  font-size: 12px;
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  user-select: none; }
-  div.kmltree li {
-    -moz-user-select: none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    user-select: none; }
-    div.kmltree li .toggler, div.kmltree li .expander {
-      -moz-user-select: none;
-      -khtml-user-select: none;
-      -webkit-user-select: none;
-      user-select: none; }
-  div.kmltree p.error {
-    -moz-user-select: text;
-    -khtml-user-select: text;
-    -webkit-user-select: text;
-    user-select: text; }
-  div.kmltree ul {
-    list-style: none;
-    padding-left: 18px; }
-  div.kmltree li ul {
-    padding-top: 5px;
-    display: none; }
-  div.kmltree li.open > ul {
-    display: block; }
 
-.expander, .toggler, .icon {
-  margin: 0;
-  padding: 0;
-  float: left;
-  width: 16px;
-  height: 16px; }
-
-.expander, .toggler {
-  cursor: pointer; }
 
 .expander {
   background: url("images/sprites/expand_collapse.gif?1306527742") repeat 0px 0px !important;
@@ -65,5 +26,4 @@ li.open > .expander {
     background: url("images/sprites/expand_collapse.gif?1306527742") repeat -14px 0px !important;
     width: 16px;
     height: 16px; }
-    
-}    
+     
