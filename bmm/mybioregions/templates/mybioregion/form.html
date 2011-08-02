@@ -4,12 +4,61 @@
 <script type="text/javascript" charset="utf-8">
     lingcod.onShow(function(){
         lingcod.setupForm($('#featureform'));
+
+        var step = 1;
+        var max_step = 3;
+        function validate(step) {
+            if (step == 1) {
+                console.log('validate step1');
+            } else if (step == 2) {
+                // Nothing to do to validate step2
+            } else if (step == 3) {
+                console.log('validate step3');
+            }
+        }; 
+
+        function wizard(action) {
+            if (step > 1 && action == 'prev') {
+                step -= 1;
+            }
+            if (step < max_step && action == 'next') {
+                validate(step);
+                step += 1;
+            }
+            $('div.step').each(function(index) {
+                $(this).hide();
+            });
+
+            $('div#step' + step).show();
+
+            if (step == 1) {
+                $('#button_prev').hide();
+            } else {
+                $('#button_prev').show();
+            }
+
+            if (step == max_step) {
+                $('#button_next').hide();
+                $('.submit_button').show();
+            } else {
+                $('#button_next').show();
+                $('.submit_button').hide();
+            }
+        };
+        $('#button_prev').click( function() { wizard('prev'); });
+        $('#button_next').click( function() { wizard('next'); });
+        wizard();
+
+        $('ul.errorlist').each( function() {
+                $('div#error_bar').html("<ul class='errorlist'><li>We encountered an error while processing your bioregion. Can you recheck the steps and make sure you've filled in all the required information?</li></ul>");
+        });
+            
     });
 </script>
 
 <style type="text/css">
 div .field > label { font-size: 12px; display: inline; }
-div .box { 
+div .step { 
     -moz-box-shadow: 5px 5px 5px #ddd;
     -webkit-box-shadow: 5px 5px 5px #ddd;
     box-shadow: 5px 5px 5px #ddd; 
@@ -40,22 +89,32 @@ span.form-image > img { width:46px; height:46px; }
     {{ hidden }}
     {% endfor %}
 
-<div class="field required">
-    {{ form.name.label_tag }}
-    {{ form.name.errors }}
-    {{ form.name }}            
-</div>
 
+  <div id="error_bar"></div>
 
+  <div class="step" id="step1">
+    <h3> Step 1 of 3 </h3>
+      <p> The starting point is the "center" of your bioregion; the hub which embodies the character of your bioregion. The resulting bioregion map will be drawn to include nearby land that exhibits similar characteristics.</p>
+      <p> First, locate your area of interest on the interactive map to the right. To navigate: </p>
+      <ul>
+        <li> Zoom In </li>
+        <li> Pan </li>
+        <li> Blah... </li>
+      </ul>
+      <p> Next set your starting point by clicking the button below, then clicking the location on the map. </p>
 
     <div id="start">
         <div class="field required">
-            {{ form.input_starting_point.label_tag }}
+            <!-- {{ form.input_starting_point.label_tag }} -->
             {{ form.input_starting_point.errors }}
             {{ form.input_starting_point }}            
         </div>
     </div>
+  </div>
 
+  <div class="step" id="step2">
+    <h3> Step 2 of 3 </h3>
+      <p> Specify the <em>relative importance</em> of the following parameters; in other words, to what extent do these parameters define your bioregion? </p>
     <div class="inputfield" id="temp">
         <div class="field required">
             {{ form.input_temp_weight.label_tag }}
@@ -77,28 +136,65 @@ span.form-image > img { width:46px; height:46px; }
             {{ form.input_biomass_weight }}            
         </div>
     </div>
+    <div class="inputfield" id="lang">
+        <div class="field required">
+            {{ form.input_lang_weight.label_tag }}
+            {{ form.input_lang_weight.errors }}
+            {{ form.input_lang_weight }}            
+        </div>
+    </div>
+    <div class="inputfield" id="elev">
+        <div class="field required">
+            {{ form.input_elev_weight.label_tag }}
+            {{ form.input_elev_weight.errors }}
+            {{ form.input_elev_weight }}            
+        </div>
+    </div>
+    <div class="inputfield" id="marine">
+        <div class="field required">
+            {{ form.input_marine_weight.label_tag }}
+            {{ form.input_marine_weight.errors }}
+            {{ form.input_marine_weight }}            
+        </div>
+    </div>
     <div class="inputfield" id="size">
         <div class="field required">
             {{ form.input_bioregion_size.label_tag }}
             {{ form.input_bioregion_size.errors }}
+            <br/>
             {{ form.input_bioregion_size }}            
         </div>
     </div>
+  </div>
 
+<div class="step" id="step3">
+    <h3> Step 3 of 3 </h3>
+    <p> Provide a name to identify your bioregion </p>
+    <div class="field required">
+        {{ form.name.label_tag }}
+        {{ form.name.errors }}
+        {{ form.name }}            
+    </div>
+    <p> Optionally, you may add notes and further descriptions here.  </p>
     <div>
         {{ form.description.label_tag }}
         {{ form.description.errors }}
         {{ form.description }}            
     </div>
+</div>
+
 <p><input type="submit" value="submit"></p>
 </form>
 
 
-<br class="clear" />
-<div class="form_controls">
-    <a href="#" class="submit_button button" onclick="this.blur(); return false;"><span>Submit</span></a>
+<div class="wizard_nav" style="width:100%">
+    <a href="#" class="button" style="float:left;" onclick="this.blur(); return false;" id="button_prev"><span>&lt; Previous</span></a>
+    <a href="#" class="button" style="float:right;" onclick="this.blur(); return false;" id="button_next"><span>Next &gt;</span></a>
+</div>
+
+<div>
     <a href="#" class="cancel_button button red" onclick="this.blur(); return false;"><span>Cancel</span></a>
-    <br class="clear" />
+    <a href="#" class="submit_button button" onclick="this.blur(); return false;"><span>Submit</span></a>
 </div>
 
 
