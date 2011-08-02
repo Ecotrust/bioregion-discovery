@@ -35,4 +35,4 @@
 {% endfor %}
 
 {% endblock %}
-{% block docname %}Bioregions{% endblock %}
+{% block docname %}Shared Bioregions{% endblock %}
