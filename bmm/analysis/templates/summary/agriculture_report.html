@@ -1,0 +1,52 @@
+{% extends 'common/panel.html' %}
+
+{% block panel %}
+{% load humanize %}
+{% load analysis_extras %}
+
+<h3>Agicultural Characteristics</h3>
+<div class='freetext'>
+<p>
+<table  style='width:430px' class='analysis_report_container'>
+    <tbody>
+        <tr class="grey">
+            <td colspan='2'><b>Proportion of Global Terrestrial Land Mass</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{landmass_perc|percentage:3}}</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Proportion of Global Terrestrial NPP</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{npp_perc|percentage:3}}</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Average Net Primary Production</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{avg_npp|floatformat:0}} g C/m<sup>2</sup>/yr</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Proportion Suitable for Agriculture</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{soil_suitability|percentage:0}}</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+    </tbody>
+</table>
+</div>
+
+<style type="text/css">
+h3 { font-weight: bold; }
+</style>
+
+{% endblock panel %}
