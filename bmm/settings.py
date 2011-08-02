@@ -49,4 +49,6 @@ GRASS_GISDBASE = '/home/grass'
 STATIC_URL = ADMIN_MEDIA_PREFIX
 HELP_EMAIL = 'bioregions@ecotrust.org'
 
+TITLES = { 'self': 'Reports', }
+
 from settings_local import *
