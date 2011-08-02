@@ -2,6 +2,33 @@
 {% load humanize %}
 {% block title %}{{instance.name}}{% endblock title %}
 {% block panel %}
+
+<script type="text/javascript">
+    lingcod.onShow(function(){
+      {% if instance.satisfied %}
+        $('#confirm').hide();
+      {% else %}
+        $('#results').hide();
+        $('#button_yes').click( function() {
+            $('#confirm').hide();
+            $('#results').show();
+        });
+        $('#button_no').click( function() {
+            var uid = '{{instance.uid}}';
+            //a = lingcod.editors[0].workspace.actions.getByTitle('Edit');
+            a = lingcod.editors[0].workspace.featureClasses.getById('mybioregions_mybioregion');
+            console.log(a);
+            /*
+            $.each(a, function (i, action) {
+                console.log(action.getUrl(uid));
+            });
+            */
+        });
+      {% endif %}
+    });
+</script>
+    
+
 <h1>The <em>{{instance.name}}</em> Bioregion</h1>
 
 <style type="text/css">
@@ -9,7 +36,14 @@
 </style>
         
     {% if instance.done %}
-    <div id="results" class="tabs">
+        <div id="confirm">
+            <h2> Take a minute to explore the map of your bioregion.</h2>
+            <h2> Are you satisfied with result? </h2>
+            <div> <a class="button" id="button_yes"><span>Yes, Proceed to Reports</span></a> </div>
+            <div> <a class="button" id="button_no"><span>No, Continue Editing</span></a> </div>
+        </div>
+
+        <div id="results" class="tabs">
         <ul>
             <li><a href="#intro"><span>Introduction</span></a></li>
             <li><a href="#summary"><span>Summary</span></a></li>
