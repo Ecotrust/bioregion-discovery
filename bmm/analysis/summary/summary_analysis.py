@@ -88,7 +88,7 @@ def get_languages(bioregion):
         language_names = get_report_cache(bioregion, 'languages')
         return language_names
     else:
-        languages = Languages.objects.all()
+        languages = Languages.objects.filter(geometry__bboverlaps=bioregion.output_geom)
         language_dict = {}
         for language in languages:
             try:
@@ -150,7 +150,7 @@ def get_ecoregions(bioregion):
         ecoregion_tuples = get_report_cache(bioregion, 'ecoregions')
         return ecoregion_tuples
     else:
-        ecoregions = EcoRegions.objects.all()
+        ecoregions = EcoRegions.objects.filter(geometry__bboverlaps=bioregion.output_geom)
         ecoregion_tuples = [(ecoregion.geometry.intersection(bioregion.output_geom).area, ecoregion.eco_name) for ecoregion in ecoregions if ecoregion.geometry.intersects(bioregion.output_geom)]
         ecoregion_dict = {}
         for area,name in ecoregion_tuples:
@@ -171,7 +171,7 @@ def get_last_wild(bioregion):
         lastwild_tuples = get_report_cache(bioregion, 'wild_regions')
         return lastwild_tuples
     else:
-        wild_regions = LastWild.objects.all()
+        wild_regions = LastWild.objects.filter(geometry__bboverlaps=bioregion.output_geom)
         wild_region_tuples = [(wild_region.geometry.intersection(bioregion.output_geom).area, wild_region.eco_name) for wild_region in wild_regions if wild_region.geometry.intersects(bioregion.output_geom)]
         wild_region_dict = {}
         for area,name in wild_region_tuples:
@@ -190,7 +190,7 @@ def get_marine_ecoregions(bioregion):
         marineregion_tuples = get_report_cache(bioregion, 'marineregions')
         return marineregion_tuples
     else:
-        marineregions = MarineRegions.objects.all()
+        marineregions = MarineRegions.objects.filter(geometry__bboverlaps=bioregion.output_geom)
         marineregion_tuples = [(marineregion.geometry.intersection(bioregion.output_geom).area, marineregion.ecoregion) for marineregion in marineregions if marineregion.geometry.intersects(bioregion.output_geom)]
         marineregion_dict = {}
         for area,name in marineregion_tuples:
