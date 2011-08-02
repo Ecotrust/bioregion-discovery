@@ -2,125 +2,48 @@
 {% load humanize %}
 {% block title %}{{instance.name}}{% endblock title %}
 {% block panel %}
-<h1>Bioregion result for {{instance.name}}</h1>
+<h1>The <em>{{instance.name}}</em> Bioregion</h1>
 
-<!-- formerly 'if not instance.done' -->
-{% if not instance.done %}
-{% block progress %}
-<h4 id="{{instance.uid}}_progress_html">{{ instance.status_html|safe }}</h4>
-<div id="{{instance.uid}}_progressbar" class="progressbar"></div> 
-<br/>
-
-<script>
-// Make sure this only gets run once; check if the function is undefined
-var {{instance.uid}}_running;
-var {{instance.uid}}_delay;
-var {{instance.uid}}_call_again;
-var update_progress_info_{{instance.uid}};
-var {{instance.uid}}_done_panel;
-
-lingcod.onShow(function(){
-    $(function() {
-        $( "#{{instance.uid}}_progressbar" ).progressbar({ value: 0 });
-    });
-
-    // This should only happen the first time the panel is loaded
-    if (typeof(update_progress_info_{{instance.uid}}) == "undefined") {
-        {{instance.uid}}_running = false;
-
-        update_progress_info_{{instance.uid}} = function() {
-            $.getJSON('{% url analysis-progress instance.uid %}' , function(data, status){
-                if (data) {
-                    var progress = parseInt(data.complete) / parseInt(data.total);
-                    var progress_html = data.html;
-                    $('#{{instance.uid}}_progressbar').progressbar( "option", "value", progress*100 );
-                    $('#{{instance.uid}}_progress_html').html(progress_html);
-                }
-                if (progress < 1.0) {
-                    {{instance.uid}}_running = true;
-                    if ({{instance.uid}}_call_again) {
-                        window.setTimeout(update_progress_info_{{instance.uid}}, {{instance.uid}}_delay);
-                    }
-                    {{instance.uid}}_call_again = true;
-                } else {
-                    {{instance.uid}}_running = false;
-                    {{instance.uid}}_done_panel = lingcod.panel({appendTo: $('#panel-holder'), 
-                        showCloseButton: true});
-                    {{instance.uid}}_done_panel.showUrl(
-                       '/analysistools/{{instance.uid}}/progress.html', { showClose: true });
-                }
-            });
-        };
-    }
-
-    {{instance.uid}}_delay = 5000; // ms
-    if (!{{instance.uid}}_running) {
-        {{instance.uid}}_call_again = true;
-    } else {
-        // This avoids calling off mulitple rounds of self-calling funcitons
-        {{instance.uid}}_call_again = false;
-    }
-    update_progress_info_{{instance.uid}}();
-
-});
-
-lingcod.beforeDestroy(function() {
-    {{instance.uid}}_delay = 10000;
-});
-</script>
-
-{% endblock progress %}
-{% endif %}
-
-    <div class="tabs">
-        <ul>
-            <li><a href="#Inputs"><span>Inputs</span></a></li>
-            {% if instance.done %}
-            <li><a href="#results"><span>Reports</span></a></li>
-            {% endif %}
-        </ul>
-        <div id="Inputs">
-            <ul class="metadata">
-              {% if instance.user.first_name and instance.user.last_name %} 
-                <li class="creator">Created By {{instance.user.first_name}} {{instance.user.last_name}}</li>
-              {% else %}
-                <li class="creator">Created By {{instance.user.username}}</li>
-              {% endif %}
-                <li class="created">Created {{instance.date_created|date:"d M, Y P"}}</li>
-                <li class="modified">Modified {{instance.date_modified|date:"d M, Y P"}}</li>
-                <br class="clear" />
-            </ul>
-
-            <h2>Description</h2>
-            <div class="box">
-                <p>{{instance.description}}</p>
-            </div>
-
-            <h2>Parameters</h2>
-            <div class="box">
-                    <p> Starting Point (lat, lon): {{ instance.input_starting_point.1|floatformat:3 }}, {{ instance.input_starting_point.0|floatformat:3 }}</p>
-                    <p> Temperature Valuation: {{ instance.input_temp_weight }} / 100</p>
-                    <p> Precipitation Valuation: {{ instance.input_precip_weight }} / 100</p>
-                    <p> Vegetation Valuation: {{ instance.input_biomass_weight }} / 100</p>
-                    <p> Bioregion Size: {{ instance.input_bioregion_size }} </p>
-            </div>
-        </div>
+<style type="text/css">
+    div.box > ul > li { font-size: 12px; }
+</style>
         
-        {% if instance.done %}
-        <div id="results" class="tabs">
+    {% if instance.done %}
+    <div id="results" class="tabs">
         <ul>
             <li><a href="#intro"><span>Introduction</span></a></li>
             <li><a href="{% url summary_analysis instance.pk %}"><span>Summary</span></a></li>
             <li><a href="{% url vulnerability_analysis instance.pk %}"><span>Vulnerabilities</span></a></li>
         </ul>
         <div id="intro">
+            <h2>Available Reports</h2>
             <div class="box">
-                <p>The Summary report provides information such as population, poverty, and resource endowments related to your bioregion.</p>
-                <p>The Vulnerabilites report provides information related to climate change, development pressure, water resource limitations, and food scarcity.</p>
+                <p>The <strong>Summary report</strong> provides information such as population, poverty, and resource endowments related to your bioregion.</p>
+                <p>The <strong>Vulnerabilites report</strong> provides information related to climate change, development pressure, water resource limitations, and food scarcity.</p>
+            </div>
+
+            {% if instance.description %}
+            <h2>Description</h2>
+            <div class="box">
+                <p>{{instance.description}}</p>
+            </div>
+            {% endif %}
+
+            <h2>Input Parameters</h2>
+            <div class="box">
+                <ul>
+                    <li> Starting Point (lat, lon): {{ instance.input_starting_point.1|floatformat:3 }}, {{ instance.input_starting_point.0|floatformat:3 }}</li>
+                    <li> Temperature Relative Weighting: {{ instance.input_temp_weight }} / 100</li>
+                    <li> Precipitation Relative Weighting: {{ instance.input_precip_weight }} / 100</li>
+                    <li> Vegetation Relative Weighting: {{ instance.input_biomass_weight }} / 100</li>
+                    <li> Language Relative Weighting: {{ instance.input_lang_weight }} / 100</li>
+                    <li> Elevation Relative Weighting: {{ instance.input_elev_weight }} / 100</li>
+                    <li> Marine Relative Weighting: {{ instance.input_marine_weight }} / 100</li>
+                    <li> Bioregion Size: {{ instance.input_bioregion_size }} </li>
+                </ul>
             </div>
         </div>
-        </div>
-        {% endif %}
     </div>
+    {% endif %}
 
 {% endblock panel %}
