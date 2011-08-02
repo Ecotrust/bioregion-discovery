@@ -1,0 +1,56 @@
+{% extends 'common/panel.html' %}
+
+{% block panel %}
+{% load humanize %}
+{% load analysis_extras %}
+
+<h3>Eco-Region Characteristics</h3>
+<div class='freetext'>
+<p>
+<table  style='width:430px' class='analysis_report_container'>
+    <tbody>
+        <tr class="grey">
+            <td colspan='2'><b>Existing Eco-Regions</b></td>
+        </tr>
+        {% for ecoregion in ecoregions %}
+        <tr>
+            <td colspan='2'>{{ecoregion.0}} ({{ecoregion.1|floatformat:0|intcomma}} km<sup>2</sup>)</td>
+        </tr>
+        {% endfor %}
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Last Remaining Wild Regions</b></td>
+        </tr>
+        {% if wild_regions %}
+            {% for wild_region in wild_regions %}
+            <tr>
+                <td colspan='2'>{{wild_region.0}} ({{wild_region.1|floatformat:0|intcomma}} km<sup>2</sup>)</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan='2'>None found</td>
+            </tr>
+        {% endif %}
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Marine Eco-Regions</b></td>
+        </tr>
+        {% for marineregion in marine_ecoregions %}
+        <tr>
+            <td colspan='2'>{{marineregion.0}} ({{marineregion.1|floatformat:0|intcomma}} km<sup>2</sup>)</td>
+        </tr>
+        {% endfor %}
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+    </tbody>
+</table>
+</div>
+
+<style type="text/css">
+h3 { font-weight: bold; }
+</style>
+
+{% endblock panel %}
