@@ -202,10 +202,10 @@
         <div id="summary" class="tabs">
             <ul>
                 <li><a href="#summary_intro"><span>Intro</span></a></li>
-                <li><a href="{% url summary_analysis instance.pk %}"><span>General</span></a></li>
-                <li><a href="{% url summary_analysis instance.pk %}"><span>Language</span></a></li>
-                <li><a href="{% url summary_analysis instance.pk %}"><span>Eco-Regions</span></a></li>
-                <li><a href="{% url summary_analysis instance.pk %}"><span>Agriculture</span></a></li>
+                <li><a href="{% url general_summary_analysis instance.pk %}"><span>General</span></a></li>
+                <li><a href="{% url language_summary_analysis instance.pk %}"><span>Language</span></a></li>
+                <li><a href="{% url ecoregions_summary_analysis instance.pk %}"><span>Eco-Regions</span></a></li>
+                <li><a href="{% url agriculture_summary_analysis instance.pk %}"><span>Agriculture</span></a></li>
             </ul>
             <div id="summary_intro">
                 <h2>Summary Reports</h2>
@@ -220,9 +220,9 @@
         <div id="vulnerabilities" class="tabs">
             <ul>
                 <li><a href="#vulnerabilities_intro"><span>Intro</span></a></li>
-                <li><a href="{% url vulnerability_analysis instance.pk %}"><span>Climate</span></a></li>
-                <li><a href="{% url vulnerability_analysis instance.pk %}"><span>Human</span></a></li>
-                <li><a href="{% url vulnerability_analysis instance.pk %}"><span>Social</span></a></li>
+                <li><a href="{% url climate_vulnerability_analysis instance.pk %}"><span>Climate</span></a></li>
+                <li><a href="{% url human_vulnerability_analysis instance.pk %}"><span>Human</span></a></li>
+                <li><a href="{% url social_vulnerability_analysis instance.pk %}"><span>Social</span></a></li>
             </ul>
             <div id="vulnerabilities_intro">
                 <h2>Vulnerabilities Reports</h2>

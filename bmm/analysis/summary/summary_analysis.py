@@ -23,6 +23,56 @@ def display_summary_analysis(request, bioregion, template='summary_report.html')
     context = run_summary_analysis(bioregion)
     return render_to_response(template, RequestContext(request, context)) 
      
+def display_general_analysis(request, bioregion, template='summary/general_report.html'):
+    #get size of bioregion
+    area = get_size(bioregion)
+    #get current population (for 2010)
+    population_2005 = get_population(bioregion)
+    #get projected population (for 2015)
+    population_2015 = get_projected_population(bioregion)
+    #get median max temperature
+    max_temp_c, max_temp_f = get_max_temp(bioregion)
+    #get median min temperature
+    min_temp_c, min_temp_f = get_min_temp(bioregion)
+    #get mean annual temperature
+    annual_temp_c, annual_temp_f = get_annual_temp(bioregion)
+    #get mean annual temperature range
+    annual_temp_range_c, annual_temp_range_f = get_annual_temp_range(bioregion)
+    #get mean annual precipitation
+    annual_precip = get_annual_precip(bioregion)
+    context = {'bioregion': bioregion, 'default_value': default_value, 'area': area, 'population_2005': population_2005, 'population_2015': population_2015, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip': annual_precip}
+    return render_to_response(template, RequestContext(request, context)) 
+     
+def display_language_analysis(request, bioregion, template='summary/language_report.html'):
+    #get list of spoken languages
+    languages = get_languages(bioregion)
+    context = {'bioregion': bioregion, 'default_value': default_value, 'languages': languages}
+    return render_to_response(template, RequestContext(request, context)) 
+    
+def display_ecoregions_analysis(request, bioregion, template='summary/ecoregions_report.html'):
+    #get existing eco-regions
+    ecoregions = get_ecoregions(bioregion)
+    #get last of the wild ecoregions 
+    wild_regions = get_last_wild(bioregion)
+    #get marine ecregions
+    marine_ecoregions = get_marine_ecoregions(bioregion)
+    context = {'bioregion': bioregion, 'default_value': default_value, 'ecoregions': ecoregions, 'wild_regions': wild_regions, 'marine_ecoregions': marine_ecoregions}
+    return render_to_response(template, RequestContext(request, context)) 
+    
+def display_agriculture_analysis(request, bioregion, template='summary/agriculture_report.html'):
+    #get size of bioregion
+    area = get_size(bioregion)
+    #get land mass proportion
+    landmass_perc = get_landmass_proportion(area)
+    #get npp proportion
+    npp_perc = get_npp_proportion(bioregion)
+    #get net primary production
+    avg_npp = get_avg_npp(bioregion)
+    #get soil suitability
+    soil_suitability = get_soil_suitability(bioregion)    
+    context = {'bioregion': bioregion, 'default_value': default_value, 'landmass_perc': landmass_perc, 'npp_perc': npp_perc, 'avg_npp': avg_npp, 'soil_suitability': soil_suitability}
+    return render_to_response(template, RequestContext(request, context)) 
+    
 '''
 Run the analysis, create the cache, and return the results as a context dictionary so they may be rendered with template
 '''    

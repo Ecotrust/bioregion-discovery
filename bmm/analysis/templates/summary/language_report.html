@@ -1,0 +1,30 @@
+{% extends 'common/panel.html' %}
+
+{% block panel %}
+{% load humanize %}
+{% load analysis_extras %}
+
+<h3>Language Characteristics</h3>
+<div class='freetext'>
+<p>
+<table  style='width:430px' class='analysis_report_container'>
+    <tbody>
+        <tr class="grey">
+            <td colspan='2'><b>Spoken Languages</b></td>
+        </tr>
+        {% for language in languages %}
+        <tr>
+            <td colspan='2'>{{language}}</td>
+        </tr>
+        {% endfor %}
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+    </tbody>
+</table>
+</div>
+
+<style type="text/css">
+h3 { font-weight: bold; }
+</style>
+
+{% endblock panel %}
