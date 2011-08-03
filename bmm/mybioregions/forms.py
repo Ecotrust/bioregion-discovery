@@ -24,10 +24,10 @@ class MyBioregionForm(FeatureForm):
             widget=SliderWidget(min=0,max=100,step=1, show_number=False, image='bmm/img/lang.png'),
             label="Human Language")
     input_elev_weight = forms.FloatField(min_value=0, max_value=100.0, initial=50,
-            widget=SliderWidget(min=0,max=100,step=1, show_number=False), #image='bmm/img/rain.png'),
+            widget=SliderWidget(min=0,max=100,step=1, show_number=False, image='bmm/img/elev.png'),
             label="Elevation and Topography")
     input_marine_weight = forms.FloatField(min_value=0, max_value=100.0, initial=0,
-            widget=SliderWidget(min=0,max=100,step=1, show_number=False), #image='bmm/img/veg.png'),
+            widget=SliderWidget(min=0,max=100,step=1, show_number=False, image='bmm/img/marine.png'),
             label="Marine Environment")
         
     class Meta(FeatureForm.Meta):
