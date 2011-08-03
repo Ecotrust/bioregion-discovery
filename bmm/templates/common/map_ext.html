@@ -36,9 +36,35 @@
 
 {% block js_ready %} 
               var myshapes_visible = $('#SharedShapes').hasClass('ui-tabs-hide');
-              if (myshapes_visible) {
+              if (options.has_features == false && myshapes_visible) {
+                $('#flyToLocation').qtip({
+                    content: '1. Navigate to your area', 
+                    show: { 
+                        ready: true, 
+                        when: { event: 'load' } 
+                    },
+                    hide: { when: {event: 'unfocus'} },
+                    style: {
+                        width: 205,
+                        padding: 7,
+                        color: 'black',
+                        textAlign: 'center',
+                        border: {
+                            width: 1,
+                            radius: 3,
+                        },
+                        tip: 'leftMiddle',
+                        name: 'cream'
+                    },
+                    position: {
+                        corner: {
+                            target: 'topMiddle',
+                            tooltip: 'topMiddle'
+                        }
+                    }
+                });
                 $('#myshapestree').qtip({
-                    content: 'Click to create a new Bioregion.', 
+                    content: '2. Create a new Bioregion', 
                     show: { 
                         ready: true, 
                         when: { event: 'load' } 
