@@ -10,18 +10,17 @@
       {% else %}
         $('#results').hide();
         $('#button_yes').click( function() {
+            var url = "/mybioregions/finished/{{instance.uid}}/";
+            $.post(url, function(data) {
+                //on success ... nothing yet
+            });
             $('#confirm').hide();
             $('#results').show();
-            // TODO Post
         });
         $('#button_no').click( function() {
             var uid = '{{instance.uid}}';
-            // TODO 
-            // Instead of hardcoded URL templates, we need to somewhow get the uritemplate from the workspace doc
-            // a = lingcod.editors[0].workspace.featureClasses.getById('mybioregions_mybioregion');
-            // a = lingcod.editors[0].workspace.actions.getByTitle('Edit');
-            uri_template = "/features/mybioregion/{uid}/form/";
-            url = uri_template.replace('{uid}',uid);
+            var uri_template = "/features/mybioregion/{uid}/form/";
+            var url = uri_template.replace('{uid}',uid);
             var panelOpts = {
                 loading_msg: 'Loading Bioregion Form',
                 showClose: true

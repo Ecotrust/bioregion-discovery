@@ -47,6 +47,7 @@ class MyBioregion(Analysis):
     
     #Descriptors (name field is inherited from Analysis)
     description = models.TextField(null=True, blank=True)
+    satisfied = models.BooleanField(default=False)
     
     # All output fields should be allowed to be Null/Blank
     output_geom = models.PolygonField(srid=settings.GEOMETRY_DB_SRID,
@@ -202,6 +203,8 @@ class MyBioregion(Analysis):
         else:
             logger.debug("%s is not a valid geometry!" % self.name)
             
+        # New shape, have user confirm it
+        self.satisfied = False
         return True
         
     def save(self, *args, **kwargs):

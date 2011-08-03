@@ -1,8 +1,14 @@
 from lingcod.common import utils
 from lingcod.shapes.views import ShpResponder
-from lingcod.features.views import get_object_for_viewing
+from lingcod.features.views import get_object_for_viewing, get_object_for_editing
 from django.http import HttpResponse
 from django.template.defaultfilters import slugify
+
+def finished(request, uid):
+    bio = get_object_for_editing(request,uid)
+    bio.satisfied = True
+    bio.save(rerun=False)
+    return HttpResponse("%s finished" % uid, status=200)
 
 def bmm_shapefile(request, instances):
     from mybioregions.models import MyBioregion, Folder, BioregionShapefile
