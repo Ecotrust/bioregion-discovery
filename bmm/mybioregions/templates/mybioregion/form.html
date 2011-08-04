@@ -52,6 +52,44 @@
         $('ul.errorlist').each( function() {
                 $('div#error_bar').html("<ul class='errorlist'><li>We encountered an error while processing your bioregion. Can you recheck the steps and make sure you've filled in all the required information?</li></ul>");
         });
+
+        $('img.paraminfo').each( function() {
+            var id = $(this).attr('id');
+            var text = "none";
+            switch(id) {
+                case 'info_temp':
+                    text = "Temp...";
+                    break;
+                case 'info_precip':
+                    text = "Precipitation...";
+                    break;
+                case 'info_biomass':
+                    text = "Biomass...";
+                    break;
+                case 'info_lang':
+                    text = "Language...";
+                    break;
+                case 'info_elev':
+                    text = "Elevation...";
+                    break;
+                case 'info_marine':
+                    text = "Marine...";
+                    break;
+                default:
+                    $(this).hide();
+            }
+            if (text!='none') {
+                $(this).qtip({
+                    content: text, 
+                    show: { 
+                        delay: 0,
+                        when: { event: 'mouseover' } 
+                    },
+                    hide: { when: {event: 'mouseleave'} },
+                    style: { name: 'light' }
+                });
+            }
+        });
             
     });
 </script>
@@ -114,49 +152,49 @@ span.form-image > img { width:46px; height:46px; }
       <p> Specify the <em>relative importance</em> of the following parameters; in other words, to what extent do these parameters define your bioregion? </p>
     <div class="inputfield" id="temp">
         <div class="field required">
-            {{ form.input_temp_weight.label_tag }}
+            {{ form.input_temp_weight.label_tag }} <img src="/media/bmm/img/info.png" id="info_temp" class="paraminfo"/>
             {{ form.input_temp_weight.errors }}
             {{ form.input_temp_weight }}            
         </div>
     </div>
     <div class="inputfield" id="precip">
         <div class="field required">
-            {{ form.input_precip_weight.label_tag }}
+            {{ form.input_precip_weight.label_tag }} <img src="/media/bmm/img/info.png" id="info_precip" class="paraminfo"/>
             {{ form.input_precip_weight.errors }}
             {{ form.input_precip_weight }}            
         </div>
     </div>
     <div class="inputfield" id="veg">
         <div class="field required">
-            {{ form.input_biomass_weight.label_tag }}
+            {{ form.input_biomass_weight.label_tag }} <img src="/media/bmm/img/info.png" id="info_biomass" class="paraminfo"/>
             {{ form.input_biomass_weight.errors }}
             {{ form.input_biomass_weight }}            
         </div>
     </div>
     <div class="inputfield" id="lang">
         <div class="field required">
-            {{ form.input_lang_weight.label_tag }}
+            {{ form.input_lang_weight.label_tag }} <img src="/media/bmm/img/info.png" id="info_lang" class="paraminfo"/>
             {{ form.input_lang_weight.errors }}
             {{ form.input_lang_weight }}            
         </div>
     </div>
     <div class="inputfield" id="elev">
         <div class="field required">
-            {{ form.input_elev_weight.label_tag }}
+            {{ form.input_elev_weight.label_tag }} <img src="/media/bmm/img/info.png" id="info_elev" class="paraminfo"/>
             {{ form.input_elev_weight.errors }}
             {{ form.input_elev_weight }}            
         </div>
     </div>
     <div class="inputfield" id="marine">
         <div class="field required">
-            {{ form.input_marine_weight.label_tag }}
+            {{ form.input_marine_weight.label_tag }} <img src="/media/bmm/img/info.png" id="info_marine" class="paraminfo"/>
             {{ form.input_marine_weight.errors }}
             {{ form.input_marine_weight }}            
         </div>
     </div>
     <div class="inputfield" id="size">
         <div class="field required">
-            {{ form.input_bioregion_size.label_tag }}
+            {{ form.input_bioregion_size.label_tag }} <img src="/media/bmm/img/info.png" id="info_size" class="paraminfo"/>
             {{ form.input_bioregion_size.errors }}
             <br/>
             {{ form.input_bioregion_size }}            
