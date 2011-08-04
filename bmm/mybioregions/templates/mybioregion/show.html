@@ -42,7 +42,7 @@
                     // their use with all forms.
                     iframe: true,
                     beforeSubmit: function(a,b,c) {
-                        panel.spin('Saving changes');
+                        panel.spin('Please wait while we determine the shape of your bioregion.');
                         $(that).trigger('saving', ["Saving changes"]);
                         return true;
                     },
@@ -156,11 +156,13 @@
 </style>
         
     {% if instance.done %}
-        <div id="confirm">
-            <h2> Take a minute to explore the map of your bioregion.</h2>
-            <h2> Are you satisfied with result? </h2>
+        <div id="confirm" class="box" style="padding: 15px;">
+            <h3> Take a minute to explore the map of your bioregion.</h3>
+            <h3> Are you satisfied with result? </h3>
+            <br/>
             <div> <a class="button" id="button_yes"><span>Yes, Proceed to Reports</span></a> </div>
             <div> <a class="button" id="button_no"><span>No, Continue Editing</span></a> </div>
+            <br/><br/>
         </div>
 
         <div id="results" class="tabs">
