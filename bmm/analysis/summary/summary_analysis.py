@@ -5,7 +5,7 @@ from lingcod.raster_stats.models import RasterDataset, zonal_stats
 #from analysis.models import *
 #from settings import *
 from lingcod.unit_converter.models import geometry_area_in_display_units, convert_float_to_area_display_units
-from analysis.utils import convert_sq_km_to_sq_mi
+from analysis.utils import convert_sq_km_to_sq_mi, convert_cm_to_in
 from analysis.models import Languages, EcoRegions, LastWild, MarineRegions
 from analysis.caching.report_caching import *
 from lingcod.common.utils import clean_geometry
@@ -26,7 +26,7 @@ def display_summary_analysis(request, bioregion, template='summary_report.html')
      
 def display_general_analysis(request, bioregion, template='summary/general_report.html'):
     #get size of bioregion
-    area = get_size(bioregion)
+    area_km, area_mi = get_size(bioregion)
     #get current population (for 2010)
     population_2005 = get_population(bioregion)
     #get projected population (for 2015)
@@ -40,8 +40,8 @@ def display_general_analysis(request, bioregion, template='summary/general_repor
     #get mean annual temperature range
     annual_temp_range_c, annual_temp_range_f = get_annual_temp_range(bioregion)
     #get mean annual precipitation
-    annual_precip = get_annual_precip(bioregion)
-    context = {'bioregion': bioregion, 'default_value': default_value, 'area': area, 'population_2005': population_2005, 'population_2015': population_2015, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip': annual_precip}
+    annual_precip_cm, annual_precip_in = get_annual_precip(bioregion)
+    context = {'bioregion': bioregion, 'default_value': default_value, 'area_km': area_km, 'area_mi': area_mi, 'population_2005': population_2005, 'population_2015': population_2015, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip_cm': annual_precip_cm, 'annual_precip_in': annual_precip_in}
     return render_to_response(template, RequestContext(request, context)) 
      
 def display_language_analysis(request, bioregion, template='summary/language_report.html'):
@@ -58,9 +58,9 @@ def display_ecoregions_analysis(request, bioregion, template='summary/ecoregions
     #get marine ecregions
     marine_ecoregions = get_marine_ecoregions(bioregion)
     #get size of bioregion
-    area = get_size(bioregion)
+    area_km, area_mi = get_size(bioregion)
     #get land mass proportion
-    landmass_perc = get_landmass_proportion(area)
+    landmass_perc = get_landmass_proportion(area_km)
     #get npp proportion
     npp_perc = get_npp_proportion(bioregion)
     #get net primary production
@@ -73,55 +73,11 @@ def display_agriculture_analysis(request, bioregion, template='summary/agricultu
     soil_suitability = get_soil_suitability(bioregion)    
     context = {'bioregion': bioregion, 'default_value': default_value, 'soil_suitability': soil_suitability}
     return render_to_response(template, RequestContext(request, context)) 
-    
-'''
-Run the analysis, create the cache, and return the results as a context dictionary so they may be rendered with template
-'''    
-def run_summary_analysis(bioregion):
-    #get size of bioregion
-    area = get_size(bioregion)
-    #get current population (for 2010)
-    population_2005 = get_population(bioregion)
-    #get projected population (for 2015)
-    population_2015 = get_projected_population(bioregion)
-    #get list of spoken languages
-    languages = get_languages(bioregion)
-    #get median max temperature
-    max_temp_c, max_temp_f = get_max_temp(bioregion)
-    #get median min temperature
-    min_temp_c, min_temp_f = get_min_temp(bioregion)
-    #get mean annual temperature
-    annual_temp_c, annual_temp_f = get_annual_temp(bioregion)
-    #get mean annual temperature range
-    annual_temp_range_c, annual_temp_range_f = get_annual_temp_range(bioregion)
-    #get mean annual precipitation
-    annual_precip = get_annual_precip(bioregion)
-    #get existing eco-regions
-    ecoregions = get_ecoregions(bioregion)
-    #get last of the wild ecoregions 
-    wild_regions = get_last_wild(bioregion)
-    #get marine ecregions
-    marine_ecoregions = get_marine_ecoregions(bioregion)
-    #get land mass proportion
-    landmass_perc = get_landmass_proportion(area)
-    #get npp proportion
-    npp_perc = get_npp_proportion(bioregion)
-    #get net primary production
-    avg_npp = get_avg_npp(bioregion)
-    #get soil suitability
-    soil_suitability = get_soil_suitability(bioregion)    
-    #compile context
-    context = {'bioregion': bioregion, 'default_value': default_value, 'area': area, 'population_2005': population_2005, 'population_2015': population_2015, 'languages': languages, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip': annual_precip, 'ecoregions': ecoregions, 'wild_regions': wild_regions, 'marine_ecoregions': marine_ecoregions, 'landmass_perc': landmass_perc, 'soil_suitability': soil_suitability, 'avg_npp': avg_npp, 'npp_perc': npp_perc}
-    return context
-    #get average poverty index
-    #poverty = get_poverty(bioregion)
-    #get soil moisture
-    #soil_moisture = get_soil_moisture(bioregion)
-    
-           
+               
 def get_size(bioregion):
-    area = int(round(geometry_area_in_display_units(bioregion.output_geom)))
-    return area
+    area_km = int(round(geometry_area_in_display_units(bioregion.output_geom)))
+    area_mi = int(round(convert_sq_km_to_sq_mi(area_km)))
+    return area_km, area_mi
            
 def get_population(bioregion):
     #this may have changed to 2005 -- see Analisa and update ninkasi
@@ -194,7 +150,9 @@ def get_annual_temp_range(bioregion):
 def get_annual_precip(bioregion):
     precip_geom = RasterDataset.objects.get(name='annual_precipitation')
     precip_stats = zonal_stats(bioregion.output_geom, precip_geom)
-    return precip_stats.avg / 10
+    precip_cm = precip_stats.avg / 10
+    precip_in = convert_cm_to_in(precip_cm)
+    return precip_cm, precip_in
     
 def get_ecoregions(bioregion):
     if report_cache_exists(bioregion, 'ecoregions'):
