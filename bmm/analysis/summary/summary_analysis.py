@@ -5,6 +5,7 @@ from lingcod.raster_stats.models import RasterDataset, zonal_stats
 #from analysis.models import *
 #from settings import *
 from lingcod.unit_converter.models import geometry_area_in_display_units, convert_float_to_area_display_units
+from analysis.utils import convert_sq_km_to_sq_mi
 from analysis.models import Languages, EcoRegions, LastWild, MarineRegions
 from analysis.caching.report_caching import *
 from lingcod.common.utils import clean_geometry
@@ -56,10 +57,6 @@ def display_ecoregions_analysis(request, bioregion, template='summary/ecoregions
     wild_regions = get_last_wild(bioregion)
     #get marine ecregions
     marine_ecoregions = get_marine_ecoregions(bioregion)
-    context = {'bioregion': bioregion, 'default_value': default_value, 'ecoregions': ecoregions, 'wild_regions': wild_regions, 'marine_ecoregions': marine_ecoregions}
-    return render_to_response(template, RequestContext(request, context)) 
-    
-def display_agriculture_analysis(request, bioregion, template='summary/agriculture_report.html'):
     #get size of bioregion
     area = get_size(bioregion)
     #get land mass proportion
@@ -68,9 +65,13 @@ def display_agriculture_analysis(request, bioregion, template='summary/agricultu
     npp_perc = get_npp_proportion(bioregion)
     #get net primary production
     avg_npp = get_avg_npp(bioregion)
+    context = {'bioregion': bioregion, 'default_value': default_value, 'ecoregions': ecoregions, 'wild_regions': wild_regions, 'marine_ecoregions': marine_ecoregions, 'landmass_perc': landmass_perc, 'npp_perc': npp_perc, 'avg_npp': avg_npp}
+    return render_to_response(template, RequestContext(request, context)) 
+    
+def display_agriculture_analysis(request, bioregion, template='summary/agriculture_report.html'):
     #get soil suitability
     soil_suitability = get_soil_suitability(bioregion)    
-    context = {'bioregion': bioregion, 'default_value': default_value, 'landmass_perc': landmass_perc, 'npp_perc': npp_perc, 'avg_npp': avg_npp, 'soil_suitability': soil_suitability}
+    context = {'bioregion': bioregion, 'default_value': default_value, 'soil_suitability': soil_suitability}
     return render_to_response(template, RequestContext(request, context)) 
     
 '''
@@ -210,12 +211,13 @@ def get_ecoregions(bioregion):
                 ecoregion_dict[name] = area
         ecoregion_tuples = [(name, convert_float_to_area_display_units(area)) for name,area in ecoregion_dict.items()]
         ecoregion_tuples.sort()
+        ecoregion_tuples = [(eco_tuple[0], eco_tuple[1], convert_sq_km_to_sq_mi(eco_tuple[1])) for eco_tuple in ecoregion_tuples]
         #ecoregion_names = [name for (area, name) in ecoregion_tuples]
         create_report_cache(bioregion, dict(ecoregions=ecoregion_tuples))
         #just return the following for now (until we get caching in place)
         #ecoregion_names = ['Central and Southern Cascades forests', 'Central Pacific coastal forests', 'Willamette Valley forests', 'Puget lowland forests', 'Eastern Cascades forests', 'Klamath-Siskiyou forests', 'Snake-Columbia shrub steppe', 'Blue Mountains forests']
         return ecoregion_tuples    
-    
+
 def get_last_wild(bioregion):
     if report_cache_exists(bioregion, 'wild_regions'):
         lastwild_tuples = get_report_cache(bioregion, 'wild_regions')
@@ -232,6 +234,7 @@ def get_last_wild(bioregion):
                     wild_region_dict[name] = area
         wild_region_tuples = [(name, convert_float_to_area_display_units(area)) for name,area in wild_region_dict.items()]
         wild_region_tuples.sort()
+        wild_region_tuples = [(wild_tuple[0], wild_tuple[1], convert_sq_km_to_sq_mi(wild_tuple[1])) for wild_tuple in wild_region_tuples]
         create_report_cache(bioregion, dict(wild_regions=wild_region_tuples))
         return wild_region_tuples  
     
@@ -250,6 +253,7 @@ def get_marine_ecoregions(bioregion):
                 marineregion_dict[name] = area
         marineregion_tuples = [(name, convert_float_to_area_display_units(area)) for name,area in marineregion_dict.items()]
         marineregion_tuples.sort()
+        marineregion_tuples = [(marine_tuple[0], marine_tuple[1], convert_sq_km_to_sq_mi(marine_tuple[1])) for marine_tuple in marineregion_tuples]
         create_report_cache(bioregion, dict(marineregions=marineregion_tuples))
         return marineregion_tuples    
     

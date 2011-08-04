@@ -10,15 +10,21 @@
 <table  style='width:430px' class='analysis_report_container'>
     <tbody>
         <tr class="grey">
-            <td><b>Size of Bioregion</b></td>
-            <td><b>Estimated Population (2005)</b></td>
+            <td colspan='2'><b>Size of Bioregion</b></td>
         </tr>
         <tr>
-            <td>{{area|intcomma}} square kilometers</td>
+            <td colspan='2'>{{area|intcomma}} square kilometers</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Estimated Population (2005)</b></td>
+        </tr>
+        <tr>
             {% if population_2005 < 1000000 %}
-            <td style='width:225px'>{{population_2005|intcomma}}</td>
+            <td  colspan='2'>{{population_2005|intcomma}}</td>
             {% else %}
-            <td style='width:225px'>{{population_2005|intword}}</td>
+            <td  colspan='2'>{{population_2005|intword}}</td>
             {% endif %}
         </tr>
         <tr><td></td><td></td></tr>
@@ -36,22 +42,28 @@
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
-            <td><b>Median Max Temperature</b></td>
             <td><b>Median Min Temperature</b></td>
+            <td><b>Median Max Temperature</b></td>
         </tr>
         <tr>
-            <td>{{max_temp_c|floatformat:0}}&deg; Celsius / {{max_temp_f|floatformat:0}}&deg; Fahrenheit</td>
             <td>{{min_temp_c|floatformat:0}}&deg; Celsius / {{min_temp_f|floatformat:0}}&deg; Fahrenheit</td>
+            <td>{{max_temp_c|floatformat:0}}&deg; Celsius / {{max_temp_f|floatformat:0}}&deg; Fahrenheit</td>
         </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
-            <td><b>Mean Annual Temperature</b></td>
-            <td><b>Mean Annual Temperature Range</b></td>
+            <td colspan='2'><b>Mean Annual Temperature</b></td>
         </tr>
         <tr>
-            <td>{{annual_temp_c|floatformat:0}}&deg; Celsius / {{annual_temp_f|floatformat:0}}&deg; Fahrenheit</td>
-            <td>{{annual_temp_range_c|floatformat:0}}&deg; Celsius / {{annual_temp_range_f|floatformat:0}}&deg; Fahrenheit</td>
+            <td colspan='2'>{{annual_temp_c|floatformat:0}}&deg; Celsius / {{annual_temp_f|floatformat:0}}&deg; Fahrenheit</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Mean Annual Temperature Range</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{annual_temp_range_c|floatformat:0}}&deg; Celsius / {{annual_temp_range_f|floatformat:0}}&deg; Fahrenheit</td>
         </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>

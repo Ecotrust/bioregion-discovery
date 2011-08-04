@@ -4,35 +4,30 @@
 {% load humanize %}
 {% load analysis_extras %}
 
-<h3>Eco-Region Characteristics</h3>
+<h2>Natural Resources</h2>
+<h3>Eco-Regions</h3>
 <div class='freetext'>
 <p>
 <table  style='width:430px' class='analysis_report_container'>
     <tbody>
         <tr class="grey">
-            <td colspan='2'><b>Existing Eco-Regions</b></td>
+            <td colspan='2'><b>Eco-Regions</b></td>
         </tr>
         {% for ecoregion in ecoregions %}
         <tr>
-            <td colspan='2'>{{ecoregion.0}} ({{ecoregion.1|floatformat:0|intcomma}} km<sup>2</sup>)</td>
+            <td colspan='2'>{{ecoregion.0}} ({{ecoregion.1|floatformat:0|intcomma}} km<sup>2</sup> / {{ecoregion.2|floatformat:0|intcomma}} mi<sup>2</sup>)</td>
         </tr>
         {% endfor %}
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
-            <td colspan='2'><b>Last Remaining Wild Regions</b></td>
+            <td colspan='2'><b>Regions considered among the 10% Least Influenced Areas</b></td>
         </tr>
-        {% if wild_regions %}
-            {% for wild_region in wild_regions %}
-            <tr>
-                <td colspan='2'>{{wild_region.0}} ({{wild_region.1|floatformat:0|intcomma}} km<sup>2</sup>)</td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan='2'>None found</td>
-            </tr>
-        {% endif %}
+        {% for region in wild_regions %}
+        <tr>
+            <td colspan='2'>{{region.0}} ({{region.1|floatformat:0|intcomma}} km<sup>2</sup> / {{region.2|floatformat:0|intcomma}} mi<sup>2</sup>)</td>
+        </tr>
+        {% endfor %}
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
@@ -40,9 +35,106 @@
         </tr>
         {% for marineregion in marine_ecoregions %}
         <tr>
-            <td colspan='2'>{{marineregion.0}} ({{marineregion.1|floatformat:0|intcomma}} km<sup>2</sup>)</td>
+            <td colspan='2'>{{marineregion.0}} ({{marineregion.1|floatformat:0|intcomma}} km<sup>2</sup> / {{marineregion.2|floatformat:0|intcomma}} mi<sup>2</sup>)</td>
         </tr>
         {% endfor %}
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+    </tbody>
+</table>
+</div>
+
+<h3>Terrestrial Production</h3>
+<div class='freetext'>
+<p>
+<table  style='width:430px' class='analysis_report_container'>
+    <tbody>
+        <tr class="grey">
+            <td colspan='2'><b>Proportion of Global Terrestrial Coverage</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{landmass_perc|percentage:3}}</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Proportion of Global Terrestrial NPP</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{npp_perc|percentage:3}}</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Average Terrestrial Net Primary Production</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{avg_npp|floatformat:0}} g C/m<sup>2</sup>/yr</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+    </tbody>
+</table>
+</div>
+<h3>Marine Production</h3>
+<div class='freetext'>
+<p>
+<table  style='width:430px' class='analysis_report_container'>
+    <tbody>
+        <tr class="grey">
+            <td colspan='2'><b>Proportion of Global Marine Coverage</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{default_value}}</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Proportion of Global Marine NPP</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{default_value}}</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Average Marine Net Primary Production</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{default_value}} g C/m<sup>2</sup>/yr</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+    </tbody>
+</table>
+</div>
+<h3>Combined Production</h3>
+<div class='freetext'>
+<p>
+<table  style='width:430px' class='analysis_report_container'>
+    <tbody>
+        <tr class="grey">
+            <td colspan='2'><b>Proportion of Global Coverage</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{default_value}}</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Proportion of Global NPP</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{default_value}}</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Average Combined Net Primary Production</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{default_value}} g C/m<sup>2</sup>/yr</td>
+        </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
     </tbody>

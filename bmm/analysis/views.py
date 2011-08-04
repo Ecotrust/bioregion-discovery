@@ -54,18 +54,18 @@ def climate_vulnerability_analysis(request, bioregion_id):
 '''
 Accessed via named url when user selects Vulnerabilities, Climate on their bioregion 
 '''
-def human_vulnerability_analysis(request, bioregion_id):
-    from vulnerability.vulnerability_analysis import display_human_analysis
+def socioeconomic_vulnerability_analysis(request, bioregion_id):
+    from vulnerability.vulnerability_analysis import display_socioeconomic_analysis
     bioregion = get_object_or_404(MyBioregion, pk=bioregion_id)
-    return display_human_analysis(request, bioregion)
+    return display_socioeconomic_analysis(request, bioregion)
     
 '''
 Accessed via named url when user selects Vulnerabilities, Climate on their bioregion 
 '''
-def social_vulnerability_analysis(request, bioregion_id):
-    from vulnerability.vulnerability_analysis import display_social_analysis
+def hazards_vulnerability_analysis(request, bioregion_id):
+    from vulnerability.vulnerability_analysis import display_hazards_analysis
     bioregion = get_object_or_404(MyBioregion, pk=bioregion_id)
-    return display_social_analysis(request, bioregion)
+    return display_hazards_analysis(request, bioregion)
     
 '''
 Accessed via named url when user selects Results, Vulnerabilities on their bioregion 
