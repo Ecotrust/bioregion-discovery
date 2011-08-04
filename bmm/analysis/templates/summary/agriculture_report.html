@@ -10,7 +10,13 @@
 <table  style='width:430px' class='analysis_report_container'>
     <tbody>
         <tr class="grey">
-            <td colspan='2'><b>Proportion Suitable for Agriculture</b></td>
+            <td colspan='2'>
+                <b>Proportion Suitable for Agriculture</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('agriculture');">Learn More</a><sup>
+                <div id="agriculture" style="display: none">
+                    <p>Metadata for this data layer can be found here:  
+                </div>
+            </td>
         </tr>
         <tr>
             <td colspan='2'>{{soil_suitability|percentage:0}}</td>
@@ -18,16 +24,29 @@
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
-            <td colspan='2'><b>Proportion Equipped for Irrigation</b></td>
+            <td colspan='2'>
+                <b>Proportion Equipped for Irrigation</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('irrigation');">Learn More</a><sup>
+                <div id="irrigation" style="display: none">
+                    <p>Metadata for this data layer can be found here:  
+                </div>
+            </td>
         </tr>
         <tr>
-            <td colspan='2'>{{default_value}}</td>
+            <td colspan='2'>{{equipped_for_irrigation|percentage:0}}</td>
         </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
     </tbody>
 </table>
 </div>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+<script type="text/javascript">
+function toggleDiv(divId) {
+   $("#"+divId).toggle();
+}
+</script>
 
 <style type="text/css">
 h3 { font-weight: bold; }

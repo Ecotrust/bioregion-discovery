@@ -5,13 +5,70 @@
 {% load analysis_extras %}
 
 <h2>Natural Resources</h2>
-<h3>Eco-Regions</h3>
+
+<h3>Net Primary Production</h3>
+<div class='freetext'>
+<p>
+<table  style='width:430px' class='analysis_report_container'>
+    <tbody>
+        <!---
+        <tr class="grey">
+            <td colspan='2'><b>Proportion of Global Terrestrial Coverage</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{area_perc|percentage:3}}</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Proportion of Global NPP</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{npp_perc|percentage:3}}</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        -->
+        <tr class="grey">
+            <td colspan='2'>
+                <b>Average Net Primary Production</b> 
+                <sup><a id="displayText" href="javascript:toggleDiv('npp');">Learn More</a><sup>
+                <div id="npp" style="display: none">
+                    <p>
+                    According to <a href="http://en.wikipedia.org/wiki/Primary_production" target="_blank">Wikipedia</a>, 
+                    Net Primary Production (NPP) is the measure of organic compound production from atmospheric or aquatic carbon dioxide.
+                    It is the rate at which all plants in an ecosystem produce net useful chemical energy.  
+                    <p>NPP is measured in mass / area / time, and in our case it is the measure of mass of carbon, per meter squared, per year. 
+                    <p>The average global terrestrial NPP is {{avg_terrestrial_npp}} g C/m<sup>2</sup>/yr.
+                    <p>The average global oceanic NPP is {{avg_oceanic_npp}} g C/m<sup>2</sup>/yr.
+                    <p>Metadata for this data layer can be found here:  
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{avg_npp|floatformat:0}} g C/m<sup>2</sup>/yr</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+    </tbody>
+</table>
+</div>
+
+
+<h3>Ecoregions</h3>
 <div class='freetext'>
 <p>
 <table  style='width:430px' class='analysis_report_container'>
     <tbody>
         <tr class="grey">
-            <td colspan='2'><b>Eco-Regions</b></td>
+            <td colspan='2'>
+                <b>Ecoregions</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('ecoregions');">Learn More</a><sup>
+                <div id="ecoregions" style="display: none">
+                    <p>World Wildlife Federation Terrestrial Ecoregions of the World.  
+                    <p>Click <a href="http://www.worldwildlife.org/science/ecoregions/item1267.html" target="_blank">here</a> for more information.
+                </div>
+            </td>
         </tr>
         {% for ecoregion in ecoregions %}
         <tr>
@@ -21,7 +78,14 @@
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
-            <td colspan='2'><b>Regions considered among the 10% Least Influenced Areas</b></td>
+            <td colspan='2'>
+                <b>Regions among the 10% Least Influenced Areas</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('last_wild');">Learn More</a><sup>
+                <div id="last_wild" style="display: none">
+                    <p>The Last of the Wild data is a vector representation of the world's 10% least influenced areas. 
+                    <p>Click <a href="http://sedac.ciesin.columbia.edu/legacy?url=http://sedac.ciesin.columbia.edu/wildareas/methods.jsp" target="_blank">here</a> for more information.
+                </div>
+            </td>
         </tr>
         {% for region in wild_regions %}
         <tr>
@@ -31,7 +95,14 @@
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
-            <td colspan='2'><b>Marine Eco-Regions</b></td>
+            <td colspan='2'>
+                <b>Marine Ecoregions</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('marine_regions');">Learn More</a><sup>
+                <div id="marine_regions" style="display: none">
+                    <p>World Wildlife Federation Marine Ecoregions of the World.  
+                    <p>Click <a href="http://www.worldwildlife.org/science/ecoregions/item1266.html" target="_blank">here</a> for more information.
+                </div>
+            </td>
         </tr>
         {% for marineregion in marine_ecoregions %}
         <tr>
@@ -44,102 +115,12 @@
 </table>
 </div>
 
-<h3>Terrestrial Production</h3>
-<div class='freetext'>
-<p>
-<table  style='width:430px' class='analysis_report_container'>
-    <tbody>
-        <tr class="grey">
-            <td colspan='2'><b>Proportion of Global Terrestrial Coverage</b></td>
-        </tr>
-        <tr>
-            <td colspan='2'>{{landmass_perc|percentage:3}}</td>
-        </tr>
-        <tr><td></td><td></td></tr>
-        <tr><td></td><td></td></tr>
-        <tr class="grey">
-            <td colspan='2'><b>Proportion of Global Terrestrial NPP</b></td>
-        </tr>
-        <tr>
-            <td colspan='2'>{{npp_perc|percentage:3}}</td>
-        </tr>
-        <tr><td></td><td></td></tr>
-        <tr><td></td><td></td></tr>
-        <tr class="grey">
-            <td colspan='2'><b>Average Terrestrial Net Primary Production</b></td>
-        </tr>
-        <tr>
-            <td colspan='2'>{{avg_npp|floatformat:0}} g C/m<sup>2</sup>/yr</td>
-        </tr>
-        <tr><td></td><td></td></tr>
-        <tr><td></td><td></td></tr>
-    </tbody>
-</table>
-</div>
-<h3>Marine Production</h3>
-<div class='freetext'>
-<p>
-<table  style='width:430px' class='analysis_report_container'>
-    <tbody>
-        <tr class="grey">
-            <td colspan='2'><b>Proportion of Global Marine Coverage</b></td>
-        </tr>
-        <tr>
-            <td colspan='2'>{{default_value}}</td>
-        </tr>
-        <tr><td></td><td></td></tr>
-        <tr><td></td><td></td></tr>
-        <tr class="grey">
-            <td colspan='2'><b>Proportion of Global Marine NPP</b></td>
-        </tr>
-        <tr>
-            <td colspan='2'>{{default_value}}</td>
-        </tr>
-        <tr><td></td><td></td></tr>
-        <tr><td></td><td></td></tr>
-        <tr class="grey">
-            <td colspan='2'><b>Average Marine Net Primary Production</b></td>
-        </tr>
-        <tr>
-            <td colspan='2'>{{default_value}} g C/m<sup>2</sup>/yr</td>
-        </tr>
-        <tr><td></td><td></td></tr>
-        <tr><td></td><td></td></tr>
-    </tbody>
-</table>
-</div>
-<h3>Combined Production</h3>
-<div class='freetext'>
-<p>
-<table  style='width:430px' class='analysis_report_container'>
-    <tbody>
-        <tr class="grey">
-            <td colspan='2'><b>Proportion of Global Coverage</b></td>
-        </tr>
-        <tr>
-            <td colspan='2'>{{default_value}}</td>
-        </tr>
-        <tr><td></td><td></td></tr>
-        <tr><td></td><td></td></tr>
-        <tr class="grey">
-            <td colspan='2'><b>Proportion of Global NPP</b></td>
-        </tr>
-        <tr>
-            <td colspan='2'>{{default_value}}</td>
-        </tr>
-        <tr><td></td><td></td></tr>
-        <tr><td></td><td></td></tr>
-        <tr class="grey">
-            <td colspan='2'><b>Average Combined Net Primary Production</b></td>
-        </tr>
-        <tr>
-            <td colspan='2'>{{default_value}} g C/m<sup>2</sup>/yr</td>
-        </tr>
-        <tr><td></td><td></td></tr>
-        <tr><td></td><td></td></tr>
-    </tbody>
-</table>
-</div>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+<script type="text/javascript">
+function toggleDiv(divId) {
+   $("#"+divId).toggle();
+}
+</script>
 
 <style type="text/css">
 h3 { font-weight: bold; }

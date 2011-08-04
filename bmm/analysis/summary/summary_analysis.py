@@ -12,8 +12,12 @@ from lingcod.common.utils import clean_geometry
 
 default_value = '---'
 global_landmass = 148940000. #sq km -- see table at http://en.wikipedia.org/wiki/Earth
-npp_grid_cell_size = 676000000. #sq m -- approximated via measurement tool in arcmap 
+global_area = 510072000. #sq km -- see table at http://en.wikipedia.org/wiki/Earth
+#npp_grid_cell_size = 676000000. #sq m -- approximated via measurement tool in arcmap 
+npp_grid_cell_size = 16684.47387 * 16684.47387
 global_npp = 62000000000000000 #need to re-figure this value (don't seem to have the equation/sources any longer...
+avg_terrestrial_npp = 426
+avg_oceanic_npp = 140 
 
 
 '''
@@ -38,7 +42,8 @@ def display_general_analysis(request, bioregion, template='summary/general_repor
     #get mean annual temperature
     annual_temp_c, annual_temp_f = get_annual_temp(bioregion)
     #get mean annual temperature range
-    annual_temp_range_c, annual_temp_range_f = get_annual_temp_range(bioregion)
+    annual_temp_range_c = max_temp_c - min_temp_c
+    annual_temp_range_f = max_temp_f - min_temp_f
     #get mean annual precipitation
     annual_precip_cm, annual_precip_in = get_annual_precip(bioregion)
     context = {'bioregion': bioregion, 'default_value': default_value, 'area_km': area_km, 'area_mi': area_mi, 'population_2005': population_2005, 'population_2015': population_2015, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip_cm': annual_precip_cm, 'annual_precip_in': annual_precip_in}
@@ -60,18 +65,22 @@ def display_ecoregions_analysis(request, bioregion, template='summary/ecoregions
     #get size of bioregion
     area_km, area_mi = get_size(bioregion)
     #get land mass proportion
-    landmass_perc = get_landmass_proportion(area_km)
+    #landmass_perc = get_landmass_proportion(area_km)
+    #get area proportion 
+    area_perc = get_global_area_proportion(area_km)
     #get npp proportion
     npp_perc = get_npp_proportion(bioregion)
     #get net primary production
     avg_npp = get_avg_npp(bioregion)
-    context = {'bioregion': bioregion, 'default_value': default_value, 'ecoregions': ecoregions, 'wild_regions': wild_regions, 'marine_ecoregions': marine_ecoregions, 'landmass_perc': landmass_perc, 'npp_perc': npp_perc, 'avg_npp': avg_npp}
+    context = {'bioregion': bioregion, 'default_value': default_value, 'ecoregions': ecoregions, 'wild_regions': wild_regions, 'marine_ecoregions': marine_ecoregions, 'area_perc': area_perc, 'npp_perc': npp_perc, 'avg_npp': avg_npp, 'avg_terrestrial_npp': avg_terrestrial_npp, 'avg_oceanic_npp': avg_oceanic_npp}
     return render_to_response(template, RequestContext(request, context)) 
     
 def display_agriculture_analysis(request, bioregion, template='summary/agriculture_report.html'):
     #get soil suitability
-    soil_suitability = get_soil_suitability(bioregion)    
-    context = {'bioregion': bioregion, 'default_value': default_value, 'soil_suitability': soil_suitability}
+    soil_suitability = get_soil_suitability(bioregion) 
+    #get equipped for irrigation proportion
+    equipped_for_irrigation = get_proportion_equipped_for_irrigation(bioregion)
+    context = {'bioregion': bioregion, 'default_value': default_value, 'soil_suitability': soil_suitability, 'equipped_for_irrigation': equipped_for_irrigation}
     return render_to_response(template, RequestContext(request, context)) 
                
 def get_size(bioregion):
@@ -139,13 +148,6 @@ def get_annual_temp(bioregion):
     temp_c = temp_stats.avg / 10
     temp_f = temp_c * 9 / 5. + 32
     return temp_c, temp_f
-    
-def get_annual_temp_range(bioregion):
-    temp_range_geom = RasterDataset.objects.get(name='temp_range')
-    temp_range_stats = zonal_stats(bioregion.output_geom, temp_range_geom)
-    temp_range_c = temp_range_stats.avg / 10
-    temp_range_f = temp_range_c * 9 / 5. + 32
-    return temp_range_c, temp_range_f
     
 def get_annual_precip(bioregion):
     precip_geom = RasterDataset.objects.get(name='annual_precipitation')
@@ -215,6 +217,10 @@ def get_marine_ecoregions(bioregion):
         create_report_cache(bioregion, dict(marineregions=marineregion_tuples))
         return marineregion_tuples    
     
+def get_global_area_proportion(area_km):
+    perc = area_km / global_area
+    return perc   
+    
 def get_landmass_proportion(area):
     perc = area / global_landmass
     return perc
@@ -224,15 +230,30 @@ def get_soil_suitability(bioregion):
     suit_stats = zonal_stats(bioregion.output_geom, suit_geom)
     return suit_stats.avg
 
+def get_proportion_equipped_for_irrigation(bioregion):
+    irrig_geom = RasterDataset.objects.get(name='irrig_equipped')
+    irrig_stats = zonal_stats(bioregion.output_geom, irrig_geom)
+    hectares = irrig_stats.sum
+    area_km, area_mi = get_size(bioregion)
+    proportion_equipped_for_irrigation = hectares / 100 / area_km
+    return proportion_equipped_for_irrigation
+
 def get_npp_proportion(bioregion):
-    npp_geom = RasterDataset.objects.get(name='npp')
+    #npp_terr_geom = RasterDataset.objects.get(name='npp_terr')
+    #npp__terr_stats = zonal_stats(bioregion.output_geom, npp_terr_geom)
+    #npp_terr_sum = npp__terr_stats.sum
+    npp_geom = RasterDataset.objects.get(name='npp_wrld')
     npp_stats = zonal_stats(bioregion.output_geom, npp_geom)
+    npp_wrld_sum = npp_stats.sum
     return npp_stats.sum / global_npp
     
 def get_avg_npp(bioregion):
-    npp_geom = RasterDataset.objects.get(name='npp')
+    npp_geom = RasterDataset.objects.get(name='npp_wrld')
     npp_stats = zonal_stats(bioregion.output_geom, npp_geom)
-    return npp_stats.avg / npp_grid_cell_size
+    #dataset returns mg C per grid cell per day 
+    #we want g C per sq meter per year 
+    npp_avg = npp_stats.avg / npp_grid_cell_size * 365 / 1000
+    return npp_avg
 
     
 def get_poverty(bioregion):
@@ -240,8 +261,3 @@ def get_poverty(bioregion):
     poverty_geom = RasterDataset.objects.get(name='poverty')
     poverty_stats = zonal_stats(bioregion.output_geom, poverty_geom)
     return poverty_stats.avg
-
-def get_soil_moisture(bioregion):
-    soilmoist_geom = RasterDataset.objects.get(name='soil_moisture')
-    soilmoist_stats = zonal_stats(bioregion.output_geom, soilmoist_geom)
-    return soilmoist_stats.avg
