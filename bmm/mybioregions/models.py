@@ -281,9 +281,9 @@ class MyBioregion(Analysis):
         </Placemark>
         """ % (self.kml_style, self.uid, escape(self.name), self.model_uid(),
             asKml(self.output_geom.transform(
-                    settings.GEOMETRY_CLIENT_SRID, clone=True)),
+                    settings.GEOMETRY_CLIENT_SRID, clone=True),uid=self.uid),
             asKml(self.input_starting_point.transform(
-                    settings.GEOMETRY_CLIENT_SRID, clone=True)))
+                    settings.GEOMETRY_CLIENT_SRID, clone=True),uid=self.uid))
     
     @property
     def kml_style(self):
