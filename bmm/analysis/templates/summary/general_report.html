@@ -4,13 +4,13 @@
 {% load humanize %}
 {% load analysis_extras %}
 
-<h3>General Characteristics</h3>
+<h3>Area</h3>
 <div class='freetext'>
 <p>
 <table  style='width:430px' class='analysis_report_container'>
     <tbody>
         <tr class="grey">
-            <td colspan='2'><b>Size of Bioregion</b></td>
+            <td colspan='2'><b>Overall Size of Bioregion</b></td>
         </tr>
         <tr>
             <td colspan='2'>{{area_km|intcomma}} km<sup>2</sup> / {{area_mi|intcomma}} mi<sup>2</sup></td>
@@ -18,7 +18,38 @@
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
-            <td colspan='2'><b>Estimated Population (2005)</b></td>
+            <td colspan='2'><b>Terrestrial</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{terra_area_km|intcomma}} km<sup>2</sup> / {{terra_area_mi|intcomma}} mi<sup>2</sup></td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'><b>Oceanic</b></td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{oceanic_area_km|intcomma}} km<sup>2</sup> / {{oceanic_area_mi|intcomma}} mi<sup>2</sup></td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+    </tbody>
+</table>
+</div>
+
+<h3>Population</h3>
+<div class='freetext'>
+<p>
+<table  style='width:430px' class='analysis_report_container'>
+    <tbody>
+        <tr class="grey">
+            <td colspan='2'>
+                <b>Estimated Population (2005)</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('pop05');">Learn More</a><sup>
+                <div id="pop05" style="display: none">
+                    <p>Data not yet available.
+                </div>
+            </td>
         </tr>
         <tr>
             {% if population_2005 < 1000000 %}
@@ -30,7 +61,13 @@
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
-            <td colspan='2'><b>Projected Population (for 2015)</b></td>
+            <td colspan='2'>
+                <b>Projected Population (for 2015)</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('pop15');">Learn More</a><sup>
+                <div id="pop15" style="display: none">
+                    <p>Data not yet available.
+                </div>
+            </td>
         </tr>
         <tr>
             {% if population_2015 < 1000000 %}
@@ -41,18 +78,50 @@
         </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
+    </tbody>
+</table>
+</div>
+
+<h3>Temperature <sup><small><a id="displayText" href="javascript:toggleDiv('temp');">Learn More</a></small><sup></h3>
+    <div id="temp" style="display: none">
+        <p>More information on the climate layers used for the Temperature reports can be found <a href="http://www.worldclim.org/" target="_blank">here</a>.
+    </div>
+<div class='freetext'>
+<p>
+<table  style='width:430px' class='analysis_report_container'>
+    <tbody>
         <tr class="grey">
-            <td><b>Median Min Temperature</b></td>
-            <td><b>Median Max Temperature</b></td>
+            <td>
+                <b>Median Minimum Temperature</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('min_temp');">Learn More</a><sup>
+                <div id="min_temp" style="display: none">
+                    <p>The median value of the minimum temperature during the coldest month.  
+                </div>
+            </td>
         </tr>
         <tr>
             <td>{{min_temp_c|floatformat:0}}&deg; Celsius / {{min_temp_f|floatformat:0}}&deg; Fahrenheit</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td>
+                <b>Median Maximum Temperature</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('max_temp');">Learn More</a><sup>
+                <div id="max_temp" style="display: none">
+                    <p>The median value of the maximum temperature during the hottest month.  
+                </div>
+            </td>
+        </tr>
+        <tr>
             <td>{{max_temp_c|floatformat:0}}&deg; Celsius / {{max_temp_f|floatformat:0}}&deg; Fahrenheit</td>
         </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
-            <td colspan='2'><b>Mean Annual Temperature</b></td>
+            <td colspan='2'>
+                <b>Mean Annual Temperature</b>
+            </td>
         </tr>
         <tr>
             <td colspan='2'>{{annual_temp_c|floatformat:0}}&deg; Celsius / {{annual_temp_f|floatformat:0}}&deg; Fahrenheit</td>
@@ -60,15 +129,35 @@
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
-            <td colspan='2'><b>Mean Annual Temperature Range</b></td>
+            <td colspan='2'>
+                <b>Mean Annual Temperature Range</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('temp_range');">Learn More</a><sup>
+                <div id="temp_range" style="display: none">
+                    <p>The difference between the median mimimum temperature and the median maximum temperature.  
+                </div>
+            </td>
         </tr>
         <tr>
             <td colspan='2'>{{annual_temp_range_c|floatformat:0}}&deg; Celsius / {{annual_temp_range_f|floatformat:0}}&deg; Fahrenheit</td>
         </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
+    </tbody>
+</table>
+</div>
+
+<h3>Precipitation <sup><small><a id="displayText" href="javascript:toggleDiv('precip');">Learn More</a></small><sup></h3>
+    <div id="precip" style="display: none">
+        <p>More information on the climate layers used for the Precipitation report can be found <a href="http://www.worldclim.org/" target="_blank">here</a>.
+    </div>
+<div class='freetext'>
+<p>
+<table  style='width:430px' class='analysis_report_container'>
+    <tbody>
         <tr class="grey">
-            <td colspan='2'><b>Mean Annual Precipitation</b></td>
+            <td colspan='2'>
+                <b>Mean Annual Precipitation</b>
+            </td>
         </tr>
         <tr>
             <td colspan='2'>{{annual_precip_cm|floatformat:0}} cm / {{annual_precip_in|floatformat:0}} in</td>
@@ -78,6 +167,14 @@
     </tbody>
 </table>
 </div>
+<p>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+<script type="text/javascript">
+function toggleDiv(divId) {
+   $("#"+divId).toggle();
+}
+</script>
 
 <style type="text/css">
 h3 { font-weight: bold; }
