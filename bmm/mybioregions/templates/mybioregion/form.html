@@ -9,12 +9,12 @@
         var max_step = 3;
         function validate(step) {
             if (step == 1) {
-                // TODO validate step1
-            } else if (step == 2) {
-                // Nothing to do to validate step2
-            } else if (step == 3) {
-                // validate step2
+                if ($('#id_input_starting_point').val() == '') {
+                    alert("You must set a starting point to proceed to step 2");
+                    return false;
+                }
             }
+            return true
         }; 
 
         function wizard(action) {
@@ -22,8 +22,9 @@
                 step -= 1;
             }
             if (step < max_step && action == 'next') {
-                validate(step);
-                step += 1;
+                if (validate(step)) {
+                    step += 1;
+                }
             }
             $('div.step').each(function(index) {
                 $(this).hide();
