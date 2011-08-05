@@ -6,7 +6,7 @@ from lingcod.raster_stats.models import RasterDataset, zonal_stats
 #from settings import *
 from lingcod.unit_converter.models import geometry_area_in_display_units, convert_float_to_area_display_units
 from analysis.utils import convert_sq_km_to_sq_mi, convert_cm_to_in
-from analysis.models import Languages, EcoRegions, LastWild, MarineRegions
+from analysis.models import Languages, EcoRegions, LastWild, MarineRegions, Watersheds
 from analysis.caching.report_caching import *
 from lingcod.common.utils import clean_geometry
 
@@ -56,6 +56,10 @@ def display_language_analysis(request, bioregion, template='summary/language_rep
     return render_to_response(template, RequestContext(request, context)) 
     
 def display_ecoregions_analysis(request, bioregion, template='summary/ecoregions_report.html'):
+    #get net primary production
+    avg_npp = get_avg_npp(bioregion)
+    #get watersheds
+    watersheds = get_watersheds(bioregion)
     #get existing eco-regions
     ecoregions = get_ecoregions(bioregion)
     #get last of the wild ecoregions 
@@ -64,15 +68,7 @@ def display_ecoregions_analysis(request, bioregion, template='summary/ecoregions
     marine_ecoregions = get_marine_ecoregions(bioregion)
     #get size of bioregion
     area_km, area_mi = get_size(bioregion)
-    #get land mass proportion
-    #landmass_perc = get_landmass_proportion(area_km)
-    #get area proportion 
-    area_perc = get_global_area_proportion(area_km)
-    #get npp proportion
-    npp_perc = get_npp_proportion(bioregion)
-    #get net primary production
-    avg_npp = get_avg_npp(bioregion)
-    context = {'bioregion': bioregion, 'default_value': default_value, 'ecoregions': ecoregions, 'wild_regions': wild_regions, 'marine_ecoregions': marine_ecoregions, 'area_perc': area_perc, 'npp_perc': npp_perc, 'avg_npp': avg_npp, 'avg_terrestrial_npp': avg_terrestrial_npp, 'avg_oceanic_npp': avg_oceanic_npp}
+    context = {'bioregion': bioregion, 'default_value': default_value, 'watersheds': watersheds, 'ecoregions': ecoregions, 'wild_regions': wild_regions, 'marine_ecoregions': marine_ecoregions, 'avg_npp': avg_npp}
     return render_to_response(template, RequestContext(request, context)) 
     
 def display_agriculture_analysis(request, bioregion, template='summary/agriculture_report.html'):
@@ -155,6 +151,26 @@ def get_annual_precip(bioregion):
     precip_cm = precip_stats.avg / 10
     precip_in = convert_cm_to_in(precip_cm)
     return precip_cm, precip_in
+    
+def get_watersheds(bioregion):
+    if report_cache_exists(bioregion, 'watersheds'):
+        watershed_tuples = get_report_cache(bioregion, 'watersheds')
+        return watershed_tuples
+    else:
+        watersheds = Watersheds.objects.filter(geometry__bboverlaps=bioregion.output_geom)
+        watershed_tuples = [(watershed.geometry.intersection(bioregion.output_geom).area, watershed.maj_name) for watershed in watersheds if watershed.geometry.intersects(bioregion.output_geom)]
+        watershed_dict = {}
+        for area,name in watershed_tuples:
+            if name in watershed_dict.keys():
+                watershed_dict[name] += area
+            else:
+                watershed_dict[name] = area
+        watershed_tuples = [(name, convert_float_to_area_display_units(area)) for name,area in watershed_dict.items()]
+        watershed_tuples.sort()
+        watershed_tuples = [(watershed_tuple[0], watershed_tuple[1], convert_sq_km_to_sq_mi(watershed_tuple[1])) for watershed_tuple in watershed_tuples]
+        create_report_cache(bioregion, dict(watersheds=watershed_tuples))
+        return watershed_tuples    
+    
     
 def get_ecoregions(bioregion):
     if report_cache_exists(bioregion, 'ecoregions'):

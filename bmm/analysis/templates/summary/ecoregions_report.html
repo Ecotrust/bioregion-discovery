@@ -11,24 +11,6 @@
 <p>
 <table  style='width:430px' class='analysis_report_container'>
     <tbody>
-        <!---
-        <tr class="grey">
-            <td colspan='2'><b>Proportion of Global Terrestrial Coverage</b></td>
-        </tr>
-        <tr>
-            <td colspan='2'>{{area_perc|percentage:3}}</td>
-        </tr>
-        <tr><td></td><td></td></tr>
-        <tr><td></td><td></td></tr>
-        <tr class="grey">
-            <td colspan='2'><b>Proportion of Global NPP</b></td>
-        </tr>
-        <tr>
-            <td colspan='2'>{{npp_perc|percentage:3}}</td>
-        </tr>
-        <tr><td></td><td></td></tr>
-        <tr><td></td><td></td></tr>
-        -->
         <tr class="grey">
             <td colspan='2'>
                 <b>Average Net Primary Production</b> 
@@ -54,12 +36,27 @@
 </table>
 </div>
 
-
 <h3>Ecoregions</h3>
 <div class='freetext'>
 <p>
 <table  style='width:430px' class='analysis_report_container'>
     <tbody>
+        <tr class="grey">
+            <td colspan='2'>
+                <b>Watersheds</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('watersheds');">Learn More</a><sup>
+                <div id="watersheds" style="display: none">
+                    <p>Data not available.
+                </div>
+            </td>
+        </tr>
+        {% for watershed in watersheds %}
+        <tr>
+            <td colspan='2'>{{watershed.0}} ({{watershed.1|floatformat:0|intcomma}} km<sup>2</sup> / {{watershed.2|floatformat:0|intcomma}} mi<sup>2</sup>)</td>
+        </tr>
+        {% endfor %}
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
         <tr class="grey">
             <td colspan='2'>
                 <b>Ecoregions</b>

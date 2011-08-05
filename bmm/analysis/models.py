@@ -64,3 +64,10 @@ class LastWild(models.Model):
     eco_code = models.CharField(max_length=50, null=True, blank=True)
     geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Last of the Wild")
     objects = models.GeoManager()    
+    
+class Watersheds(models.Model):
+    maj_bas = models.IntegerField()
+    maj_name = models.CharField(max_length=75)
+    maj_area = models.IntegerField()
+    geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Major Watersheds")
+    objects = models.GeoManager()    
