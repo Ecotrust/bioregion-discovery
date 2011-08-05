@@ -6,7 +6,7 @@ from lingcod.raster_stats.models import RasterDataset, zonal_stats
 #from settings import *
 from lingcod.unit_converter.models import geometry_area_in_display_units, convert_float_to_area_display_units
 from analysis.utils import convert_sq_km_to_sq_mi, convert_cm_to_in
-from analysis.models import Languages, EcoRegions, LastWild, MarineRegions, Watersheds
+from analysis.models import Languages, EcoRegions, LastWild, MarineRegions, Watersheds, WorldMask
 from analysis.caching.report_caching import *
 from lingcod.common.utils import clean_geometry
 
@@ -31,6 +31,10 @@ def display_summary_analysis(request, bioregion, template='summary_report.html')
 def display_general_analysis(request, bioregion, template='summary/general_report.html'):
     #get size of bioregion
     area_km, area_mi = get_size(bioregion)
+    #get terrestrial area
+    terra_area_km, terra_area_mi = get_terra_area(bioregion)
+    #get oceanic area
+    oceanic_area_km, oceanic_area_mi = get_oceanic_area(bioregion)
     #get current population (for 2010)
     population_2005 = get_population(bioregion)
     #get projected population (for 2015)
@@ -46,7 +50,7 @@ def display_general_analysis(request, bioregion, template='summary/general_repor
     annual_temp_range_f = max_temp_f - min_temp_f
     #get mean annual precipitation
     annual_precip_cm, annual_precip_in = get_annual_precip(bioregion)
-    context = {'bioregion': bioregion, 'default_value': default_value, 'area_km': area_km, 'area_mi': area_mi, 'population_2005': population_2005, 'population_2015': population_2015, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip_cm': annual_precip_cm, 'annual_precip_in': annual_precip_in}
+    context = {'bioregion': bioregion, 'default_value': default_value, 'area_km': area_km, 'area_mi': area_mi, 'terra_area_km': terra_area_km, 'terra_area_mi': terra_area_mi, 'oceanic_area_km': oceanic_area_km, 'oceanic_area_mi': oceanic_area_mi, 'population_2005': population_2005, 'population_2015': population_2015, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip_cm': annual_precip_cm, 'annual_precip_in': annual_precip_in}
     return render_to_response(template, RequestContext(request, context)) 
      
 def display_language_analysis(request, bioregion, template='summary/language_report.html'):
@@ -57,7 +61,8 @@ def display_language_analysis(request, bioregion, template='summary/language_rep
     
 def display_ecoregions_analysis(request, bioregion, template='summary/ecoregions_report.html'):
     #get net primary production
-    avg_npp = get_avg_npp(bioregion)
+    terr_npp_avg = get_terr_npp_avg(bioregion)
+    ocn_npp_avg = get_ocn_npp_avg(bioregion)
     #get watersheds
     watersheds = get_watersheds(bioregion)
     #get existing eco-regions
@@ -66,9 +71,7 @@ def display_ecoregions_analysis(request, bioregion, template='summary/ecoregions
     wild_regions = get_last_wild(bioregion)
     #get marine ecregions
     marine_ecoregions = get_marine_ecoregions(bioregion)
-    #get size of bioregion
-    area_km, area_mi = get_size(bioregion)
-    context = {'bioregion': bioregion, 'default_value': default_value, 'watersheds': watersheds, 'ecoregions': ecoregions, 'wild_regions': wild_regions, 'marine_ecoregions': marine_ecoregions, 'avg_npp': avg_npp}
+    context = {'bioregion': bioregion, 'default_value': default_value, 'watersheds': watersheds, 'ecoregions': ecoregions, 'wild_regions': wild_regions, 'marine_ecoregions': marine_ecoregions, 'terr_npp_avg': terr_npp_avg, 'ocn_npp_avg': ocn_npp_avg, 'avg_terrestrial_npp': avg_terrestrial_npp, 'avg_oceanic_npp': avg_oceanic_npp}
     return render_to_response(template, RequestContext(request, context)) 
     
 def display_agriculture_analysis(request, bioregion, template='summary/agriculture_report.html'):
@@ -83,7 +86,36 @@ def get_size(bioregion):
     area_km = int(round(geometry_area_in_display_units(bioregion.output_geom)))
     area_mi = int(round(convert_sq_km_to_sq_mi(area_km)))
     return area_km, area_mi
-           
+    
+def get_terra_area(bioregion):
+    terra_geom = get_terra_geom(bioregion)
+    terra_area_km = int(round(geometry_area_in_display_units(terra_geom)))        
+    terra_area_mi = int(round(convert_sq_km_to_sq_mi(terra_area_km)))
+    return terra_area_km, terra_area_mi    
+    
+def get_oceanic_area(bioregion):
+    oceanic_geom = get_oceanic_geom(bioregion)
+    oceanic_area_km = int(round(geometry_area_in_display_units(oceanic_geom)))
+    oceanic_area_mi = int(round(convert_sq_km_to_sq_mi(oceanic_area_km)))
+    return oceanic_area_km, oceanic_area_mi  
+
+def get_terra_geom(bioregion):
+    if report_cache_exists(bioregion, 'terra_geom'):
+        terra_geom = get_report_cache(bioregion, 'terra_geom')
+    else:
+        terra_mask = WorldMask.objects.get(id=1)
+        terra_geom = bioregion.output_geom.intersection(terra_mask.geometry)
+        create_report_cache(bioregion, dict(terra_geom=terra_geom))
+    return terra_geom
+    
+def get_oceanic_geom(bioregion):
+    if report_cache_exists(bioregion, 'oceanic_geom'):
+        oceanic_geom = get_report_cache(bioregion, 'oceanic_geom')
+    else:
+        terra_mask = WorldMask.objects.get(id=1)
+        oceanic_geom = bioregion.output_geom.difference(terra_mask.geometry)
+    return oceanic_geom
+               
 def get_population(bioregion):
     #this may have changed to 2005 -- see Analisa and update ninkasi
     pop_geom = RasterDataset.objects.get(name='population_2005')
@@ -253,7 +285,7 @@ def get_proportion_equipped_for_irrigation(bioregion):
     area_km, area_mi = get_size(bioregion)
     proportion_equipped_for_irrigation = hectares / 100 / area_km
     return proportion_equipped_for_irrigation
-
+'''
 def get_npp_proportion(bioregion):
     #npp_terr_geom = RasterDataset.objects.get(name='npp_terr')
     #npp__terr_stats = zonal_stats(bioregion.output_geom, npp_terr_geom)
@@ -262,15 +294,32 @@ def get_npp_proportion(bioregion):
     npp_stats = zonal_stats(bioregion.output_geom, npp_geom)
     npp_wrld_sum = npp_stats.sum
     return npp_stats.sum / global_npp
-    
+'''
+'''
 def get_avg_npp(bioregion):
-    npp_geom = RasterDataset.objects.get(name='npp_wrld')
-    npp_stats = zonal_stats(bioregion.output_geom, npp_geom)
-    #dataset returns mg C per grid cell per day 
-    #we want g C per sq meter per year 
-    npp_avg = npp_stats.avg / npp_grid_cell_size * 365 / 1000
+    if report_cache_exists(bioregion, 'terrestrial_npp') and report_cache_exists(bioregion, 'oceanic_npp'):
+        terr_npp_avg = get_report_cache(bioregion, 'terrestrial_npp')
+        ocn_npp_avg = get_report_cache(bioregion, 'oceanic_npp')
+    else:
+        terr_npp_avg = get_terr_npp_avg(bioregion)
+        create_report_cache(bioregion, terr_npp_avg)
+        ocn_npp_avg = get_ocn_npp_avg(bioregion)
+        create_report_cache(bioregion, ocn_npp_avg)
+    return terr_npp_avg, ocn_npp_avg
+'''
+def get_terr_npp_avg(bioregion):
+    terra_geom = get_terra_geom(bioregion)
+    npp_geom = RasterDataset.objects.get(name='npp_terr')
+    npp_stats = zonal_stats(terra_geom, npp_geom)
+    npp_avg = npp_stats.avg / (26064.03459 ** 2)
     return npp_avg
 
+def get_ocn_npp_avg(bioregion):
+    oceanic_geom = get_oceanic_geom(bioregion)
+    npp_geom = RasterDataset.objects.get(name='npp_ocn')
+    npp_stats = zonal_stats(oceanic_geom, npp_geom)
+    npp_avg = npp_stats.avg * 365 / 1000 #mg per day converted to g per year
+    return npp_avg
     
 def get_poverty(bioregion):
     return default_value

@@ -71,3 +71,8 @@ class Watersheds(models.Model):
     maj_area = models.IntegerField()
     geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Major Watersheds")
     objects = models.GeoManager()    
+    
+class WorldMask(models.Model):
+    dissme = models.IntegerField()
+    geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="World Terrestrial Mask")
+    objects = models.GeoManager()    
