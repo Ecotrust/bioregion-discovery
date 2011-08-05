@@ -54,7 +54,7 @@
     "model": "raster_stats.rasterdataset", 
     "fields": {
       "type": "continuous", 
-      "name": "npp", 
+      "name": "npp_terr", 
       "full_name": "", 
       "filepath": "/usr/local/apps/bioregions/data/reports/summary/npp_mw"
     }
