@@ -117,7 +117,6 @@ def get_oceanic_geom(bioregion):
     return oceanic_geom
                
 def get_population(bioregion):
-    #this may have changed to 2005 -- see Analisa and update ninkasi
     pop_geom = RasterDataset.objects.get(name='population_2005')
     pop_stats = zonal_stats(bioregion.output_geom, pop_geom)
     return int(pop_stats.sum)
@@ -285,28 +284,7 @@ def get_proportion_equipped_for_irrigation(bioregion):
     area_km, area_mi = get_size(bioregion)
     proportion_equipped_for_irrigation = hectares / 100 / area_km
     return proportion_equipped_for_irrigation
-'''
-def get_npp_proportion(bioregion):
-    #npp_terr_geom = RasterDataset.objects.get(name='npp_terr')
-    #npp__terr_stats = zonal_stats(bioregion.output_geom, npp_terr_geom)
-    #npp_terr_sum = npp__terr_stats.sum
-    npp_geom = RasterDataset.objects.get(name='npp_wrld')
-    npp_stats = zonal_stats(bioregion.output_geom, npp_geom)
-    npp_wrld_sum = npp_stats.sum
-    return npp_stats.sum / global_npp
-'''
-'''
-def get_avg_npp(bioregion):
-    if report_cache_exists(bioregion, 'terrestrial_npp') and report_cache_exists(bioregion, 'oceanic_npp'):
-        terr_npp_avg = get_report_cache(bioregion, 'terrestrial_npp')
-        ocn_npp_avg = get_report_cache(bioregion, 'oceanic_npp')
-    else:
-        terr_npp_avg = get_terr_npp_avg(bioregion)
-        create_report_cache(bioregion, terr_npp_avg)
-        ocn_npp_avg = get_ocn_npp_avg(bioregion)
-        create_report_cache(bioregion, ocn_npp_avg)
-    return terr_npp_avg, ocn_npp_avg
-'''
+    
 def get_terr_npp_avg(bioregion):
     terra_geom = get_terra_geom(bioregion)
     npp_geom = RasterDataset.objects.get(name='npp_terr')
@@ -318,7 +296,10 @@ def get_ocn_npp_avg(bioregion):
     oceanic_geom = get_oceanic_geom(bioregion)
     npp_geom = RasterDataset.objects.get(name='npp_ocn')
     npp_stats = zonal_stats(oceanic_geom, npp_geom)
-    npp_avg = npp_stats.avg * 365 / 1000 #mg per day converted to g per year
+    if npp_stats.avg is None: #i'm assuming this is needed to account for possible absence of overlap...
+        npp_avg = 0
+    else:
+        npp_avg = npp_stats.avg * 365 / 1000 #mg per day converted to g per year
     return npp_avg
     
 def get_poverty(bioregion):
