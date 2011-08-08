@@ -116,11 +116,17 @@
                 </div>
             </td>
         </tr>
+        {% if not marine_ecoregions.0 %}
+        <tr>
+            <td colspan='2'>None present</td>
+        </tr>
+        {% else %}
         {% for marineregion in marine_ecoregions %}
         <tr>
             <td colspan='2'>{{marineregion.0}} ({{marineregion.1|floatformat:0|intcomma}} km<sup>2</sup> / {{marineregion.2|floatformat:0|intcomma}} mi<sup>2</sup>)</td>
         </tr>
         {% endfor %}
+        {% endif %}
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
     </tbody>

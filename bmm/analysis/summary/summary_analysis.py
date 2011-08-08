@@ -294,12 +294,16 @@ def get_terr_npp_avg(bioregion):
 
 def get_ocn_npp_avg(bioregion):
     oceanic_geom = get_oceanic_geom(bioregion)
-    npp_geom = RasterDataset.objects.get(name='npp_ocn')
-    npp_stats = zonal_stats(oceanic_geom, npp_geom)
-    if npp_stats.avg is None: #i'm assuming this is needed to account for possible absence of overlap...
+    if oceanic_geom.area == 0:
         npp_avg = 0
     else:
-        npp_avg = npp_stats.avg * 365 / 1000 #mg per day converted to g per year
+        npp_geom = RasterDataset.objects.get(name='npp_ocn')
+        #originally i thought the following was to account for lack of overlap, but that wasn't necessarily the case
+        #(see if statement above which was required to account for lack of overlap)
+        if npp_stats.avg is None: 
+            npp_avg = 0
+        else:
+            npp_avg = npp_stats.avg * 365 / 1000 #mg per day converted to g per year
     return npp_avg
     
 def get_poverty(bioregion):
