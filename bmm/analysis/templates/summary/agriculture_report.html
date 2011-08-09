@@ -19,7 +19,13 @@
             </td>
         </tr>
         <tr>
-            <td colspan='2'>{{soil_suitability|percentage:0}}</td>
+            <td colspan='2'>
+                {% if soil_suitability == 0 %}
+                    No Data Available
+                {% else %}
+                    {{soil_suitability|percentage:0}}
+                {% endif %}
+            </td>
         </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
@@ -33,7 +39,13 @@
             </td>
         </tr>
         <tr>
-            <td colspan='2'>{{equipped_for_irrigation|percentage:0}}</td>
+            <td colspan='2'>
+                {% if equipped_for_irrigation == 0 %}
+                    No Data Available
+                {% else %}
+                    {{equipped_for_irrigation|percentage:0}}
+                {% endif %}
+            </td>
         </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>

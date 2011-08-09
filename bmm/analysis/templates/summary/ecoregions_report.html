@@ -29,7 +29,13 @@
             </td>
         </tr>
         <tr>
-            <td colspan='2'>{{terr_npp_avg|floatformat:0}} g C/m<sup>2</sup>/yr</td>
+            <td colspan='2'>
+                {% if terr_npp_avg == 0 %}
+                    No Data Available
+                {% else %}
+                    {{terr_npp_avg|floatformat:0}} g C/m<sup>2</sup>/yr
+                {% endif %}
+            </td>
         </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
@@ -43,7 +49,13 @@
             </td>
         </tr>
         <tr>
-            <td colspan='2'>{{ocn_npp_avg|floatformat:0}} g C/m<sup>2</sup>/yr</td>
+            <td colspan='2'>
+                {% if ocn_npp_avg == 0 %}
+                    No Data Available
+                {% else %}
+                    {{ocn_npp_avg|floatformat:0}} g C/m<sup>2</sup>/yr
+                {% endif %}
+            </td>
         </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
@@ -65,11 +77,17 @@
                 </div>
             </td>
         </tr>
-        {% for watershed in watersheds %}
-        <tr>
-            <td colspan='2'>{{watershed.0}} ({{watershed.1|floatformat:0|intcomma}} km<sup>2</sup> / {{watershed.2|floatformat:0|intcomma}} mi<sup>2</sup>)</td>
-        </tr>
-        {% endfor %}
+        {% if watersheds.0 %}
+            {% for watershed in watersheds %}
+            <tr>
+                <td colspan='2'>{{watershed.0}} ({{watershed.1|floatformat:0|intcomma}} km<sup>2</sup> / {{watershed.2|floatformat:0|intcomma}} mi<sup>2</sup>)</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan='2'>No Data Available</td>
+            </tr>
+        {% endif %}
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
@@ -132,6 +150,7 @@
     </tbody>
 </table>
 </div>
+<p>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
 <script type="text/javascript">
