@@ -28,7 +28,11 @@ SIZE_LOOKUP = { # in millions of Hectares
     'L': 50,
     'VL': 100
 }
-SAVE_MAPSET = False
+
+try:
+    REMOVE_MAPSET_AFTER_RUN = settings.REMOVE_MAPSET_AFTER_RUN
+except:
+    REMOVE_MAPSET_AFTER_RUN = True
 
 @register
 class MyBioregion(Analysis):
@@ -64,12 +68,15 @@ class MyBioregion(Analysis):
         p_temp = self.input_temp_weight
         p_precip = self.input_precip_weight
         p_biomass = self.input_biomass_weight
+        p_lang = self.input_lang_weight
+        p_elev = self.input_elev_weight
+        p_marine = self.input_marine_weight
 
         g = Grass(settings.GRASS_LOCATION,
                 gisbase=settings.GRASS_GISBASE,
                 gisdbase=settings.GRASS_GISDBASE,
-                autoclean=True)
-        g.verbose = False
+                autoclean=REMOVE_MAPSET_AFTER_RUN)
+        g.verbose = not REMOVE_MAPSET_AFTER_RUN # go verbose only if we're not removing the mapset
         rasts = g.list()['rast']
 
         outdir = '/tmp'
@@ -84,28 +91,44 @@ class MyBioregion(Analysis):
         radius = math.sqrt(desired_size/math.pi) 
         buff = coords.buffer(radius*5) # to be safe against long skinny bioregions
 
-        x = p_temp + p_precip + p_biomass 
+        x = p_temp + p_precip + p_biomass + p_lang + p_elev + p_marine 
         dist_constant = 0.0
-        # regression, R^2 ~ 0.43 for 250 random samples
-        max_cost = math.fabs((4283 * x * (desired_size_mHa ** 0.5))+122119)
+        # TODO
+        # regression, R^2 ~ 0.38 for 275 random samples
+        intercept = 0 #464070
+        max_cost = math.fabs((3162 * x * (desired_size_mHa ** 0.5))+intercept)
 
         self.output_initcost = max_cost
-        if x < 1:
+        if x - p_marine < 1:
             dist_constant = 2.0
 
         # set initial region
         g.run('g.region rast=biomass_slope')
         g.run('g.region w=%d s=%d e=%d n=%d' % buff.extent )
-        #rasts = ['biomass_slope','temp_slope','precip_slope']
         start_values = get_raster_values(g, rasts, coords)
         start_values['ocean_slope'] = get_nearest_ocean_value(g, coords)
         
-        g.run('r.mapcalc "weighted_combined_slope = %s + ' % dist_constant +
-                            #'(%d * ocean_mask) +' % 10.0**12 +
+        g.run('r.mapcalc "weighted_land_slope = %s + ' % dist_constant +
                             '(%s * pow(abs(%s - temp_slope),2))*10 + ' % (p_temp,start_values['temp_slope'])  + 
                             '(%s * pow(abs(%s - precip_slope),2))*10 + ' % (p_precip,start_values['precip_slope'])  + 
-                            '(%s * pow(abs(%s - biomass_slope),2))*10' % (p_biomass,start_values['biomass_slope'])  + 
+                            '(%s * pow(abs(%s - biomass_slope),2))*10 + ' % (p_biomass,start_values['biomass_slope'])  + 
+                            '(%s * pow(abs(%s - lang_slope),2))*10 + ' % (p_lang,start_values['lang_slope'])  + 
+                            '(%s * pow(abs(%s - elev_slope),2))*10' % (p_elev,start_values['elev_slope'])  + 
                             '"')
+
+        if p_marine >= 1:
+            '''
+            We need a distance constant to prevent 'runout' - this needs to be inversely propotional to the marine weighting
+            For the multiplier, normalize to other layers (10^5 = 1000000 then divide by the marine weight)
+            '''
+            g.run('r.mapcalc "weighted_ocean_slope = (10000000/%s) + ' % (p_marine,) + 
+                            '(%s * pow(abs(%s - ocean_slope),2))*(1000000/%s)' % (p_marine,start_values['ocean_slope'], p_marine )  + 
+                            '"')
+            g.run('r.mapcalc "weighted_combined_slope = if(isnull(weighted_ocean_slope),0,weighted_ocean_slope) + ' + 
+                  'if(isnull(weighted_land_slope),0,weighted_land_slope)"')
+        else:
+            # Don't include the ocean at all, just use the land slope
+            g.run('g.rename rast=weighted_land_slope,weighted_combined_slope')
 
         # iterate over cost_distance analysis until we converge on a reasonable size
         tolerance = 0.15
@@ -189,7 +212,7 @@ class MyBioregion(Analysis):
             i += 1
 
         geom.srid = settings.GEOMETRY_DB_SRID 
-        if geom and not SAVE_MAPSET: 
+        if geom and REMOVE_MAPSET_AFTER_RUN: 
             os.remove(output)
             del g
 
