@@ -52,4 +52,6 @@ HELP_EMAIL = 'bioregions@ecotrust.org'
 
 TITLES = { 'self': 'Reports', }
 
+REMOVE_MAPSET_AFTER_RUN = True
+
 from settings_local import *

@@ -37,10 +37,16 @@ def main():
 
         desired_size = random.choice(SIZE_LOOKUP.keys())
         desired_size_mHa = SIZE_LOOKUP[desired_size]
+        marine = 0
+        if random.choice([True,False]):
+            marine = random.randrange(0,100)
         bio = MyBioregion(user=user, name=name, 
                 input_temp_weight = random.randrange(0,100),
                 input_precip_weight = random.randrange(0,100),
                 input_biomass_weight = random.randrange(0,100),
+                input_lang_weight = random.randrange(0,100),
+                input_elev_weight = random.randrange(0,100),
+                input_marine_weight = marine, 
                 input_starting_point = g,
                 input_bioregion_size= desired_size
                 ) 
@@ -70,7 +76,7 @@ def summary():
         cost = bio.output_finalcost
         desired_size_mHa = SIZE_LOOKUP[bio.input_bioregion_size]
         ratio = mHa / desired_size_mHa
-        if ratio > 0.8 and ratio < 1.2 and cost < 30000000:
+        if ratio > 0.8 and ratio < 1.2 and cost < 10000000:
             knowns.append(known)
             costs.append(cost)
             init.append(bio.output_initcost)
@@ -90,15 +96,24 @@ def summary():
     print " n = ", len(knowns)
     print " R^2 =", r2
     print
-    plt.subplot(211)
+    #plt.subplot(211)
     plt.scatter(knowns, costs)
-    plt.subplot(212)
+
+    print min(costs)
+    print max(costs)
+    #b = 0
+    def calc(x):
+        return a * x + b 
+    linexs = [0, max(knowns)]
+    lineys = [calc(x) for x in linexs]
+    #plt.subplot(212)
+    plt.plot(linexs, lineys)
     #plt.scatter(init, final)
-    plt.hist(diff)
+    #plt.hist(diff)
     plt.show()
 
 
 if __name__ == '__main__':
     #delete()
-    main()
+    #main()
     summary()
