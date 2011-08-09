@@ -281,12 +281,12 @@ def get_ocn_npp_avg(bioregion):
         npp_avg = 0
     else:
         npp_geom = RasterDataset.objects.get(name='npp_ocn')
-        #originally i thought the following was to account for lack of overlap, but that wasn't necessarily the case
-        #(see if statement above which was required to account for lack of overlap)
-        if npp_stats.avg is None: 
-            npp_avg = 0
-        else:
+        #settling on the following to account for lack of overlap
+        #(see if statement above which helps with this issue as well)
+        try:
             npp_avg = npp_stats.avg * 365 / 1000 #mg per day converted to g per year
+        except:
+            npp_avg = 0
     return npp_avg
     
 def get_poverty(bioregion):

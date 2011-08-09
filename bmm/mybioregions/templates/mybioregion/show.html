@@ -189,13 +189,13 @@
             <div class="box">
                 <ul>
                     <li> Starting Point (lat, lon): {{ instance.input_starting_point.1|floatformat:3 }}, {{ instance.input_starting_point.0|floatformat:3 }}</li>
-                    <li> Temperature Relative Weighting: {{ instance.input_temp_weight }} / 100</li>
-                    <li> Precipitation Relative Weighting: {{ instance.input_precip_weight }} / 100</li>
-                    <li> Vegetation Relative Weighting: {{ instance.input_biomass_weight }} / 100</li>
-                    <li> Language Relative Weighting: {{ instance.input_lang_weight }} / 100</li>
-                    <li> Elevation Relative Weighting: {{ instance.input_elev_weight }} / 100</li>
-                    <li> Marine Relative Weighting: {{ instance.input_marine_weight }} / 100</li>
-                    <li> Bioregion Size: {{ instance.input_bioregion_size }} </li>
+                    <li> Temperature Relative Weighting: {{ instance.input_temp_weight|floatformat:0 }} / 100</li>
+                    <li> Precipitation Relative Weighting: {{ instance.input_precip_weight|floatformat:0 }} / 100</li>
+                    <li> Vegetation Relative Weighting: {{ instance.input_biomass_weight|floatformat:0 }} / 100</li>
+                    <li> Language Relative Weighting: {{ instance.input_lang_weight|floatformat:0 }} / 100</li>
+                    <li> Elevation Relative Weighting: {{ instance.input_elev_weight|floatformat:0 }} / 100</li>
+                    <li> Marine Relative Weighting: {{ instance.input_marine_weight|floatformat:0 }} / 100</li>
+                    <li> Bioregion Size: {% if instance.input_bioregion_size == 'VS' %} Very Small (2m Hectares) {% else %} {% if instance.input_bioregion_size == 'S' %} Small (5m Hectares) {% else %} {% if instance.input_bioregion_size == 'M' %} Medium (20m Hectares) {% else %} {% if instance.input_bioregion_size == 'L' %} Large (50m Hectares) {% else %} {% if instance.input_bioregion_size == 'VL' %} Very Large (100m Hectares) {% endif %}{% endif %}{% endif %}{% endif %}{% endif %}</li>
                 </ul>
             </div>
         </div>
@@ -212,8 +212,8 @@
                 <div class="box">
                     <p>The <strong>Overview reports</strong> provide estimates of size, population, temperature, and precipitation for your bioregion.</p>
                     <p>The <strong>Language reports</strong> provide information related to what languages are currently spoken within your bioregion and what languages have historically been spoken.</p>
-                    <p>The <strong>Resources reports</strong> provide information related to ...</p>
-                    <p>The <strong>Agriculture reports</strong> provide information related to ...</p>
+                    <p>The <strong>Resources reports</strong> provide information related to primary productivity and existing ecoregions.</p>
+                    <p>The <strong>Agriculture reports</strong> provide information related to soil suitability and irrigation.</p>
                 </div>
             </div>
         </div>
@@ -227,9 +227,9 @@
             <div id="vulnerabilities_intro">
                 <h2>Vulnerabilities Reports</h2>
                 <div class="box">
-                    <p>The <strong>Climage reports</strong> provide information related to ...</p>
-                    <p>The <strong>Human reports</strong> provide information related to ...</p>
-                    <p>The <strong>Social reports</strong> provide information related to ...</p>
+                    <p>The <strong>Climate Change reports</strong> provide information related to impacts on agriculture, water, and land loss due to sea level rise.</p>
+                    <p>The <strong>Socio-Economic reports</strong> provide information related to human impacts, human needs, social equity, and cultural pressures.</p>
+                    <p>The <strong>Natural Hazards reports</strong> provide information related to potential natural hazards and their economic costs.</p>
                 </div>
             </div>
         </div>
