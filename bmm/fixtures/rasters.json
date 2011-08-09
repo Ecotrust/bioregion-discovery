@@ -168,6 +168,176 @@
       "full_name": "",
       "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/clmtimpct_mw"
     }
+  },
+  {
+    "pk": 42,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "water_impact",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/wtrimpct2"
+    }
+  },
+  {
+    "pk": 43,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "sea_rise_1m",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/sealvl_1"
+    }
+  },
+  {
+    "pk": 44,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "sea_rise_3m",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/sealvl_3"
+    }
+  },
+  {
+    "pk": 45,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "sea_rise_6m",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/sealvl_6"
+    }
+  },
+  {
+    "pk": 46,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "ocean_impact",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/ocnimpct_2"
+    }
+  },
+  {
+    "pk": 47,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "cyclone",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/hzrd_cyc2"
+    }
+  },
+  {
+    "pk": 48,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "drought",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/hzrd_drgt2"
+    }
+  },
+  {
+    "pk": 49,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "flood",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/hazrd_fld1"
+    }
+  },
+  {
+    "pk": 50,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "landslide",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/hzrd_lnd1"
+    }
+  },
+  {
+    "pk": 51,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "earthquake",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/hzrd_pga1"
+    }
+  },
+  {
+    "pk": 52,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "volcano",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/hzrd_vol1"
+    }
+  },
+  {
+    "pk": 53,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "cyclone_impact",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/cyc_gpp"
+    }
+  },
+  {
+    "pk": 54,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "drought_impact",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/drgt_gdp"
+    }
+  },
+  {
+    "pk": 55,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "flood_impact",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/fld_gdp"
+    }
+  },
+  {
+    "pk": 56,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "landslide_impact",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/lnd_gdp"
+    }
+  },
+  {
+    "pk": 57,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "earthquake_impact",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/pga_gdp"
+    }
+  },
+  {
+    "pk": 58,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "continuous",
+      "name": "volcano_impact",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/vol_gdp"
+    }
   }
 
 ]

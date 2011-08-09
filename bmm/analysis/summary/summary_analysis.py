@@ -5,7 +5,7 @@ from lingcod.raster_stats.models import RasterDataset, zonal_stats
 #from analysis.models import *
 #from settings import *
 from lingcod.unit_converter.models import geometry_area_in_display_units, convert_float_to_area_display_units
-from analysis.utils import convert_sq_km_to_sq_mi, convert_cm_to_in
+from analysis.utils import convert_sq_km_to_sq_mi, convert_cm_to_in, get_terra_geom, get_oceanic_geom
 from analysis.models import Languages, EcoRegions, LastWild, MarineRegions, Watersheds, WorldMask
 from analysis.caching.report_caching import *
 from lingcod.common.utils import clean_geometry
@@ -99,23 +99,6 @@ def get_oceanic_area(bioregion):
     oceanic_area_mi = int(round(convert_sq_km_to_sq_mi(oceanic_area_km)))
     return oceanic_area_km, oceanic_area_mi  
 
-def get_terra_geom(bioregion):
-    if report_cache_exists(bioregion, 'terra_geom'):
-        terra_geom = get_report_cache(bioregion, 'terra_geom')
-    else:
-        terra_mask = WorldMask.objects.get(id=1)
-        terra_geom = bioregion.output_geom.intersection(terra_mask.geometry)
-        create_report_cache(bioregion, dict(terra_geom=terra_geom))
-    return terra_geom
-    
-def get_oceanic_geom(bioregion):
-    if report_cache_exists(bioregion, 'oceanic_geom'):
-        oceanic_geom = get_report_cache(bioregion, 'oceanic_geom')
-    else:
-        terra_mask = WorldMask.objects.get(id=1)
-        oceanic_geom = bioregion.output_geom.difference(terra_mask.geometry)
-    return oceanic_geom
-               
 def get_population(bioregion):
     pop_geom = RasterDataset.objects.get(name='population_2005')
     pop_stats = zonal_stats(bioregion.output_geom, pop_geom)
