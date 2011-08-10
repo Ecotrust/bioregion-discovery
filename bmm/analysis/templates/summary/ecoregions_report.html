@@ -70,28 +70,6 @@
     <tbody>
         <tr class="grey">
             <td colspan='2'>
-                <b>Watersheds</b>
-                <sup><a id="displayText" href="javascript:toggleDiv('watersheds');">Learn More</a><sup>
-                <div id="watersheds" style="display: none">
-                    <p>More information on the Watersheds data layer can be found <a href="http://hydrosheds.cr.usgs.gov/" target="_blank">here</a>.
-                </div>
-            </td>
-        </tr>
-        {% if watersheds.0 %}
-            {% for watershed in watersheds %}
-            <tr>
-                <td colspan='2'>{{watershed.0}} ({{watershed.1|floatformat:0|intcomma}} km<sup>2</sup> / {{watershed.2|floatformat:0|intcomma}} mi<sup>2</sup>)</td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan='2'>No Data Available</td>
-            </tr>
-        {% endif %}
-        <tr><td></td><td></td></tr>
-        <tr><td></td><td></td></tr>
-        <tr class="grey">
-            <td colspan='2'>
                 <b>Ecoregions</b>
                 <sup><a id="displayText" href="javascript:toggleDiv('ecoregions');">Learn More</a><sup>
                 <div id="ecoregions" style="display: none">
@@ -122,6 +100,28 @@
             <td colspan='2'>{{region.0}} ({{region.1|floatformat:0|intcomma}} km<sup>2</sup> / {{region.2|floatformat:0|intcomma}} mi<sup>2</sup>)</td>
         </tr>
         {% endfor %}
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'>
+                <b>Watersheds</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('watersheds');">Learn More</a><sup>
+                <div id="watersheds" style="display: none">
+                    <p>More information on the Watersheds data layer can be found <a href="http://hydrosheds.cr.usgs.gov/" target="_blank">here</a>.
+                </div>
+            </td>
+        </tr>
+        {% if watersheds.0 %}
+            {% for watershed in watersheds %}
+            <tr>
+                <td colspan='2'>{{watershed.0}} ({{watershed.1|floatformat:0|intcomma}} km<sup>2</sup> / {{watershed.2|floatformat:0|intcomma}} mi<sup>2</sup>)</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan='2'>No Data Available</td>
+            </tr>
+        {% endif %}
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
