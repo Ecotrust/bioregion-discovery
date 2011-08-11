@@ -91,4 +91,19 @@ class ExtinctLanguages(models.Model):
     lmp_lat = models.FloatField()
     lmp_c1 = models.CharField(max_length=32)
     geometry = models.PointField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Extinct Language Points")
+    objects = models.GeoManager()   
+
+class SeaRise1m(models.Model):
+    gridcode = models.IntegerField()
+    geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Sea Level Rise 1m")
     objects = models.GeoManager()    
+
+class SeaRise3m(models.Model):
+    gridcode = models.IntegerField()
+    geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Sea Level Rise 3m")
+    objects = models.GeoManager()    
+
+class SeaRise6m(models.Model):
+    gridcode = models.IntegerField()
+    geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Sea Level Rise 6m")
+    objects = models.GeoManager()        

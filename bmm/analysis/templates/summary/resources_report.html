@@ -63,14 +63,67 @@
 </table>
 </div>
 
-<h3>Ecoregions</h3>
+<h3>Land-Based Agicultural Characteristics</h3>
 <div class='freetext'>
 <p>
 <table  style='width:430px' class='analysis_report_container'>
     <tbody>
         <tr class="grey">
             <td colspan='2'>
-                <b>Ecoregions</b>
+                <b>Proportion Suitable for Agriculture</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('agriculture');">Learn More</a><sup>
+                <div id="agriculture" style="display: none">
+                    <p>This value represents the proportion of the terrestrial area in the bioregion that is considered suitable for agriculture.
+                    <p>More information on the Agricultural Suitability data layer can be found <a href="http://www.sage.wisc.edu/atlas/maps.php?datasetid=19&includerelatedlinks=1&dataset=19" target="_blank">here</a>.
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan='2'>
+                {% if soil_suitability.0 == 0 %}
+                    No Data Available
+                {% else %}
+                    {{soil_suitability.0|percentage:0}} 
+                    <p>({{soil_suitability.1|floatformat:0|intcomma}} km<sup>2</sup> / {{soil_suitability.2|floatformat:0|intcomma}} mi<sup>2</sup>)
+                {% endif %}
+            </td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'>
+                <b>Proportion Equipped for Irrigation</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('irrigation');">Learn More</a><sup>
+                <div id="irrigation" style="display: none">
+                    <p>This value represents the proportion of the terrestrial area in the bioregion that is equipped for irrigation.
+                    <p>More information on the Irrigation data layer can be found <a href="http://www.fao.org/nr/water/aquastat/irrigationmap/index30.stm" target="_blank">here</a>.
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan='2'>
+                {% if equipped_for_irrigation.0 == 0 %}
+                    No Data Available
+                {% else %}
+                    {{equipped_for_irrigation.0|percentage:1}}
+                    <p>({{equipped_for_irrigation.1|floatformat:0|intcomma}} km<sup>2</sup> / {{equipped_for_irrigation.2|floatformat:0|intcomma}} mi<sup>2</sup>)
+                {% endif %}
+            </td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+    </tbody>
+</table>
+</div>
+
+<h3>Ecological Regions</h3>
+<div class='freetext'>
+<p>
+<table  style='width:430px' class='analysis_report_container'>
+    <tbody>
+        <tr class="grey">
+            <td colspan='2'>
+                <b>WWF Ecoregions</b>
                 <sup><a id="displayText" href="javascript:toggleDiv('ecoregions');">Learn More</a><sup>
                 <div id="ecoregions" style="display: none">
                     <p>World Wildlife Federation Terrestrial Ecoregions of the World.  
@@ -126,7 +179,7 @@
         <tr><td></td><td></td></tr>
         <tr class="grey">
             <td colspan='2'>
-                <b>Marine Ecoregions</b>
+                <b>WWF Marine Ecoregions</b>
                 <sup><a id="displayText" href="javascript:toggleDiv('marine_regions');">Learn More</a><sup>
                 <div id="marine_regions" style="display: none">
                     <p>World Wildlife Federation Marine Ecoregions of the World.  

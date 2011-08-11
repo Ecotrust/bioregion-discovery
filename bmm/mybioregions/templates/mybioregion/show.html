@@ -202,27 +202,25 @@
         <div id="summary" class="tabs">
             <ul>
                 <li><a href="#summary_intro"><span>Intro</span></a></li>
-                <li><a href="{% url general_summary_analysis instance.pk %}"><span>Overview</span></a></li>
-                <li><a href="{% url language_summary_analysis instance.pk %}"><span>Language</span></a></li>
-                <li><a href="{% url ecoregions_summary_analysis instance.pk %}"><span>Resources</span></a></li>
-                <li><a href="{% url agriculture_summary_analysis instance.pk %}"><span>Agriculture</span></a></li>
+                <li><a href="{% url overview_analysis instance.pk %}"><span>Overview</span></a></li>
+                <li><a href="{% url language_analysis instance.pk %}"><span>Language</span></a></li>
+                <li><a href="{% url natural_resources_analysis instance.pk %}"><span>Natural Resources</span></a></li>
             </ul>
             <div id="summary_intro">
                 <h2>Summary Reports</h2>
                 <div class="box">
                     <p>The <strong>Overview reports</strong> provide estimates of size, population, temperature, and precipitation for your bioregion.</p>
                     <p>The <strong>Language reports</strong> provide information related to what languages are currently spoken within your bioregion and what languages have historically been spoken.</p>
-                    <p>The <strong>Resources reports</strong> provide information related to primary productivity and existing ecoregions.</p>
-                    <p>The <strong>Agriculture reports</strong> provide information related to soil suitability and irrigation.</p>
+                    <p>The <strong>Natural Resources reports</strong> provide information related to primary productivity, agriculture, and existing ecoregions.</p>
                 </div>
             </div>
         </div>
         <div id="vulnerabilities" class="tabs">
             <ul>
                 <li><a href="#vulnerabilities_intro"><span>Intro</span></a></li>
-                <li><a href="{% url climate_vulnerability_analysis instance.pk %}"><span>Climate Change</span></a></li>
-                <li><a href="{% url socioeconomic_vulnerability_analysis instance.pk %}"><span>Socio-Economic</span></a></li>
-                <li><a href="{% url hazards_vulnerability_analysis instance.pk %}"><span>Natural Hazards</span></a></li>
+                <li><a href="{% url climate_change_analysis instance.pk %}"><span>Climate Change</span></a></li>
+                <li><a href="{% url socioeconomic_analysis instance.pk %}"><span>Socio-Economic</span></a></li>
+                <li><a href="{% url natural_hazards_analysis instance.pk %}"><span>Natural Hazards</span></a></li>
             </ul>
             <div id="vulnerabilities_intro">
                 <h2>Vulnerabilities Reports</h2>

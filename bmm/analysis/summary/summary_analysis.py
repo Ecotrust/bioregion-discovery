@@ -14,8 +14,8 @@ default_value = '---'
 global_landmass = 148940000. #sq km -- see table at http://en.wikipedia.org/wiki/Earth
 global_area = 510072000. #sq km -- see table at http://en.wikipedia.org/wiki/Earth
 #npp_grid_cell_size = 676000000. #sq m -- approximated via measurement tool in arcmap 
-npp_grid_cell_size = 16684.47387 * 16684.47387
-global_npp = 62000000000000000 #need to re-figure this value (don't seem to have the equation/sources any longer...
+#npp_grid_cell_size = 16684.47387 * 16684.47387
+#global_npp = 62000000000000000 #need to re-figure this value (don't seem to have the equation/sources any longer...
 avg_terrestrial_npp = 426
 avg_oceanic_npp = 140 
 
@@ -30,7 +30,7 @@ def display_summary_analysis(request, bioregion, template='summary_report.html')
      
 def display_general_analysis(request, bioregion, template='summary/general_report.html'):
     #get size of bioregion
-    area_km, area_mi = get_size(bioregion)
+    area_km, area_mi = get_size(bioregion.output_geom)
     #get terrestrial area
     terra_area_km, terra_area_mi = get_terra_area(bioregion)
     #get oceanic area
@@ -59,10 +59,14 @@ def display_language_analysis(request, bioregion, template='summary/language_rep
     context = {'bioregion': bioregion, 'default_value': default_value, 'languages': languages}
     return render_to_response(template, RequestContext(request, context)) 
     
-def display_ecoregions_analysis(request, bioregion, template='summary/ecoregions_report.html'):
+def display_resources_analysis(request, bioregion, template='summary/resources_report.html'):
     #get net primary production
     terr_npp_avg = get_terr_npp_avg(bioregion)
     ocn_npp_avg = get_ocn_npp_avg(bioregion)
+    #get soil suitability
+    soil_suitability = get_soil_suitability(bioregion) 
+    #get equipped for irrigation proportion
+    equipped_for_irrigation = get_proportion_equipped_for_irrigation(bioregion)
     #get watersheds
     watersheds = get_watersheds(bioregion)
     #get existing eco-regions
@@ -71,9 +75,9 @@ def display_ecoregions_analysis(request, bioregion, template='summary/ecoregions
     wild_regions = get_last_wild(bioregion)
     #get marine ecregions
     marine_ecoregions = get_marine_ecoregions(bioregion)
-    context = {'bioregion': bioregion, 'default_value': default_value, 'watersheds': watersheds, 'ecoregions': ecoregions, 'wild_regions': wild_regions, 'marine_ecoregions': marine_ecoregions, 'terr_npp_avg': terr_npp_avg, 'ocn_npp_avg': ocn_npp_avg, 'avg_terrestrial_npp': avg_terrestrial_npp, 'avg_oceanic_npp': avg_oceanic_npp}
+    context = {'bioregion': bioregion, 'default_value': default_value, 'watersheds': watersheds, 'ecoregions': ecoregions, 'wild_regions': wild_regions, 'marine_ecoregions': marine_ecoregions, 'terr_npp_avg': terr_npp_avg, 'ocn_npp_avg': ocn_npp_avg, 'avg_terrestrial_npp': avg_terrestrial_npp, 'avg_oceanic_npp': avg_oceanic_npp, 'soil_suitability': soil_suitability, 'equipped_for_irrigation': equipped_for_irrigation}
     return render_to_response(template, RequestContext(request, context)) 
-    
+'''    
 def display_agriculture_analysis(request, bioregion, template='summary/agriculture_report.html'):
     #get soil suitability
     soil_suitability = get_soil_suitability(bioregion) 
@@ -81,9 +85,9 @@ def display_agriculture_analysis(request, bioregion, template='summary/agricultu
     equipped_for_irrigation = get_proportion_equipped_for_irrigation(bioregion)
     context = {'bioregion': bioregion, 'default_value': default_value, 'soil_suitability': soil_suitability, 'equipped_for_irrigation': equipped_for_irrigation}
     return render_to_response(template, RequestContext(request, context)) 
-               
-def get_size(bioregion):
-    area_km = int(round(geometry_area_in_display_units(bioregion.output_geom)))
+'''
+def get_size(geom):
+    area_km = int(round(geometry_area_in_display_units(geom)))
     area_mi = int(round(convert_sq_km_to_sq_mi(area_km)))
     return area_km, area_mi
     
@@ -256,17 +260,25 @@ def get_landmass_proportion(area):
     return perc
     
 def get_soil_suitability(bioregion):
+    terra_geom = get_terra_geom(bioregion)
     suit_geom = RasterDataset.objects.get(name='soil_suitability')
-    suit_stats = zonal_stats(bioregion.output_geom, suit_geom)
-    return suit_stats.avg
+    suit_stats = zonal_stats(terra_geom, suit_geom)
+    proportion = suit_stats.avg
+    area_km, area_mi = get_size(terra_geom)
+    prop_area_km = area_km * proportion
+    prop_area_mi = area_mi * proportion
+    return (proportion, prop_area_km, prop_area_mi)
 
 def get_proportion_equipped_for_irrigation(bioregion):
+    terra_geom = get_terra_geom(bioregion)
     irrig_geom = RasterDataset.objects.get(name='irrig_equipped')
-    irrig_stats = zonal_stats(bioregion.output_geom, irrig_geom)
+    irrig_stats = zonal_stats(terra_geom, irrig_geom)
     hectares = irrig_stats.sum
-    area_km, area_mi = get_size(bioregion)
-    proportion_equipped_for_irrigation = hectares / 100 / area_km
-    return proportion_equipped_for_irrigation
+    area_km, area_mi = get_size(terra_geom)
+    proportion = hectares / 100 / area_km
+    prop_area_km = area_km * proportion
+    prop_area_mi = area_mi * proportion
+    return (proportion, prop_area_km, prop_area_mi)
     
 def get_terr_npp_avg(bioregion):
     terra_geom = get_terra_geom(bioregion)
