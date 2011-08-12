@@ -108,4 +108,9 @@ class SeaRise3m(models.Model):
 class SeaRise6m(models.Model):
     gridcode = models.IntegerField()
     geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Sea Level Rise 6m")
-    objects = models.GeoManager()        
+    objects = models.GeoManager()       
+
+class UrbanExtent(models.Model):
+    gridcode = models.IntegerField()
+    geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Urban Extent Boundaries")
+    objects = models.GeoManager()    

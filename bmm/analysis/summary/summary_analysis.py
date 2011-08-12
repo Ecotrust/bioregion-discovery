@@ -6,7 +6,7 @@ from lingcod.raster_stats.models import RasterDataset, zonal_stats
 #from settings import *
 from lingcod.unit_converter.models import geometry_area_in_display_units, convert_float_to_area_display_units
 from analysis.utils import convert_sq_km_to_sq_mi, convert_cm_to_in, get_terra_geom, get_oceanic_geom
-from analysis.models import Languages, EcoRegions, LastWild, MarineRegions, Watersheds, WorldMask
+from analysis.models import Languages, EcoRegions, LastWild, MarineRegions, Watersheds, WorldMask, UrbanExtent
 from analysis.caching.report_caching import *
 from lingcod.common.utils import clean_geometry
 
@@ -35,8 +35,10 @@ def display_general_analysis(request, bioregion, template='summary/general_repor
     terra_area_km, terra_area_mi = get_terra_area(bioregion)
     #get oceanic area
     oceanic_area_km, oceanic_area_mi = get_oceanic_area(bioregion)
-    #get current population (for 2010)
+    #get current population (for 2005)
     population_2005 = get_population(bioregion)
+    #get urban/rural population percentages (for 2005)
+    urban_perc = get_urban_perc(population_2005, bioregion)
     #get projected population (for 2015)
     population_2015 = get_projected_population(bioregion)
     #get median max temperature
@@ -50,7 +52,7 @@ def display_general_analysis(request, bioregion, template='summary/general_repor
     annual_temp_range_f = max_temp_f - min_temp_f
     #get mean annual precipitation
     annual_precip_cm, annual_precip_in = get_annual_precip(bioregion)
-    context = {'bioregion': bioregion, 'default_value': default_value, 'area_km': area_km, 'area_mi': area_mi, 'terra_area_km': terra_area_km, 'terra_area_mi': terra_area_mi, 'oceanic_area_km': oceanic_area_km, 'oceanic_area_mi': oceanic_area_mi, 'population_2005': population_2005, 'population_2015': population_2015, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip_cm': annual_precip_cm, 'annual_precip_in': annual_precip_in}
+    context = {'bioregion': bioregion, 'default_value': default_value, 'area_km': area_km, 'area_mi': area_mi, 'terra_area_km': terra_area_km, 'terra_area_mi': terra_area_mi, 'oceanic_area_km': oceanic_area_km, 'oceanic_area_mi': oceanic_area_mi, 'population_2005': population_2005, 'urban_perc': urban_perc, 'population_2015': population_2015, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip_cm': annual_precip_cm, 'annual_precip_in': annual_precip_in}
     return render_to_response(template, RequestContext(request, context)) 
      
 def display_language_analysis(request, bioregion, template='summary/language_report.html'):
@@ -107,6 +109,29 @@ def get_population(bioregion):
     pop_geom = RasterDataset.objects.get(name='population_2005')
     pop_stats = zonal_stats(bioregion.output_geom, pop_geom)
     return int(pop_stats.sum)
+    
+def get_urban_perc(pop_2005, bioregion):
+    if report_cache_exists(bioregion, 'urban_percentage'):
+        urban_perc = get_report_cache(bioregion, 'urban_percentage')
+        return urban_perc
+    else:
+        pop_geom = RasterDataset.objects.get(name='population_2005')
+        urban_objects = UrbanExtent.objects.filter(geometry__bboverlaps=bioregion.output_geom)
+        urban_pop = 0
+        for urban_object in urban_objects:
+            urban_shape = urban_object.geometry
+            if not urban_shape.valid:
+                urban_shape = urban_shape.buffer(0)
+            does_intersect = urban_shape.intersects(bioregion.output_geom)
+            if does_intersect:
+                urban_overlap = urban_shape.intersection(bioregion.output_geom)
+                pop_stats = zonal_stats(urban_overlap, pop_geom)
+                if pop_stats.sum:
+                    urban_pop += pop_stats.sum
+        urban_perc = urban_pop / pop_2005
+        create_report_cache(bioregion, dict(urban_percentage=urban_perc))
+        return urban_perc
+       
 
 def get_projected_population(bioregion):
     pop_geom = RasterDataset.objects.get(name='population_2015')
