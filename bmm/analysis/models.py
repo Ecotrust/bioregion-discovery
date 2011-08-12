@@ -8,6 +8,8 @@ from picklefield import PickledObjectField
 class ReportCache(models.Model):
     wkt_hash = models.CharField(max_length=255)
     context = PickledObjectField()
+    date_created = models.DateTimeField(auto_now_add=True, verbose_name="Date Created")
+    date_modified = models.DateTimeField(auto_now=True, verbose_name="Date Modified")
     
     #ensure no duplicates (same geometry and type) 
     def save(self, *args, **kwargs):
