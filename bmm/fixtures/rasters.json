@@ -170,6 +170,16 @@
     }
   },
   {
+    "pk": 41,
+    "model": "raster_stats.rasterdataset",
+    "fields": {
+      "type": "categorical",
+      "name": "ag_impact",
+      "full_name": "",
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/cch_ag_4"
+    }
+  },
+  {
     "pk": 42,
     "model": "raster_stats.rasterdataset",
     "fields": {
