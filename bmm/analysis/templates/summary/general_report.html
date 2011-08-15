@@ -62,6 +62,21 @@
         <tr><td></td><td></td></tr>
         <tr class="grey">
             <td colspan='2'>
+                <b>Estimated Urban Proportion (2005)</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('urban');">Learn More</a><sup>
+                <div id="urban" style="display: none">
+                    <p>This report is based on the Global Rural-Urban Mapping Project (GRUMP) Data Collection, Alpha version
+                    <p>More information on this data layer can be found <a href="http://sedac.ciesin.columbia.edu/gpw/metadata3.jsp" target="_blank">here</a>.
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan='2'>{{urban_perc|percentage:0}}</td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'>
                 <b>Projected Population (for 2015)</b>
                 <sup><a id="displayText" href="javascript:toggleDiv('pop15');">Learn More</a><sup>
                 <div id="pop15" style="display: none">
@@ -84,7 +99,7 @@
 
 <h3>Temperature <sup><small><a id="displayText" href="javascript:toggleDiv('temp');">Learn More</a></small><sup></h3>
     <div id="temp" style="display: none">
-        <p>More information on the climate layers used for the Temperature reports can be found <a href="http://www.worldclim.org/" target="_blank">here</a>.
+        <p>More information on the Temperature data layers can be found <a href="http://www.worldclim.org/" target="_blank">here</a>.
     </div>
 <div class='freetext'>
 <p>
@@ -146,10 +161,7 @@
 </table>
 </div>
 
-<h3>Precipitation <sup><small><a id="displayText" href="javascript:toggleDiv('precip');">Learn More</a></small><sup></h3>
-    <div id="precip" style="display: none">
-        <p>More information on the climate layers used for the Precipitation report can be found <a href="http://www.worldclim.org/" target="_blank">here</a>.
-    </div>
+<h3>Precipitation</h3>
 <div class='freetext'>
 <p>
 <table  style='width:430px' class='analysis_report_container'>
@@ -157,6 +169,11 @@
         <tr class="grey">
             <td colspan='2'>
                 <b>Mean Annual Precipitation</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('avg_precip');">Learn More</a><sup>
+                <div id="avg_precip" style="display: none">
+                    <p>The average yearly rainfall.  
+                    <p>More information on the Precipitation data layer can be found <a href="http://www.worldclim.org/" target="_blank">here</a>.
+                </div>
             </td>
         </tr>
         <tr>

@@ -8,6 +8,8 @@ from picklefield import PickledObjectField
 class ReportCache(models.Model):
     wkt_hash = models.CharField(max_length=255)
     context = PickledObjectField()
+    date_created = models.DateTimeField(auto_now_add=True, verbose_name="Date Created")
+    date_modified = models.DateTimeField(auto_now=True, verbose_name="Date Modified")
     
     #ensure no duplicates (same geometry and type) 
     def save(self, *args, **kwargs):
@@ -75,4 +77,40 @@ class Watersheds(models.Model):
 class WorldMask(models.Model):
     dissme = models.IntegerField()
     geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="World Terrestrial Mask")
+    objects = models.GeoManager()    
+    
+class ExtinctLanguages(models.Model):
+    nam_label = models.CharField(max_length=40)
+    name_prop = models.CharField(max_length=40)
+    name2 = models.CharField(max_length=40)
+    nam_ansi = models.CharField(max_length=40)
+    cnt = models.CharField(max_length=8)
+    c1 = models.CharField(max_length=33)
+    pop = models.CharField(max_length=86, null=True, blank=True)
+    lmp_pop1 = models.FloatField()
+    g = models.CharField(max_length=225)
+    lmp_lon = models.FloatField()
+    lmp_lat = models.FloatField()
+    lmp_c1 = models.CharField(max_length=32)
+    geometry = models.PointField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Extinct Language Points")
+    objects = models.GeoManager()   
+
+class SeaRise1m(models.Model):
+    gridcode = models.IntegerField()
+    geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Sea Level Rise 1m")
+    objects = models.GeoManager()    
+
+class SeaRise3m(models.Model):
+    gridcode = models.IntegerField()
+    geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Sea Level Rise 3m")
+    objects = models.GeoManager()    
+
+class SeaRise6m(models.Model):
+    gridcode = models.IntegerField()
+    geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Sea Level Rise 6m")
+    objects = models.GeoManager()       
+
+class UrbanExtent(models.Model):
+    gridcode = models.IntegerField()
+    geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Urban Extent Boundaries")
     objects = models.GeoManager()    

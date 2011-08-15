@@ -12,7 +12,7 @@
         According to <a href="http://en.wikipedia.org/wiki/Primary_production" target="_blank">Wikipedia</a>, 
         Net Primary Production (NPP) is the measure of organic compound production from atmospheric or aquatic carbon dioxide.
         It is the rate at which all plants in an ecosystem produce net useful chemical energy.  
-        <p>NPP is measured in mass / area / time, and in our case it is the measure of grams of carbon, per meter squared, per year. 
+        <p>NPP is measured in mass / area / time, and in our case it is the measure of grams of carbon per meter squared per year. 
     </div>
 
 <div class='freetext'>
@@ -25,11 +25,19 @@
                 <sup><a id="displayText" href="javascript:toggleDiv('npp_terr');">Learn More</a><sup>
                 <div id="npp_terr" style="display: none">
                     <p>In comparison, the average Global Terrestrial NPP is {{avg_terrestrial_npp}} g C/m<sup>2</sup>/yr.
+                    <p>NOTE:  Many significant land masses were not included within this dataset, we report on such absences with
+                       'No Data Available'.  
                 </div>
             </td>
         </tr>
         <tr>
-            <td colspan='2'>{{terr_npp_avg|floatformat:0}} g C/m<sup>2</sup>/yr</td>
+            <td colspan='2'>
+                {% if terr_npp_avg == 0 %}
+                    No Data Available
+                {% else %}
+                    {{terr_npp_avg|floatformat:0}} g C/m<sup>2</sup>/yr
+                {% endif %}
+            </td>
         </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
@@ -39,11 +47,18 @@
                 <sup><a id="displayText" href="javascript:toggleDiv('npp_ocn');">Learn More</a><sup>
                 <div id="npp_ocn" style="display: none">
                     <p>In comparison, the Average Global Oceanic NPP is {{avg_oceanic_npp}} g C/m<sup>2</sup>/yr, with coastal areas tending higher than deep sea areas.
+                    <p>More information on the Oceanic NPP dataset can be found <a href="http://www.science.oregonstate.edu/ocean.productivity/index.php" target="_blank">here</a>.
                 </div>
             </td>
         </tr>
         <tr>
-            <td colspan='2'>{{ocn_npp_avg|floatformat:0}} g C/m<sup>2</sup>/yr</td>
+            <td colspan='2'>
+                {% if ocn_npp_avg == 0 %}
+                    No Data Available
+                {% else %}
+                    {{ocn_npp_avg|floatformat:0}} g C/m<sup>2</sup>/yr
+                {% endif %}
+            </td>
         </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
@@ -51,30 +66,69 @@
 </table>
 </div>
 
-<h3>Ecoregions</h3>
+<h3>Land-Based Agicultural Characteristics</h3>
 <div class='freetext'>
 <p>
 <table  style='width:430px' class='analysis_report_container'>
     <tbody>
         <tr class="grey">
             <td colspan='2'>
-                <b>Watersheds</b>
-                <sup><a id="displayText" href="javascript:toggleDiv('watersheds');">Learn More</a><sup>
-                <div id="watersheds" style="display: none">
-                    <p>Data not yet available.
+                <b>Proportion Suitable for Agriculture</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('agriculture');">Learn More</a><sup>
+                <div id="agriculture" style="display: none">
+                    <p>This value represents the proportion of the terrestrial area in the bioregion that is considered suitable for agriculture.
+                    <p>More information on the Agricultural Suitability data layer can be found <a href="http://www.sage.wisc.edu/atlas/maps.php?datasetid=19&includerelatedlinks=1&dataset=19" target="_blank">here</a>.
+                    <p>NOTE:  Many significant land masses were not included within this dataset, we report on such absences with
+                       'No Data Available'.  
                 </div>
             </td>
         </tr>
-        {% for watershed in watersheds %}
         <tr>
-            <td colspan='2'>{{watershed.0}} ({{watershed.1|floatformat:0|intcomma}} km<sup>2</sup> / {{watershed.2|floatformat:0|intcomma}} mi<sup>2</sup>)</td>
+            <td colspan='2'>
+                {% if soil_suitability.0 == 0 %}
+                    No Data Available
+                {% else %}
+                    {{soil_suitability.0|percentage:0}} 
+                    <p>({{soil_suitability.1|floatformat:0|intcomma}} km<sup>2</sup> / {{soil_suitability.2|floatformat:0|intcomma}} mi<sup>2</sup>)
+                {% endif %}
+            </td>
         </tr>
-        {% endfor %}
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
             <td colspan='2'>
-                <b>Ecoregions</b>
+                <b>Proportion Equipped for Irrigation</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('irrigation');">Learn More</a><sup>
+                <div id="irrigation" style="display: none">
+                    <p>This value represents the proportion of the terrestrial area in the bioregion that is equipped for irrigation.
+                    <p>More information on the Irrigation data layer can be found <a href="http://www.fao.org/nr/water/aquastat/irrigationmap/index30.stm" target="_blank">here</a>.
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan='2'>
+                {% if equipped_for_irrigation.0 == 0 %}
+                    No Data Available
+                {% else %}
+                    {{equipped_for_irrigation.0|percentage:1}}
+                    <p>({{equipped_for_irrigation.1|floatformat:0|intcomma}} km<sup>2</sup> / {{equipped_for_irrigation.2|floatformat:0|intcomma}} mi<sup>2</sup>)
+                {% endif %}
+            </td>
+        </tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+    </tbody>
+</table>
+</div>
+
+<h3>Ecological Regions</h3>
+<div class='freetext'>
+<p>
+<table  style='width:430px' class='analysis_report_container'>
+    <tbody>
+        <tr class="grey">
+            <td colspan='2'>
+                <b>WWF Ecoregions</b>
                 <sup><a id="displayText" href="javascript:toggleDiv('ecoregions');">Learn More</a><sup>
                 <div id="ecoregions" style="display: none">
                     <p>World Wildlife Federation Terrestrial Ecoregions of the World.  
@@ -91,10 +145,10 @@
         <tr><td></td><td></td></tr>
         <tr class="grey">
             <td colspan='2'>
-                <b>Regions among the 10% Least Influenced Areas</b>
+                <b>Wild Regions</b>
                 <sup><a id="displayText" href="javascript:toggleDiv('last_wild');">Learn More</a><sup>
                 <div id="last_wild" style="display: none">
-                    <p>The Last of the Wild data is a vector representation of the world's 10% least influenced areas. 
+                    <p>The Wild Regions report is based on a vector representation of the world's 10% least influenced areas. 
                     <p>Click <a href="http://sedac.ciesin.columbia.edu/legacy?url=http://sedac.ciesin.columbia.edu/wildareas/methods.jsp" target="_blank">here</a> for more information.
                 </div>
             </td>
@@ -108,7 +162,31 @@
         <tr><td></td><td></td></tr>
         <tr class="grey">
             <td colspan='2'>
-                <b>Marine Ecoregions</b>
+                <b>Watersheds</b>
+                <sup><a id="displayText" href="javascript:toggleDiv('watersheds');">Learn More</a><sup>
+                <div id="watersheds" style="display: none">
+                    <p>More information on the Watersheds data layer can be found <a href="http://hydrosheds.cr.usgs.gov/" target="_blank">here</a>.
+                    <p>NOTE:  Many significant land masses were not included within this dataset, we report on such absences with
+                       'No Data Available'.  
+                </div>
+            </td>
+        </tr>
+        {% if watersheds.0 %}
+            {% for watershed in watersheds %}
+            <tr>
+                <td colspan='2'>{{watershed.0}} ({{watershed.1|floatformat:0|intcomma}} km<sup>2</sup> / {{watershed.2|floatformat:0|intcomma}} mi<sup>2</sup>)</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan='2'>No Data Available</td>
+            </tr>
+        {% endif %}
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr class="grey">
+            <td colspan='2'>
+                <b>WWF Marine Ecoregions</b>
                 <sup><a id="displayText" href="javascript:toggleDiv('marine_regions');">Learn More</a><sup>
                 <div id="marine_regions" style="display: none">
                     <p>World Wildlife Federation Marine Ecoregions of the World.  
@@ -132,6 +210,7 @@
     </tbody>
 </table>
 </div>
+<p>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
 <script type="text/javascript">

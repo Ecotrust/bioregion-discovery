@@ -174,8 +174,8 @@
         <div id="intro">
             <h2>Reports</h2>
             <div class="box">
-                <p>The <strong>Summary reports</strong> provide information such as population, poverty, and resource endowments related to your bioregion.</p>
-                <p>The <strong>Vulnerabilites reports</strong> provide information related to climate change, development pressure, water resource limitations, and food scarcity.</p>
+                <p><strong>Summary:</strong> provides information such as population, poverty, and resource endowments related to your bioregion.</p>
+                <p><strong>Vulnerabilities:</strong> provides information related to climate change, development pressure, water resource limitations, and food scarcity.</p>
             </div>
 
             {% if instance.description %}
@@ -189,47 +189,45 @@
             <div class="box">
                 <ul>
                     <li> Starting Point (lat, lon): {{ instance.input_starting_point.1|floatformat:3 }}, {{ instance.input_starting_point.0|floatformat:3 }}</li>
-                    <li> Temperature Relative Weighting: {{ instance.input_temp_weight }} / 100</li>
-                    <li> Precipitation Relative Weighting: {{ instance.input_precip_weight }} / 100</li>
-                    <li> Vegetation Relative Weighting: {{ instance.input_biomass_weight }} / 100</li>
-                    <li> Language Relative Weighting: {{ instance.input_lang_weight }} / 100</li>
-                    <li> Elevation Relative Weighting: {{ instance.input_elev_weight }} / 100</li>
-                    <li> Marine Relative Weighting: {{ instance.input_marine_weight }} / 100</li>
-                    <li> Bioregion Size: {{ instance.input_bioregion_size }} </li>
+                    <li> Temperature Relative Weighting: {{ instance.input_temp_weight|floatformat:0 }} / 100</li>
+                    <li> Precipitation Relative Weighting: {{ instance.input_precip_weight|floatformat:0 }} / 100</li>
+                    <li> Vegetation Relative Weighting: {{ instance.input_biomass_weight|floatformat:0 }} / 100</li>
+                    <li> Language Relative Weighting: {{ instance.input_lang_weight|floatformat:0 }} / 100</li>
+                    <li> Elevation Relative Weighting: {{ instance.input_elev_weight|floatformat:0 }} / 100</li>
+                    <li> Marine Relative Weighting: {{ instance.input_marine_weight|floatformat:0 }} / 100</li>
+                    <li> Bioregion Size: {% if instance.input_bioregion_size == 'VS' %} Very Small (2m Hectares) {% else %} {% if instance.input_bioregion_size == 'S' %} Small (5m Hectares) {% else %} {% if instance.input_bioregion_size == 'M' %} Medium (20m Hectares) {% else %} {% if instance.input_bioregion_size == 'L' %} Large (50m Hectares) {% else %} {% if instance.input_bioregion_size == 'VL' %} Very Large (100m Hectares) {% endif %}{% endif %}{% endif %}{% endif %}{% endif %}</li>
                 </ul>
             </div>
         </div>
         <div id="summary" class="tabs">
             <ul>
                 <li><a href="#summary_intro"><span>Intro</span></a></li>
-                <li><a href="{% url general_summary_analysis instance.pk %}"><span>Overview</span></a></li>
-                <li><a href="{% url language_summary_analysis instance.pk %}"><span>Language</span></a></li>
-                <li><a href="{% url ecoregions_summary_analysis instance.pk %}"><span>Resources</span></a></li>
-                <li><a href="{% url agriculture_summary_analysis instance.pk %}"><span>Agriculture</span></a></li>
+                <li><a href="{% url overview_analysis instance.pk %}"><span>Overview</span></a></li>
+                <li><a href="{% url language_analysis instance.pk %}"><span>Language</span></a></li>
+                <li><a href="{% url natural_resources_analysis instance.pk %}"><span>Natural Resources</span></a></li>
             </ul>
             <div id="summary_intro">
                 <h2>Summary Reports</h2>
                 <div class="box">
-                    <p>The <strong>Overview reports</strong> provide estimates of size, population, temperature, and precipitation for your bioregion.</p>
-                    <p>The <strong>Language reports</strong> provide information related to what languages are currently spoken within your bioregion and what languages have historically been spoken.</p>
-                    <p>The <strong>Resources reports</strong> provide information related to ...</p>
-                    <p>The <strong>Agriculture reports</strong> provide information related to ...</p>
+                    <p><strong>Overview: </strong> provides estimates of size, population, temperature, and precipitation for your bioregion.</p>
+                    <p><strong>Language:</strong> provides information related to what languages are currently spoken within your bioregion and what languages have historically been spoken.</p>
+                    <p><strong>Natural Resources:</strong> provides information related to primary productivity, agriculture, and existing ecoregions.</p>
                 </div>
             </div>
         </div>
         <div id="vulnerabilities" class="tabs">
             <ul>
                 <li><a href="#vulnerabilities_intro"><span>Intro</span></a></li>
-                <li><a href="{% url climate_vulnerability_analysis instance.pk %}"><span>Climate Change</span></a></li>
-                <li><a href="{% url socioeconomic_vulnerability_analysis instance.pk %}"><span>Socio-Economic</span></a></li>
-                <li><a href="{% url hazards_vulnerability_analysis instance.pk %}"><span>Natural Hazards</span></a></li>
+                <li><a href="{% url climate_change_analysis instance.pk %}"><span>Climate Change</span></a></li>
+                <li><a href="{% url socioeconomic_analysis instance.pk %}"><span>Socio-Economic</span></a></li>
+                <li><a href="{% url natural_hazards_analysis instance.pk %}"><span>Natural Hazards</span></a></li>
             </ul>
             <div id="vulnerabilities_intro">
                 <h2>Vulnerabilities Reports</h2>
                 <div class="box">
-                    <p>The <strong>Climage reports</strong> provide information related to ...</p>
-                    <p>The <strong>Human reports</strong> provide information related to ...</p>
-                    <p>The <strong>Social reports</strong> provide information related to ...</p>
+                    <p><strong>Climate Change:</strong> provides information related to impacts on agriculture, water, and land loss due to sea level rise.</p>
+                    <p><strong>Socio-Economic:</strong> provides information related to human impacts, human needs, social equity, and cultural pressures.</p>
+                    <p><strong>Natural Hazards:</strong> provides information related to potential natural hazards and their economic costs.</p>
                 </div>
             </div>
         </div>
