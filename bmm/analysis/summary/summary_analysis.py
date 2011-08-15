@@ -122,8 +122,7 @@ def get_urban_perc(pop_2005, bioregion):
             urban_shape = urban_object.geometry
             if not urban_shape.valid:
                 urban_shape = urban_shape.buffer(0)
-            does_intersect = urban_shape.intersects(bioregion.output_geom)
-            if does_intersect:
+            if urban_shape.intersects(bioregion.output_geom):
                 urban_overlap = urban_shape.intersection(bioregion.output_geom)
                 pop_stats = zonal_stats(urban_overlap, pop_geom)
                 if pop_stats.sum:
@@ -245,7 +244,10 @@ def get_last_wild(bioregion):
         wild_regions = LastWild.objects.filter(geometry__bboverlaps=bioregion.output_geom)
         wild_region_tuples =  []
         for wild_region in wild_regions:
-            wild_geom = wild_region.geometry.buffer(0)
+            if wild_region.geometry.valid:
+                wild_geom = wild_region.geometry
+            else:
+                wild_geom = wild_region.geometry.buffer(0)
             if wild_geom.intersects(bioregion.output_geom):
                 inter_geom = wild_geom.intersection(bioregion.output_geom)
                 wild_region_tuples.append((inter_geom.area, wild_region.eco_name))
