@@ -243,7 +243,13 @@ def get_last_wild(bioregion):
         return lastwild_tuples
     else:
         wild_regions = LastWild.objects.filter(geometry__bboverlaps=bioregion.output_geom)
-        wild_region_tuples = [(wild_region.geometry.intersection(bioregion.output_geom).area, wild_region.eco_name) for wild_region in wild_regions if wild_region.geometry.intersects(bioregion.output_geom)]
+        wild_region_tuples =  []
+        for wild_region in wild_regions:
+            wild_geom = wild_region.geometry.buffer(0)
+            if wild_geom.intersects(bioregion.output_geom):
+                inter_geom = wild_geom.intersection(bioregion.output_geom)
+                wild_region_tuples.append((inter_geom.area, wild_region.eco_name))
+        #wild_region_tuples = [(wild_region.geometry.intersection(bioregion.output_geom).area, wild_region.eco_name) for wild_region in wild_regions if wild_region.geometry.intersects(bioregion.output_geom)]
         wild_region_dict = {}
         for area,name in wild_region_tuples:
             if name is not None:
