@@ -236,17 +236,17 @@ class MyBioregion(Analysis):
             del kwargs['rerun']
         else:
             rerun = False
-        # only rerun the analysis if any of the input_ fields have changed
-        # ie if name and description change no need to rerun the full analysis
-        if self.pk is None:
-            rerun = True
-        else:
-            orig = MyBioregion.objects.get(pk=self.pk)
-            for f in MyBioregion.input_fields():
-                # Is original value different from form value?
-                if orig._get_FIELD_display(f) != self._get_FIELD_display(f):
-                    rerun = True
-                    break
+            # only rerun the analysis if any of the input_ fields have changed
+            # ie if name and description change no need to rerun the full analysis
+            if self.pk is None:
+                rerun = True
+            else:
+                orig = MyBioregion.objects.get(pk=self.pk)
+                for f in MyBioregion.input_fields():
+                    # Is original value different from form value?
+                    if orig._get_FIELD_display(f) != self._get_FIELD_display(f):
+                        rerun = True
+                        break
         super(MyBioregion, self).save(rerun=rerun)
 
     @classmethod
