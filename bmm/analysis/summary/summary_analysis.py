@@ -30,34 +30,34 @@ def display_summary_analysis(request, bioregion, template='summary_report.html')
      
 def display_general_analysis(request, bioregion, template='summary/general_report.html'):
     #get size of bioregion
-    area_km, area_mi = get_size(bioregion.output_geom)
+    area_km, area_mi = get_size(bioregion.output_geom) #0 seconds
     #get terrestrial area
-    terra_area_km, terra_area_mi = get_terra_area(bioregion)
+    terra_area_km, terra_area_mi = get_terra_area(bioregion) #2 seconds
     #get oceanic area
-    oceanic_area_km, oceanic_area_mi = get_oceanic_area(bioregion)
+    oceanic_area_km, oceanic_area_mi = get_oceanic_area(bioregion) #2 seconds
     #get current population (for 2005)
-    population_2005 = get_population(bioregion)
+    population_2005 = get_population(bioregion) #2 seconds
     #get urban/rural population percentages (for 2005)
-    urban_perc = get_urban_perc(population_2005, bioregion)
+    urban_perc = get_urban_perc(population_2005, bioregion) #23 seconds
     #get projected population (for 2015)
-    population_2015 = get_projected_population(bioregion)
+    population_2015 = get_projected_population(bioregion) #2 seconds
     #get median max temperature
-    max_temp_c, max_temp_f = get_max_temp(bioregion)
+    max_temp_c, max_temp_f = get_max_temp(bioregion) #2 seconds
     #get median min temperature
-    min_temp_c, min_temp_f = get_min_temp(bioregion)
+    min_temp_c, min_temp_f = get_min_temp(bioregion) #2 seconds
     #get mean annual temperature
-    annual_temp_c, annual_temp_f = get_annual_temp(bioregion)
+    annual_temp_c, annual_temp_f = get_annual_temp(bioregion) #9 seconds
     #get mean annual temperature range
     annual_temp_range_c = max_temp_c - min_temp_c
     annual_temp_range_f = max_temp_f - min_temp_f
     #get mean annual precipitation
-    annual_precip_cm, annual_precip_in = get_annual_precip(bioregion)
+    annual_precip_cm, annual_precip_in = get_annual_precip(bioregion) #9 seconds
     context = {'bioregion': bioregion, 'default_value': default_value, 'area_km': area_km, 'area_mi': area_mi, 'terra_area_km': terra_area_km, 'terra_area_mi': terra_area_mi, 'oceanic_area_km': oceanic_area_km, 'oceanic_area_mi': oceanic_area_mi, 'population_2005': population_2005, 'urban_perc': urban_perc, 'population_2015': population_2015, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip_cm': annual_precip_cm, 'annual_precip_in': annual_precip_in}
     return render_to_response(template, RequestContext(request, context)) 
      
 def display_language_analysis(request, bioregion, template='summary/language_report.html'):
     #get list of spoken languages
-    languages = get_languages(bioregion)
+    languages = get_languages(bioregion) #19 seconds
     context = {'bioregion': bioregion, 'default_value': default_value, 'languages': languages}
     return render_to_response(template, RequestContext(request, context)) 
     
