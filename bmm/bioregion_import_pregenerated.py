@@ -151,12 +151,10 @@ def get_bioregion(pt):
     return the_bio
 
 
-def reports():
+def reports(bio):
     req = HttpRequest()
-    for bio in []: #MyBioregion.objects.filter(user=user):
-        poly = bio.output_geom
-        pt = GEOSGeometry('SRID=4326;POINT(%s %s)' % (x,y))
-        print "reports for ", bio.name
+    print "reports for ", bio.name
+    try:
         overview_analysis(req, bio.pk)
         language_analysis(req, bio.pk)
         natural_resources_analysis(req, bio.pk)
@@ -166,6 +164,8 @@ def reports():
         socioeconomic_analysis(req, bio.pk)
         natural_hazards_analysis(req, bio.pk)
         vulnerability_analysis(req, bio.pk)
+    except:
+        pass
 
 
 if __name__ == '__main__':
@@ -192,6 +192,7 @@ if __name__ == '__main__':
                 bio2.add_to_collection(folder)
                 bio2.share_with(public)
                 bio2.save(rerun=False)
+                reports(bio2)
             else:
                 print "NO BIOREGION!", name
                 print name, pt
