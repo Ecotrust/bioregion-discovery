@@ -17,12 +17,8 @@ from django.http import HttpRequest
 import random
 from IPython.Shell import IPShellEmbed; debug = IPShellEmbed()
 
-lines = open("../data/cities15000.txt").readlines()
-
-def get_random_city():
-    line = random.choice(lines)
-    data = line.strip().split('\t')
-    return float(data[5]), float(data[4]), data[1]
+user = User.objects.get(username='pregen')
+seed = True
 
 def delete(): 
     for model in [MyBioregion, Folder]:
@@ -31,42 +27,36 @@ def delete():
             i.delete()
 
 def main():
-    user = User.objects.get(username='pregen')
-
     from django.contrib.gis.gdal import DataSource
     ds = DataSource("../data/ecobio/Eco_Bioregion1.shp")
     layer = ds[0]
     layer.spatial_filter = None
 
-    # TODO loop through delegate list
-    for i in range(20):
-        #x,y,name = get_delegate_info()
-        x,y,name = get_random_city()
-        g = GEOSGeometry('SRID=4326;POINT(%s %s)' % (x,y))
-
-        # intersect pregen bioregions with g to get a single polygon
-        extent = g.buffer(0.0000001).extent
-        print extent
-        layer.spatial_filter = extent
-        try:
-            pregen_bio = [feat for feat in layer][0]
-        except IndexError:
-            print "-- Point doesnt intersect any bioregions; skipping !!!!!"
-            print x, y, name
-
-        if len(layer) > 1:
-            print "-- Point is right in between two bioregions; use the first !!!!!"
+    for pregen_bio in layer:
+        name = "Bio%s" % pregen_bio.fid
+        cont = pregen_bio.get("CONTINENT")
+        if not cont: 
+            continue
+        folder, created = Folder.objects.get_or_create(name=cont, user=user)
+        g = pregen_bio.geom.geos.point_on_surface #GEOSGeometry('SRID=4326;POINT(%s %s)' % (x,y))
 
         outg = None
-        if pregen_bio.geom.geom_count > 1:
+        if pregen_bio.geom.geom_type == 'MultiPolygon':
+            largestarea = 0
             for geom in pregen_bio.geom:
-                if geom.geos.intersects(g):
+                if geom.area > largestarea:
+                    largestarea = geom.area
                     outg = geom.geos
-        else:
+        elif pregen_bio.geom.geom_type == 'Polygon':
             outg = pregen_bio.geom.geos
+        else:
+            print "!!!! not a polygon"
+            continue
 
         if outg:
             outg.srid = 4326
+        else:
+            debug()
 
         desired_size = random.choice(SIZE_LOOKUP.keys())
         desired_size_mHa = SIZE_LOOKUP[desired_size]
@@ -78,21 +68,94 @@ def main():
                 input_elev_weight = 50,
                 input_marine_weight = 10,
                 input_starting_point = g,
-                input_bioregion_size= 'VS'
+                input_bioregion_size= 'L'
                 ) 
-        bio.save()
 
         # Now override the size and geometry
-        bio.input_bioregion_size = 'L'
         bio.output_geom = outg.transform(settings.GEOMETRY_DB_SRID, clone=True)
+        bio.output_numruns = 5
+        bio.output_finalcost = 100
         bio.satisfied = True
         bio.save(rerun=False)
+        if seed:
+            bio.kml_safe
+
+        bio.add_to_collection(folder)
+        
+def get_attendees():
+    user = User.objects.get(username='pregen')
+    from geopy import geocoders  
+    g = geocoders.Google()
+
+    import csv
+    # Load cached
+    cached = csv.reader(open("../data/cached_bioregional_players.csv",'rb'))
+    cached.next()
+    players = {}
+    for row in cached:
+        lon = row[1]
+        lat = row[2]
+        if "*" not in lon and "*" not in lat:
+            pt = GEOSGeometry('SRID=4326;POINT(%s %s)' % (lon,lat))
+        else:
+            pt = None
+        players[row[0]] = pt
+
+    outcache = open("../data/cached_bioregional_players.csv",'a')
+    reader = csv.reader(open("../data/bioregional_players.csv",'rb'))
+    reader.next()
+    for row in reader:
+        name = row[0].strip()
+        geoname = row[13].strip()
+        if players.has_key(name):
+            continue
+        if not geoname:
+            continue
+        try:
+            place, (lat, lon) = g.geocode(geoname)  
+            pt = GEOSGeometry('SRID=4326;POINT(%s %s)' % (lon,lat))
+            outcache.write("\"%s\",%s,%s,\"%s\"" % (name, pt.x, pt.y, geoname))
+            outcache.write("\n")
+        except:
+            print "!!!! NO DATA FOUND FOR %s (%s)" % (name, geoname)
+            outcache.write("\"%s\",******,******,\"%s\"" % (name, geoname))
+            outcache.write("\n")
+            pt = None
+
+        players[name] = pt
+        print pt
+        print "Writing cache for %s : %s" % (name, pt)
+
+    outcache.close()
+    return players
+
+def share(bio):
+    pass
+
+
+def get_bioregion(pt):
+    pt = pt.transform(settings.GEOMETRY_DB_SRID, clone=True)
+    bios = MyBioregion.objects.filter(user=user,output_geom__bboverlaps=pt.buffer(100000))
+    for bio in bios:
+        if bio.output_geom.intersects(pt):
+            return bio
+
+    # no intersection, take the closest
+    nearest = 100000000000000
+    the_bio = None
+    for bio in bios:
+        d = bio.output_geom.distance(pt)
+        if d < nearest:
+            nearest = d
+            the_bio = bio
+    return the_bio
 
 
 def reports():
-    user = User.objects.get(username='pregen')
     req = HttpRequest()
-    for bio in MyBioregion.objects.all(user=user):
+    for bio in []: #MyBioregion.objects.filter(user=user):
+        poly = bio.output_geom
+        pt = GEOSGeometry('SRID=4326;POINT(%s %s)' % (x,y))
         print "reports for ", bio.name
         overview_analysis(req, bio.pk)
         language_analysis(req, bio.pk)
@@ -106,6 +169,30 @@ def reports():
 
 
 if __name__ == '__main__':
-    delete()
-    main()
-    reports()
+    public = Group.objects.get(name="Share with Public")
+    #delete()
+    #main()
+    a = get_attendees()
+    user = User.objects.get(username='pregen')
+    folder, created = Folder.objects.get_or_create(name="Bioregions of the Attendees", user=user)
+    for name, pt in a.items():
+        if pt and len(MyBioregion.objects.filter(user=user, name=name)) < 1:
+            bio = get_bioregion(pt)
+            if bio:
+                bio2 = bio.copy(user)
+                try:
+                    newname = escape(name)
+                except:
+                    print "NOT NAMED", name
+                    newname = bio2.name
+                bio2.name = newname
+                bio2.input_starting_point = pt
+                if seed:
+                    bio2.kml_safe
+                bio2.add_to_collection(folder)
+                bio2.share_with(public)
+                bio2.save(rerun=False)
+            else:
+                print "NO BIOREGION!", name
+                print name, pt
+
