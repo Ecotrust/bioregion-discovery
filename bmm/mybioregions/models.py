@@ -46,6 +46,7 @@ class MyBioregion(Analysis):
     input_lang_weight = models.FloatField(verbose_name='Value given to Language')
     input_elev_weight = models.FloatField(verbose_name='Value given to Elevation')
     input_marine_weight = models.FloatField(verbose_name='Value given to Marine Environment')
+    input_dwater_weight = models.FloatField(verbose_name='Value given to Proximity to Major Waterbodies')
     input_bioregion_size = models.CharField(choices=BIOREGION_SIZES, max_length=3,
             verbose_name='Relative size of Bioregion', default='S')
     
@@ -71,6 +72,7 @@ class MyBioregion(Analysis):
         p_lang = self.input_lang_weight
         p_elev = self.input_elev_weight
         p_marine = self.input_marine_weight
+        p_dwater = self.input_dwater_weight
 
         g = Grass(settings.GRASS_LOCATION,
                 gisbase=settings.GRASS_GISBASE,
@@ -93,7 +95,6 @@ class MyBioregion(Analysis):
 
         x = p_temp + p_precip + p_biomass + p_lang + p_elev + p_marine 
         dist_constant = 0.0
-        # TODO
         # regression, R^2 ~ 0.38 for 275 random samples
         intercept = 0 #464070
         max_cost = math.fabs((3162 * x * (desired_size_mHa ** 0.5))+intercept)
@@ -112,8 +113,9 @@ class MyBioregion(Analysis):
                             '(%s * pow(abs(%s - temp_slope),2))*10 + ' % (p_temp,start_values['temp_slope'])  + 
                             '(%s * pow(abs(%s - precip_slope),2))*10 + ' % (p_precip,start_values['precip_slope'])  + 
                             '(%s * pow(abs(%s - biomass_slope),2))*10 + ' % (p_biomass,start_values['biomass_slope'])  + 
-                            '(%s * pow(abs(%s - lang_slope),2))*10 + ' % (p_lang,start_values['lang_slope'])  + 
+                            '(%s * pow(abs(%s - dwater_slope),2))*10 + ' % (p_dwater,start_values['dwater_slope'])  + 
                             '(%s * pow(abs(%s - elev_slope),2))*10' % (p_elev,start_values['elev_slope'])  + 
+                            '(%s * if(%s - lang_slope == 0, 0, 10000)) * 10 + ' % (p_lang,start_values['lang_slope'])  + 
                             '"')
 
         if p_marine >= 1:
