@@ -47,7 +47,7 @@ class MyBioregion(Analysis):
     input_elev_weight = models.FloatField(verbose_name='Value given to Elevation')
     input_marine_weight = models.FloatField(verbose_name='Value given to Marine Environment')
     input_bioregion_size = models.CharField(choices=BIOREGION_SIZES, max_length=3,
-            verbose_name='Relative size of Bioregion', default='M')
+            verbose_name='Relative size of Bioregion', default='S')
     
     #Descriptors (name field is inherited from Analysis)
     description = models.TextField(null=True, blank=True)
