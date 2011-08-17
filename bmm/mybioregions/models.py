@@ -121,9 +121,9 @@ class MyBioregion(Analysis):
         if p_marine >= 1:
             '''
             We need a distance constant to prevent 'runout' - this needs to be inversely propotional to the marine weighting
-            For the multiplier, normalize to other layers (10^5 = 1000000 then divide by the marine weight)
+            For the multiplier, normalize to other layers (10^6 = 10000000 then divide by the marine weight)
             '''
-            g.run('r.mapcalc "weighted_ocean_slope = (10000000/%s) + ' % (p_marine,) + 
+            g.run('r.mapcalc "weighted_ocean_slope = (100000000/%s) + ' % (p_marine,) + 
                             '(%s * pow(abs(%s - ocean_slope),2))*(1000000/%s)' % (p_marine,start_values['ocean_slope'], p_marine )  + 
                             '"')
             g.run('r.mapcalc "weighted_combined_slope = if(isnull(weighted_ocean_slope),0,weighted_ocean_slope) + ' + 
