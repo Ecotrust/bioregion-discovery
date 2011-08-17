@@ -114,8 +114,8 @@ class MyBioregion(Analysis):
                             '(%s * pow(abs(%s - precip_slope),2))*10 + ' % (p_precip,start_values['precip_slope'])  + 
                             '(%s * pow(abs(%s - biomass_slope),2))*10 + ' % (p_biomass,start_values['biomass_slope'])  + 
                             '(%s * pow(abs(%s - dwater_slope),2))*10 + ' % (p_dwater,start_values['dwater_slope'])  + 
-                            '(%s * pow(abs(%s - elev_slope),2))*10' % (p_elev,start_values['elev_slope'])  + 
-                            '(%s * if(%s - lang_slope == 0, 0, 10000)) * 10 + ' % (p_lang,start_values['lang_slope'])  + 
+                            '(%s * pow(abs(%s - elev_slope),2))*10 + ' % (p_elev,start_values['elev_slope'])  + 
+                            '(%s * if(%s - lang_slope == 0, 0, 10000)) * 10' % (p_lang,start_values['lang_slope'])  + 
                             '"')
 
         if p_marine >= 1:
