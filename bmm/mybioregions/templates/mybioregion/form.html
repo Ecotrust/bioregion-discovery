@@ -59,22 +59,22 @@
             var text = "none";
             switch(id) {
                 case 'info_temp':
-                    text = "Temp...";
+                    text = "Temperature takes into account both minimum temperature and temperature range.";
                     break;
                 case 'info_precip':
-                    text = "Precipitation...";
+                    text = "Precipitation takes into account the average annual rainfall.";
                     break;
                 case 'info_biomass':
-                    text = "Biomass...";
+                    text = "Vegetation takes into account the total biomass of the region.";
                     break;
                 case 'info_lang':
-                    text = "Language...";
+                    text = "Language takes into account the primary spoken language in a region.";
                     break;
                 case 'info_elev':
-                    text = "Elevation...";
+                    text = "Elevation takes into account the land elevation above sea level";
                     break;
                 case 'info_marine':
-                    text = "Marine...";
+                    text = "Marine takes into account sea surface temperature, bathymetry and distance to shoreline.";
                     break;
                 default:
                     $(this).hide();
@@ -169,6 +169,7 @@ span.form-image > img { width:46px; height:46px; }
   <div class="step" id="step2">
     <h3> Step 2 of 3 </h3>
       <p> Specify the <em>relative importance</em> of the following parameters; in other words, to what extent do these parameters define your bioregion? </p>
+      <p> For example, if you slide the temperature parameter to the right, your bioregion shape will be more likely to include areas with similar temperature characteristics to your starting point. </p>
     <div class="inputfield" id="temp">
         <div class="field required">
             {{ form.input_temp_weight.label_tag }} <img src="/media/bmm/img/info.png" id="info_temp" class="paraminfo"/>
