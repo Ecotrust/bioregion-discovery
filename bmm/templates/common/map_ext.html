@@ -6,7 +6,7 @@
     {% if user.is_authenticated %}
     <li><a href="#" id="profile">
         {% if user.first_name and user.first_name.strip or user.last_name and user.last_name.strip %}
-            {{user.first_name}} {{user.last_name}} 
+            {{user.first_name}} {{user.last_name}}
         {% else %}
             {{user.username}}
         {% endif %}
