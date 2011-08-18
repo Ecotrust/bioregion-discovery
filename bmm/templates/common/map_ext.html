@@ -4,7 +4,7 @@
 
 {% block metanavigation %}
     {% if user.is_authenticated %}
-    <li><a href="#" id="profile">{{user.username}}</a> | </li>
+    <li><a href="#" id="profile">{{user.first_name}} {{user.last_name}}</a> | </li>
     {% endif %}
 
     <li style="display:none;"><a href="#" id="news">news</a> | </li>
