@@ -28,7 +28,7 @@ def create_users():
         user.is_superuser = False
         user.groups = [group]
         user.save()
-        print user.username, user.groups
+        #print user.username, user.groups
         
 
 
