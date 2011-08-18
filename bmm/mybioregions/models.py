@@ -123,8 +123,8 @@ class MyBioregion(Analysis):
             We need a distance constant to prevent 'runout' - this needs to be inversely propotional to the marine weighting
             For the multiplier, normalize to other layers (10^6 = 10000000 then divide by the marine weight)
             '''
-            g.run('r.mapcalc "weighted_ocean_slope = (100000000/%s) + ' % (p_marine,) + 
-                            '(%s * pow(abs(%s - ocean_slope),2))*(1000000/%s)' % (p_marine,start_values['ocean_slope'], p_marine )  + 
+            g.run('r.mapcalc "weighted_ocean_slope = (10000000/%s) + ' % (p_marine,) + 
+                            '(%s * pow(abs(%s - ocean_slope),2))*(1000/%s)' % (p_marine,start_values['ocean_slope'], p_marine )  + 
                             '"')
             g.run('r.mapcalc "weighted_combined_slope = if(isnull(weighted_ocean_slope),0,weighted_ocean_slope) + ' + 
                   'if(isnull(weighted_land_slope),0,weighted_land_slope)"')
@@ -146,11 +146,16 @@ class MyBioregion(Analysis):
             g.run('g.region w=%d s=%d e=%d n=%d' % buff.extent )
             g.run('r.cost -k input=weighted_combined_slope output=cost1 coordinate=%s,%s max_cost=%s' % \
                     (coords[0],coords[1],max_cost) )
-            g.run('r.mapcalc "bioregion1=if(cost1 >= 0)"')
-            g.run('r.to.vect -s input=bioregion1 output=bioregion1_poly feature=area') 
+            g.run('r.mapcalc "bio_rast=if(cost1 >= 0)"')
+            g.run('r.to.vect input=bio_rast output=bio_poly feature=area') 
+
+            # get "nicer" shapes by simplifying then smoothing
+            g.run('v.generalize --o input=bio_poly output=bio_poly_simpl method=douglas_reduction threshold=12000 reduction=50') 
+            g.run('v.generalize --o input=bio_poly_simpl output=bio_poly_gen method=chaiken threshold=5.0')
+
             if os.path.exists(output):
                 os.remove(output)
-            g.run('v.out.ogr -c input=bioregion1_poly type=area format=GeoJSON dsn=%s' % output)
+            g.run('v.out.ogr input=bio_poly_gen type=area format=GeoJSON dsn=%s' % output)
             old_area = largest_area
             largest_area, geom = get_largest_from_json(output)
             delta_area = largest_area - old_area
@@ -325,8 +330,12 @@ class MyBioregion(Analysis):
                 <scale>0.8</scale>
             </LabelStyle>
             <PolyStyle>
-                <color>778B1A55</color>
+                <color>888B1A55</color>
             </PolyStyle>
+            <LineStyle>
+                <color>22ffffff</color>
+                <width>3</width>
+            </LineStyle>
         </Style>
         """ % (self.model_uid(),)
     
