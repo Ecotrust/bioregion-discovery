@@ -194,6 +194,7 @@
                     <li> Vegetation Relative Weighting: {{ instance.input_biomass_weight|floatformat:0 }} / 100</li>
                     <li> Language Relative Weighting: {{ instance.input_lang_weight|floatformat:0 }} / 100</li>
                     <li> Elevation Relative Weighting: {{ instance.input_elev_weight|floatformat:0 }} / 100</li>
+                    <li> Proximity to Water Relative Weighting: {{ instance.input_dwater_weight|floatformat:0 }} / 100</li>
                     <li> Marine Relative Weighting: {{ instance.input_marine_weight|floatformat:0 }} / 100</li>
                     <li> Bioregion Size: {% if instance.input_bioregion_size == 'VS' %} Very Small (2m Hectares) {% else %} {% if instance.input_bioregion_size == 'S' %} Small (5m Hectares) {% else %} {% if instance.input_bioregion_size == 'M' %} Medium (20m Hectares) {% else %} {% if instance.input_bioregion_size == 'L' %} Large (50m Hectares) {% else %} {% if instance.input_bioregion_size == 'VL' %} Very Large (100m Hectares) {% endif %}{% endif %}{% endif %}{% endif %}{% endif %}</li>
                 </ul>
