@@ -14,7 +14,8 @@ from lingcod.analysistools.grass import Grass
 from lingcod.analysistools.utils import linear_regression
 import random
 
-lines = open("/home/mperry/cities15000.txt").readlines()
+lines = open("../data/cities15000.txt").readlines()
+user = User.objects.get(username='demo')
 
 def get_random_city():
     line = random.choice(lines)
@@ -23,7 +24,7 @@ def get_random_city():
 
 def delete(): 
     for model in [MyBioregion, Folder]:
-        a = model.objects.all()
+        a = model.objects.filter(user=user)
         for i in a:
             i.delete()
 
@@ -46,6 +47,7 @@ def main():
                 input_biomass_weight = random.randrange(0,100),
                 input_lang_weight = random.randrange(0,100),
                 input_elev_weight = random.randrange(0,100),
+                input_dwater_weight = random.randrange(0,100),
                 input_marine_weight = marine, 
                 input_starting_point = g,
                 input_bioregion_size= desired_size
@@ -114,6 +116,6 @@ def summary():
 
 
 if __name__ == '__main__':
-    #delete()
-    #main()
+    delete()
+    main()
     summary()

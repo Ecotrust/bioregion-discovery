@@ -76,9 +76,6 @@
                 case 'info_marine':
                     text = "Marine takes into account sea surface temperature, bathymetry and distance to shoreline.";
                     break;
-                case 'info_dwater':
-                    text = "Proximity to Major Waterbodies takes into account the distance from lakes and majors rivers.";
-                    break;
                 default:
                     $(this).hide();
             }
@@ -206,13 +203,6 @@ span.form-image > img { width:46px; height:46px; }
             {{ form.input_elev_weight.label_tag }} <img src="/media/bmm/img/info.png" id="info_elev" class="paraminfo"/>
             {{ form.input_elev_weight.errors }}
             {{ form.input_elev_weight }}            
-        </div>
-    </div>
-    <div class="inputfield" id="dwater">
-        <div class="field required">
-            {{ form.input_dwater_weight.label_tag }} <img src="/media/bmm/img/info.png" id="info_dwater" class="paraminfo"/>
-            {{ form.input_dwater_weight.errors }}
-            {{ form.input_dwater_weight }}            
         </div>
     </div>
     <div class="inputfield" id="marine">
