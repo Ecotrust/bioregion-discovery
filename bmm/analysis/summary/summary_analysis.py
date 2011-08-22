@@ -38,9 +38,10 @@ def display_general_analysis(request, bioregion, template='summary/general_repor
     #get current population (for 2005)
     population_2005 = get_population(bioregion) #2 seconds
     #get urban/rural population percentages (for 2005)
-    urban_perc = get_urban_perc(population_2005, bioregion) #23 seconds
+    urban_pop = get_urban_pop(population_2005, bioregion) #23 seconds
     #get projected population (for 2015)
     population_2015 = get_projected_population(bioregion) #2 seconds
+    population_change = (float(population_2015) / population_2005) - 1
     #get median max temperature
     max_temp_c, max_temp_f = get_max_temp(bioregion) #2 seconds
     #get median min temperature
@@ -52,7 +53,7 @@ def display_general_analysis(request, bioregion, template='summary/general_repor
     annual_temp_range_f = max_temp_f - min_temp_f
     #get mean annual precipitation
     annual_precip_cm, annual_precip_in = get_annual_precip(bioregion) #9 seconds
-    context = {'bioregion': bioregion, 'default_value': default_value, 'area_km': area_km, 'area_mi': area_mi, 'terra_area_km': terra_area_km, 'terra_area_mi': terra_area_mi, 'oceanic_area_km': oceanic_area_km, 'oceanic_area_mi': oceanic_area_mi, 'population_2005': population_2005, 'urban_perc': urban_perc, 'population_2015': population_2015, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip_cm': annual_precip_cm, 'annual_precip_in': annual_precip_in}
+    context = {'bioregion': bioregion, 'default_value': default_value, 'area_km': area_km, 'area_mi': area_mi, 'terra_area_km': terra_area_km, 'terra_area_mi': terra_area_mi, 'oceanic_area_km': oceanic_area_km, 'oceanic_area_mi': oceanic_area_mi, 'population_2005': population_2005, 'urban_pop': urban_pop, 'population_2015': population_2015, 'population_change': population_change, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip_cm': annual_precip_cm, 'annual_precip_in': annual_precip_in}
     return render_to_response(template, RequestContext(request, context)) 
      
 def display_language_analysis(request, bioregion, template='summary/language_report.html'):
@@ -110,10 +111,10 @@ def get_population(bioregion):
     pop_stats = zonal_stats(bioregion.output_geom, pop_geom)
     return int(pop_stats.sum)
     
-def get_urban_perc(pop_2005, bioregion):
-    if report_cache_exists(bioregion, 'urban_percentage'):
-        urban_perc = get_report_cache(bioregion, 'urban_percentage')
-        return urban_perc
+def get_urban_pop(pop_2005, bioregion):
+    if report_cache_exists(bioregion, 'urban_population'):
+        urban_pop, urban_perc = get_report_cache(bioregion, 'urban_population')
+        return (urban_pop, urban_perc)
     else:
         pop_geom = RasterDataset.objects.get(name='population_2005')
         urban_objects = UrbanExtent.objects.filter(geometry__bboverlaps=bioregion.output_geom)
@@ -128,8 +129,8 @@ def get_urban_perc(pop_2005, bioregion):
                 if pop_stats.sum:
                     urban_pop += pop_stats.sum
         urban_perc = urban_pop / pop_2005
-        create_report_cache(bioregion, dict(urban_percentage=urban_perc))
-        return urban_perc
+        create_report_cache(bioregion, dict(urban_population=(urban_pop, urban_perc)))
+        return (urban_pop, urban_perc)
        
 
 def get_projected_population(bioregion):
