@@ -29,9 +29,9 @@ class MyBioregionForm(FeatureForm):
     input_marine_weight = forms.FloatField(min_value=0, max_value=100.0, initial=0,
             widget=SliderWidget(min=0,max=100,step=1, show_number=False, image='bmm/img/marine.png'),
             label="Marine Environment")
-    input_dwater_weight = forms.FloatField(min_value=0, max_value=100.0, initial=50,
-            widget=SliderWidget(min=0,max=100,step=1, show_number=False, image='bmm/img/dwater.png'),
-            label="Proximity to Major Waterbodies")
+    #input_dwater_weight = forms.FloatField(min_value=0, max_value=100.0, initial=50,
+    #        widget=SliderWidget(min=0,max=100,step=1, show_number=False, image='bmm/img/dwater.png'),
+    #        label="Proximity to Major Waterbodies")
         
     class Meta(FeatureForm.Meta):
         model = MyBioregion
