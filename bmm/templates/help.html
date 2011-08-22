@@ -29,7 +29,6 @@
                 <li><a href="#generating">Creating Bioregions</a></li>
                 <li><a href="#editing">Editing Bioregions</a></li>
                 <li><a href="#reports">Viewing Reports</a></li>
-                <li><a href="#data_layers">Viewing Data Layers</a></li>
             </ul>
             <li><h2><a href="#advanced">Advanced</a></h2></li>
             <ul>
@@ -69,35 +68,45 @@
             <div style="padding-left: 25px">
                 <h3><a name="generating">Creating Bioregions</a></h3>
                 <p> 
-                    To begin creating your own bioregion, you will want to locate your home on the map.
-                    Enter the population center nearest your home into the text field and click the 'Fly Here' button.
+                    To begin creating your own bioregion, you will want to <strong>locate your home on the map</strong>.
+                    <h5>Fly Here</h5>
+                    <p>Enter the population center nearest your home into the text field and click the 'Fly Here' button.</p>
+                    <h5>Mouse Controls</h5>
+                    <p>The navigation controls in the upper-right corner of the map can be used to move around the map.  
+                    Additionally, the <a href="http://earth.google.com/support/bin/answer.py?answer=176674#zoom_mouse" target="_blank">Google Earth tutorial</a> 
+                    provides the basics of navigating the map.</p>
                 </p>
                 <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/portland_33.png" align="center" />
+                <h5>Create New</h5>
                 <p> 
-                    You may also want to manuever around the map with mouse or keyboard controls to more precisely view your home location.
-                </p>
-                <p> 
-                    Once you have found your home location on the map click 'Create New' near the top of the left panel and select 'Bioregion' from the drop down list.
+                    Once you have found your home location on the map click '<strong>Create New</strong>' near the top of the left panel 
+                    and select '<strong>Bioregion</strong>' from the drop down list.
                 </p>
                 <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/create_bioregion_80.png" align="center" />
                 <p> 
                     This will bring up the 'New Bioregion' form.
                 </p>
-                <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/bioregion_form_38.png" align="center" />
-                <p> 
-                    To complete this form, you will need to enter a Name and select a Starting Point.  
-                    Select a starting point by selecting the 'Click to Set Starting Point' button and clicking your home location on the map.  
-                    If you wish to change the location of the placemark, simply select the placemark with the left mouse button, holding the mouse button down as you drag the placemark to the desired location, and release. 
+                <p>To complete this form, you will need to navigate through three panels.</p>
+                <p><strong>Step 1</strong> Select a Starting Point.  </p>
+                <p> Select a starting point by selecting the 'Click to Set Starting Point' button and clicking your home 
+                    location on the map.  If you wish to change the location of the placemark, simply select the placemark 
+                    with the left mouse button, holding the mouse button down as you drag the placemark to the desired location, 
+                    and release. 
                 </p>
-                <p> 
-                    After you have placed an indicator on your home location and provided a name for your bioregion, you will want to position the four slider bars representing the weight you would like the application to each of the four variables, Temperature, Spoken Language, Precipitation, and Vegetation.  
-                    For instance, if you feel that Temperature is very important in identifying your bioregion, then you will want to increase the weight given to that parameter.  
-                    If you feel that Spoken Language is not very important in identifying your bioregion, then you will want to weight that parameter with a smaller value.  
+                <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/bioregion_form_step1.png" align="center" />
+                <p><strong>Step 2</strong> Specify the relative importance of each of the parameters.
+                <p> You will want to position each of the slider bars to match the relative value you would like to assign to the given parameter.
+                <p> For instance, if Temperature should be relatively consistent throughout your bioregion you will want to assign a high value
+                    to the Temperature parameter (slide the indicator to the right).  </p>
+                <p> If, on the other hand, spoken Language need not be homogenous throughout your bioregion you will want to assign a low value
+                    to the Human Language parameter (slide the indicator to the left).  </p>
                 </p>
-                <p> 
-                    Once you have given your Bioregion a name and location, and have finished weighting the four parameters select 'Submit' and wait while the application generates your bioregion.
-                    <a class="help_back" href="#helptop">&lt;&lt;back to top</a>
+                <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/bioregion_form_step2_alt.png" align="center" />
+                <p><strong>Step 3</strong> Provide a Name for your bioregion, and optionally a description. 
+                <p>Select 'Submit' and wait while the application generates your bioregion.
                 </p>
+                <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/bioregion_form_step3_alt.png" align="center" />
+                <p><a class="help_back" href="#helptop">&lt;&lt;back to top</a></p>
             </div>
             
             <div style="padding-left: 25px">
@@ -116,29 +125,22 @@
             <div style="padding-left: 25px">
                 <h3><a name="reports">Viewing Reports</a></h3>
                 <p> 
-                    After you are happy with your bioregion results you have the option of running reports on your shape through the attributes panel.  
-                    Select 'Attributes' or double click your bioregion to bring up the Results panel. 
+                    After you are happy with your bioregion results you have the option of running reports on your shape through the Reports panel.  
+                    Select 'Reports' or double click your bioregion to bring up the Reports panel. 
                 </p>
-                <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/attributes_80.png" align="center" />
+                <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/attributes_now_reports.png" align="center" />
                 <p> 
-                    From here you can generate Summary Characteristic Reports and Vulnerabilities Reports.
+                    From here you can generate various reports by clicking on either Summary or Vulnerabilities.
                 </p>
-                <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/reports_80.png" align="center" />
-                <p> 
-                    <a class="help_back" href="#helptop">&lt;&lt;back to top</a>
+                <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/reports2.png" align="center" />
+                <p>
+                    Generate Summary reports by selecting Overview, Language, or Natural Resources.
                 </p>
-            </div>
-            
-            <div style="padding-left: 25px">
-                <h3><a name="data_layers">Viewing Data Layers</a></h3>
-                <p> 
-                    You may also be interested in viewing the data layers that are used to generate your bioregion and create these reports.  
-                    Some of these data layers are available for viewing through the 'Data and Tools' panel.  
+                <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/summary.png" align="center" />
+                <p>
+                    Generate Vulnerability reports by selecting Climate Change, Socio-Economic, or Natural Hazards.
                 </p>
-                <p> 
-                    By selecting the Data and Tools panel, you can expand the World Bioregional Data tree (under the Bioregional Tool Data section), selecting the layer you wish to view.   
-                </p>
-                <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/data_layers_80.png" align="center" />
+                <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/vulnerabilities.png" align="center" />
                 <p> 
                     <a class="help_back" href="#helptop">&lt;&lt;back to top</a>
                 </p>
@@ -169,7 +171,7 @@
                 <p> 
                     Select the group you wish to share your bioregion with and submit.
                 </p>
-                <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/share_with_group_80.png" align="center" />
+                <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/share_with_group_2.png" align="center" />
                 <p> 
                     <a class="help_back" href="#helptop">&lt;&lt;back to top</a>
                 </p>
@@ -181,7 +183,7 @@
                     You can view shapes that others have shared with you through the Data and Tools panel.  
                     To view these shared shapes, expand the Bioregions tree (and subsequent subtrees) under the Shared Bioregions section.
                 </p>
-                <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/shared_bioregions_80.png" align="center" />
+                <img style="border:1px solid black" src="{{MEDIA_URL}}/bmm/img/help/shared_bioregions_2.png" align="center" />
                 <p> 
                     <a class="help_back" href="#helptop">&lt;&lt;back to top</a>
                 </p>
@@ -191,6 +193,9 @@
                 <h3><a name="support">Help</a></h3>
                 <p> 
                     For questions that are not answered on this page, please feel free to contact us at <a href="mailto:bioregions@ecotrust.org">bioregions@ecotrust.org</a>.
+                </p>
+                <p> 
+                    <a class="help_back" href="#helptop">&lt;&lt;back to top</a>
                 </p>
             </div>
         </div>
