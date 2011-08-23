@@ -68,7 +68,7 @@ def summary():
     final = []
     numruns = []
     diff = []
-    for bio in MyBioregion.objects.all():
+    for bio in MyBioregion.objects.filter(user=user):
         if not bio.output_geom:
             continue
         sumw = (bio.input_biomass_weight + bio.input_precip_weight + bio.input_biomass_weight)
@@ -82,7 +82,11 @@ def summary():
             costs.append(cost)
             init.append(bio.output_initcost)
             final.append(bio.output_finalcost)
-            diff.append(bio.output_initcost - bio.output_finalcost)
+            try: 
+                dif = bio.output_initcost - bio.output_finalcost
+            except:
+                dif = None
+            diff.append(dif)
             numruns.append(bio.output_numruns)
             print bio.name, bio.output_numruns, "   ", int(bio.output_finalcost), "   ", sumw, \
                 bio.input_bioregion_size, mHa, known, ratio
@@ -115,6 +119,6 @@ def summary():
 
 
 if __name__ == '__main__':
-    delete()
-    main()
+    #delete()
+    #main()
     summary()
