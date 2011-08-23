@@ -158,6 +158,16 @@
       "full_name": "", 
       "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/bltuplnd_mw"
     }
+  }, 
+  {
+    "pk": 39, 
+    "model": "raster_stats.rasterdataset", 
+    "fields": {
+      "type": "continuous", 
+      "name": "temp_change", 
+      "full_name": "", 
+      "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/cc_t_50"
+    }
   },
   {
     "pk": 40,
