@@ -46,7 +46,7 @@ class MyBioregion(Analysis):
     input_lang_weight = models.FloatField(verbose_name='Value given to Language')
     input_elev_weight = models.FloatField(verbose_name='Value given to Elevation')
     input_marine_weight = models.FloatField(verbose_name='Value given to Marine Environment')
-    input_dwater_weight = models.FloatField(verbose_name='Value given to Proximity to Major Waterbodies')
+    #input_dwater_weight = models.FloatField(verbose_name='Value given to Proximity to Major Waterbodies')
     input_bioregion_size = models.CharField(choices=BIOREGION_SIZES, max_length=3,
             verbose_name='Relative size of Bioregion', default='S')
     
@@ -72,7 +72,7 @@ class MyBioregion(Analysis):
         p_lang = self.input_lang_weight
         p_elev = self.input_elev_weight
         p_marine = self.input_marine_weight
-        p_dwater = self.input_dwater_weight
+        #p_dwater = self.input_dwater_weight
 
         g = Grass(settings.GRASS_LOCATION,
                 gisbase=settings.GRASS_GISBASE,
@@ -113,7 +113,6 @@ class MyBioregion(Analysis):
                             '(%s * pow(abs(%s - temp_slope),2))*10 + ' % (p_temp,start_values['temp_slope'])  + 
                             '(%s * pow(abs(%s - precip_slope),2))*10 + ' % (p_precip,start_values['precip_slope'])  + 
                             '(%s * pow(abs(%s - biomass_slope),2))*10 + ' % (p_biomass,start_values['biomass_slope'])  + 
-                            '(%s * pow(abs(%s - dwater_slope),2))*10 + ' % (p_dwater,start_values['dwater_slope'])  + 
                             '(%s * pow(abs(%s - elev_slope),2))*10 + ' % (p_elev,start_values['elev_slope'])  + 
                             '(%s * if(%s - lang_slope == 0, 0, 10000)) * 10' % (p_lang,start_values['lang_slope'])  + 
                             '"')
@@ -147,17 +146,8 @@ class MyBioregion(Analysis):
             g.run('r.cost -k input=weighted_combined_slope output=cost1 coordinate=%s,%s max_cost=%s' % \
                     (coords[0],coords[1],max_cost) )
             g.run('r.mapcalc "bio_rast=if(cost1 >= 0)"')
-            g.run('r.to.vect input=bio_rast output=bio_poly feature=area') 
-
-            # get "nicer" shapes by simplifying then smoothing
-            g.run('v.generalize --o input=bio_poly output=bio_poly_simpl method=douglas_reduction threshold=12000 reduction=50') 
-            g.run('v.generalize --o input=bio_poly_simpl output=bio_poly_gen method=chaiken threshold=5.0')
-
-            if os.path.exists(output):
-                os.remove(output)
-            g.run('v.out.ogr input=bio_poly_gen type=area format=GeoJSON dsn=%s' % output)
             old_area = largest_area
-            largest_area, geom = get_largest_from_json(output)
+            largest_area = get_cost_area(g, 'bio_rast')
             delta_area = largest_area - old_area
 
             ratio = desired_size/largest_area
@@ -176,17 +166,13 @@ class MyBioregion(Analysis):
                 unders.append(max_cost)
                 unders_sizes.append(largest_area)
 
-
             try:
-                #estimate the placement between
-                #highest underestimate and the lowest overestimate
+                # estimate the placement between
+                # highest underestimate and the lowest overestimate
                 usd = desired_size - max(unders_sizes)
                 osd = min(overs_sizes) - desired_size
                 tsd = float(usd + osd)
                 max_cost = max(unders) * osd/tsd + min(overs) * usd/tsd
-                #simple average method 
-                #avgc = (max(unders) + min(overs))/2.0
-                #logger.debug("Estimating between high and low... %s (or %s using simple average)" % (max_cost, avgc))
             except ValueError:
                 max_cost = max_cost * (ratio ** 0.67)
 
@@ -218,20 +204,39 @@ class MyBioregion(Analysis):
 
             i += 1
 
+        # Now that we have our raster bioregion, convert to vector and save geom
+        g.run('r.to.vect -s input=bio_rast output=bio_poly feature=area') 
+
+        # get "nicer" shapes by simplifying then smoothing - currently not robust enough
+        # for production due to topology errors and islands when running generalize
+        #g.run('v.generalize --o input=bio_poly output=bio_poly_s method=douglas_reduction threshold=4000 reduction=50') 
+        #g.run('v.generalize --o input=bio_poly_s output=bio_poly_sg method=chaiken threshold=5.0')
+
+        if has_areas(g, 'bio_poly_sg'):
+            the_vect = 'bio_poly_sg'
+        else:
+            the_vect = 'bio_poly'
+
+        if os.path.exists(output):
+            os.remove(output)
+        g.run('v.out.ogr input=%s type=area format=GeoJSON dsn=%s' % (the_vect, output))
+        largest_area, geom = get_largest_from_json(output)
+
         geom.srid = settings.GEOMETRY_DB_SRID 
         if geom and REMOVE_MAPSET_AFTER_RUN: 
             os.remove(output)
             del g
 
-        if not geom.valid:
-            geom = geom.buffer(0)
+        # Compensate for cell exclusion aroudn the coastal areas
+        geom = geom.buffer(2500)
             
         if geom.valid:
             self.output_geom = geom
             self.output_numruns = i
             self.output_finalcost = max_cost
         else:
-            logger.debug("%s is not a valid geometry!" % self.name)
+            self.output_geom = geom.buffer(0)
+            logger.debug("Geom is invalid")
             
         # New shape, have user confirm it
         self.satisfied = False
@@ -333,8 +338,8 @@ class MyBioregion(Analysis):
                 <color>888B1A55</color>
             </PolyStyle>
             <LineStyle>
-                <color>22ffffff</color>
-                <width>3</width>
+                <color>33ffffff</color>
+                <width>4</width>
             </LineStyle>
         </Style>
         """ % (self.model_uid(),)
@@ -478,4 +483,29 @@ def get_nearest_ocean_value(g, coords):
     if ocean_val is None:
         ocean_val = 1.0
     return ocean_val
+
+def has_areas(g, vector):
+    try:
+        topo = g.run('v.info %s -t' % vector)
+        for t in topo.split():
+            k,v = t.split("=")
+            if k.strip() == 'areas' and int(v.strip()) > 0:
+                return True
+    except:
+        pass
+    return False
+
+def get_cost_area(g, rast):
+    report = g.run('r.report %s units=me' % rast)
+    """
+    |1| . . . . . . . . . . . . . . . . . . . . . . . . . . . .|    96,572,063,073|
+    """
+    lines = report.split("\n")
+    for line in lines:
+        if line.startswith('|1| . . . . . . . '):
+            return float(line.split('|')[3].strip().replace(",",""))
+            
+    raise Exception("Never got a raster report for cat 1")
+            
+    
 

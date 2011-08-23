@@ -14,7 +14,8 @@ from lingcod.analysistools.grass import Grass
 from lingcod.analysistools.utils import linear_regression
 import random
 
-lines = open("/home/mperry/cities15000.txt").readlines()
+lines = open("../data/cities15000.txt").readlines()
+user = User.objects.get(username='demo')
 
 def get_random_city():
     line = random.choice(lines)
@@ -23,7 +24,7 @@ def get_random_city():
 
 def delete(): 
     for model in [MyBioregion, Folder]:
-        a = model.objects.all()
+        a = model.objects.filter(user=user)
         for i in a:
             i.delete()
 
@@ -67,7 +68,7 @@ def summary():
     final = []
     numruns = []
     diff = []
-    for bio in MyBioregion.objects.all():
+    for bio in MyBioregion.objects.filter(user=user):
         if not bio.output_geom:
             continue
         sumw = (bio.input_biomass_weight + bio.input_precip_weight + bio.input_biomass_weight)
@@ -81,7 +82,11 @@ def summary():
             costs.append(cost)
             init.append(bio.output_initcost)
             final.append(bio.output_finalcost)
-            diff.append(bio.output_initcost - bio.output_finalcost)
+            try: 
+                dif = bio.output_initcost - bio.output_finalcost
+            except:
+                dif = None
+            diff.append(dif)
             numruns.append(bio.output_numruns)
             print bio.name, bio.output_numruns, "   ", int(bio.output_finalcost), "   ", sumw, \
                 bio.input_bioregion_size, mHa, known, ratio

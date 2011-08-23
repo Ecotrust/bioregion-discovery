@@ -19,10 +19,9 @@ r.in.gdal --o input=${INPUT_DIR}/tmp_rng_mw/hdr.adf output=tmp_rng_slope
 r.in.gdal --o input=${INPUT_DIR}/precip_mw/hdr.adf output=precip_slope
 r.in.gdal --o input=${INPUT_DIR}/mar_mw/hdr.adf output=ocean_slope
 r.in.gdal --o input=${INPUT_DIR}/elev_mw/hdr.adf output=elev_slope
+r.in.gdal --o input=${INPUT_DIR}/lang_mw/hdr.adf output=lang_slope
 
-# TODO get the actual data here.... 
-r.in.gdal --o input=${INPUT_DIR}/precip_mw/hdr.adf output=lang_slope
-r.in.gdal --o input=${INPUT_DIR}/precip_mw/hdr.adf output=dwater_slope
+#r.in.gdal --o input=${INPUT_DIR}/precip_mw/hdr.adf output=dwater_slope
 
 # Calculate the temp_slope grid
 r.mapcalc "temp_slope = (tmp_rng_slope + min_temp_slope) / 2"
