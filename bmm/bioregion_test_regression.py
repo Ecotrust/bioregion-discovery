@@ -47,7 +47,6 @@ def main():
                 input_biomass_weight = random.randrange(0,100),
                 input_lang_weight = random.randrange(0,100),
                 input_elev_weight = random.randrange(0,100),
-                input_dwater_weight = random.randrange(0,100),
                 input_marine_weight = marine, 
                 input_starting_point = g,
                 input_bioregion_size= desired_size
