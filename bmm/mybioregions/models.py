@@ -114,22 +114,36 @@ class MyBioregion(Analysis):
                             '(%s * pow(abs(%s - precip_slope),2))*10 + ' % (p_precip,start_values['precip_slope'])  + 
                             '(%s * pow(abs(%s - biomass_slope),2))*10 + ' % (p_biomass,start_values['biomass_slope'])  + 
                             '(%s * pow(abs(%s - elev_slope),2))*10 + ' % (p_elev,start_values['elev_slope'])  + 
-                            '(%s * if(%s - lang_slope == 0, 0, 10000)) * 10' % (p_lang,start_values['lang_slope'])  + 
+                            '(%s * if(%s - lang_slope == 0, 0, 2500))*10' % (p_lang,start_values['lang_slope'])  + 
                             '"')
 
         if p_marine >= 1:
             '''
             We need a distance constant to prevent 'runout' - this needs to be inversely propotional to the marine weighting
-            For the multiplier, normalize to other layers (10^6 = 10000000 then divide by the marine weight)
+            For the multiplier, normalize to other layers (also inversly prop. to the marine weighting). 
             '''
-            g.run('r.mapcalc "weighted_ocean_slope = (10000000/%s) + ' % (p_marine,) + 
-                            '(%s * pow(abs(%s - ocean_slope),2))*(1000/%s)' % (p_marine,start_values['ocean_slope'], p_marine )  + 
+            marine_dist_const = 35000 # increasing this makes distance from shore uniformly more expensive
+            marine_mult_const = 2500 # increasing this multplies the cost surface, making ocean costs higher and exaggerating differences
+            g.run('r.mapcalc "weighted_ocean_slope = %s + ' % (marine_dist_const, ) +
+                            '(%s * pow(abs(%s - ocean_slope),2))*10' % (p_marine, start_values['ocean_slope'])  + 
                             '"')
-            g.run('r.mapcalc "weighted_combined_slope = if(isnull(weighted_ocean_slope),0,weighted_ocean_slope) + ' + 
+
+            #ocean_mult = get_ocean_multiplier() # not complete yet
+            ocean_mult = marine_mult_const/p_marine
+            g.run('r.mapcalc "weighted_combined_slope = if(isnull(weighted_ocean_slope),0,weighted_ocean_slope * %s) + ' % (ocean_mult,) + 
                   'if(isnull(weighted_land_slope),0,weighted_land_slope)"')
         else:
             # Don't include the ocean at all, just use the land slope
             g.run('g.rename rast=weighted_land_slope,weighted_combined_slope')
+
+        g.run('r.colors -n -e map=weighted_combined_slope color=grey')
+        try:
+            img_path = os.path.join(settings.MEDIA_ROOT, 'bio_cost', self.uid + '.png') 
+            if os.path.exists(img_path):
+                os.remove(img_path)
+            g.run('r.out.png -t input=weighted_combined_slope output=%s' % img_path )
+        except:
+            pass
 
         # iterate over cost_distance analysis until we converge on a reasonable size
         tolerance = 0.15
@@ -443,7 +457,9 @@ def get_largest_from_json(output):
     # Assume the rest are slivers, etc
     largest_area = geom.area
     for feat in layer[1:]:
-        if feat.geom.area > largest_area:
+        value = feat.get("value")
+        # Look only for value = 1 ... makes this function non-reusable but works for bioregions model
+        if feat.geom.area > largest_area and value == 1:
             largest_area = feat.geom.area
             geom = feat.geom.geos
     return largest_area, geom
@@ -507,5 +523,32 @@ def get_cost_area(g, rast):
             
     raise Exception("Never got a raster report for cat 1")
             
-    
+def get_raster_univar(g, rast):
+    univar = {}
+    out = g.run('r.univar -g map=%s' % rast)
+    lines = out.split("\n")
+    for line in lines:
+        try:
+            x = line.split("=")
+            univar[x[0].strip()] = float(x[1])
+        except:
+            pass
+    return univar
+
+
+
+def get_ocean_multiplier(g):
+    # Adjust ocean to match Land['mean'] within 2 std deviations
+    land = get_raster_univar(g, 'weighted_land_slope')
+    ocean = get_raster_univar(g, 'weighted_ocean_slope')
+    land_weight = x - p_marine + 1 # min/max is 1-501
+    relative_ocean_weight = p_marine / land_weight 
+    # 0.01 = very low ocean weight = very high ocean cost (+2 sd)
+    # 100 = very high ocean weight = very low ocean cost (-2 sd)
+    sd = -4.04 * relative_ocean_weight + 2.0336
+    new_ocean_mean = sd * land['stddev'] + land['mean']
+    if new_ocean_mean < ocean['mean']:
+        new_ocean_mean = ocean['mean']
+    ocean_mult = new_ocean_mean / ocean['mean']
+    return ocean_mult
 

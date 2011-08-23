@@ -233,5 +233,12 @@
         </div>
     </div>
     {% endif %}
+    {% if request.user.is_staff %}
+    <div class="box">
+        <h1> Cost Surface </h1>
+        <h3> white=low cost, black=high cost, blue=NULL </h3>
+        <img style="background-color:lightblue" src="/media/bio_cost/{{instance.uid}}.png" width="440" border="1">
+    </div>
+    {% endif %}
 
 {% endblock panel %}
