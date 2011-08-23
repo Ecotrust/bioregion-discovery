@@ -21,7 +21,7 @@ INSTALLED_APPS += ( 'mybioregions',
 
 COMPRESS_CSS['application']['source_filenames'] += (
     'bmm/css/analysis_report.css',
-    'bmm/css/kmltree_mod.css',
+    'kmltree/dist/kmltree_mod.css',
 )
 
 COMPRESS_JS['application']['source_filenames'] += (
