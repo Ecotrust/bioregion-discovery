@@ -174,7 +174,7 @@
     "model": "raster_stats.rasterdataset",
     "fields": {
       "type": "categorical",
-      "name": "ag_impact",
+      "name": "ag_impacts",
       "full_name": "",
       "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/cch_ag_4"
     }
@@ -183,8 +183,8 @@
     "pk": 42,
     "model": "raster_stats.rasterdataset",
     "fields": {
-      "type": "continuous",
-      "name": "water_impact",
+      "type": "categorical",
+      "name": "water_impacts",
       "full_name": "",
       "filepath": "/usr/local/apps/bioregions/data/reports/vulnerabilities/wtrimpct2"
     }
