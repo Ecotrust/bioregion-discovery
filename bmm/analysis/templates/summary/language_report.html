@@ -21,11 +21,24 @@
                 </div>
             </td>
         </tr>
-        {% for language in languages %}
-        <tr>
-            <td colspan='2'>{{language}}</td>
-        </tr>
-        {% endfor %}
+        {% if languages.0.1 == 'Areas of No Data' and lang_count == 1 %}
+            <tr>
+                <td colspan='2'>
+                    The area within this Bioregion is not covered by the WLMS dataset.
+                </td>
+            </tr>
+        {% else %}
+            {% for language in languages %}
+            <tr>
+                <td colspan='2'>
+                    {{language.1}} 
+                    {% if language.0 %} (Est Pop: {{language.0|floatformat:0|intcomma}})
+                    {% else %} (Est Pop: Unknown)
+                    {% endif %} 
+                </td>
+            </tr>
+            {% endfor %}
+        {% endif %}
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
     </tbody>
