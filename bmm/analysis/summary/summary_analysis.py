@@ -59,7 +59,8 @@ def display_general_analysis(request, bioregion, template='summary/general_repor
 def display_language_analysis(request, bioregion, template='summary/language_report.html'):
     #get list of spoken languages
     languages = get_languages(bioregion) #19 seconds
-    context = {'bioregion': bioregion, 'default_value': default_value, 'languages': languages}
+    lang_count = len(languages)
+    context = {'bioregion': bioregion, 'default_value': default_value, 'languages': languages, 'lang_count': lang_count}
     return render_to_response(template, RequestContext(request, context)) 
     
 def display_resources_analysis(request, bioregion, template='summary/resources_report.html'):
@@ -143,27 +144,37 @@ def get_languages(bioregion):
         language_names = get_report_cache(bioregion, 'languages')
         return language_names
     else:
+        pop_geom = RasterDataset.objects.get(name='population_2005')
         languages = Languages.objects.filter(geometry__bboverlaps=bioregion.output_geom)
         language_dict = {}
         for language in languages:
             try:
-                does_intersect = language.geometry.intersects(bioregion.output_geom)
-                if does_intersect:
-                    if language.nam_ansi is None:
-                        name = 'Areas of No Data'
-                    else:
-                        name = language.nam_ansi
-                    area = geometry_area_in_display_units(language.geometry.intersection(bioregion.output_geom))
-                    if name in language_dict.keys():
-                        language_dict[name] += area
-                    else:
-                        language_dict[name] = area
+                #does_intersect = language.geometry.intersects(bioregion.output_geom)
+                language_intersection = language.geometry.intersection(bioregion.output_geom)
             except:
-                #does_intersect = clean_geometry(language.geometry).intersects(bioregion.output_geom)
-                pass
-        language_tuples = [(area, name) for name,area in language_dict.items()]
+                #does_intersect = language.geometry.buffer(0).intersects(bioregion.output_geom)
+                language_intersection = language.geometry.buffer(0).intersection(bioregion.output_geom)
+            if language_intersection.area > 0:
+                if language.nam_ansi is None:
+                    name = 'Areas of No Data'
+                else:
+                    #name = (language.nam_ansi, language.familyprop)
+                    name = language.nam_ansi
+                #area = geometry_area_in_display_units(language.geometry.intersection(bioregion.output_geom))
+                pop_stats = zonal_stats(language_intersection.buffer(0), pop_geom)
+                if pop_stats:
+                    pop = pop_stats.sum
+                else:
+                    pop = 0
+                #pop = language.lmp_pop1
+                if name in language_dict.keys():
+                    language_dict[name] += pop
+                else:
+                    language_dict[name] = pop
+        language_tuples = [(pop, name) for name,pop in language_dict.items()]
         language_tuples.sort(reverse=True)
-        language_names = [name for (area, name) in language_tuples]
+        #language_names = [name for (pop, name) in language_tuples]
+        language_names = language_tuples
         create_report_cache(bioregion, dict(languages=language_names))
         return language_names
        
