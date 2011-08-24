@@ -84,8 +84,6 @@ class MyBioregion(Analysis):
         outdir = '/tmp'
         outbase = 'bioregion_%s' % str(time.time()).split('.')[0]
         output = os.path.join(outdir,outbase+'.json')
-        if os.path.exists(output):
-            raise Exception(output + " already exists")
 
         # Guess seed value
         desired_size_mHa = SIZE_LOOKUP[self.input_bioregion_size] #million Hectares
@@ -156,10 +154,21 @@ class MyBioregion(Analysis):
         unders = []
         unders_sizes = []
         while True:
-            g.run('g.region w=%d s=%d e=%d n=%d' % buff.extent )
-            g.run('r.cost -k input=weighted_combined_slope output=cost1 coordinate=%s,%s max_cost=%s' % \
+            try:
+                g.run('g.remove rast=cost1,bio_rast')
+                g.run('r.cost --o -k input=weighted_combined_slope output=cost1 coordinate=%s,%s max_cost=%s' % \
                     (coords[0],coords[1],max_cost) )
-            g.run('r.mapcalc "bio_rast=if(cost1 >= 0)"')
+                g.run('r.mapcalc "bio_rast=if(cost1 >= 0)"')
+            except:
+                # should never happen, lets try that again
+                logger.error("Whoa .. Grass failed on the the cost or mapcalc step... i=%s ... trying again" % i)
+                max_cost = max_cost * 1.001
+                if i > 5 and old_area:
+                    # this is bad - cost has never been run
+                    raise Exception('The geospatial processing step is broken... please report to application developers')
+                i += 1
+                continue
+
             old_area = largest_area
             largest_area = get_cost_area(g, 'bio_rast')
             delta_area = largest_area - old_area

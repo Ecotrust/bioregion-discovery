@@ -77,7 +77,7 @@ def summary():
         cost = bio.output_finalcost
         desired_size_mHa = SIZE_LOOKUP[bio.input_bioregion_size]
         ratio = mHa / desired_size_mHa
-        if ratio > 0.8 and ratio < 1.2 and cost < 10000000:
+        if ratio > 0.8 and ratio < 1.2 and cost < 500000000:
             knowns.append(known)
             costs.append(cost)
             init.append(bio.output_initcost)
@@ -119,6 +119,6 @@ def summary():
 
 
 if __name__ == '__main__':
-    delete()
-    main()
+    #delete()
+    #main()
     summary()
