@@ -139,7 +139,12 @@ class MyBioregion(Analysis):
             img_path = os.path.join(settings.MEDIA_ROOT, 'bio_cost', self.uid + '.png') 
             if os.path.exists(img_path):
                 os.remove(img_path)
-            g.run('r.out.png -t input=weighted_combined_slope output=%s' % img_path )
+            # -t only available in 6.4.1+
+            if g.revision > 43635: 
+                opt = '-t'
+            else:
+                opt = ''
+            g.run('r.out.png %s input=weighted_combined_slope output=%s' % (opt, img_path) )
         except:
             pass
 
