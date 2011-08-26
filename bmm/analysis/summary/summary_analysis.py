@@ -156,7 +156,7 @@ def get_languages(bioregion):
                 import pdb 
                 pdb.set_trace()            
                 #does_intersect = language.geometry.buffer(0).intersects(bioregion.output_geom)
-                language_intersection = language.geometry.buffer(0.1).intersection(bioregion.output_geom)
+                language_intersection = language.geometry.buffer(1).intersection(bioregion.output_geom)
             if language_intersection.area > 0:
                 if language.nam_ansi is None:
                     name = 'No Data'
