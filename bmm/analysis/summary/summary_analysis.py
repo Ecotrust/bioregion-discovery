@@ -152,11 +152,11 @@ def get_languages(bioregion):
             try:
                 #does_intersect = language.geometry.intersects(bioregion.output_geom)
                 language_intersection = language.geometry.intersection(bioregion.output_geom)
-            except:
-                import pdb 
-                pdb.set_trace()            
+            except:          
                 #does_intersect = language.geometry.buffer(0).intersects(bioregion.output_geom)
-                language_intersection = language.geometry.buffer(1).intersection(bioregion.output_geom)
+                #the following doesn't work on dev/prod -- giving up for now
+                #language_intersection = language.geometry.buffer(1).intersection(bioregion.output_geom)
+                continue
             if language_intersection.area > 0:
                 if language.nam_ansi is None:
                     name = 'No Data'
@@ -164,20 +164,19 @@ def get_languages(bioregion):
                     #name = (language.nam_ansi, language.familyprop)
                     name = language.nam_ansi
                 #area = geometry_area_in_display_units(language.geometry.intersection(bioregion.output_geom))
-                #pop_stats = zonal_stats(language_intersection.buffer(0), pop_geom)
-                #if pop_stats:
-                #    pop = pop_stats.sum
-                #else:
-                pop = 0
-                #pop = language.lmp_pop1
+                pop_stats = zonal_stats(language_intersection.buffer(0), pop_geom)
+                if pop_stats:
+                    pop = pop_stats.sum
+                else:
+                    pop = 0
                 pop_total += pop
                 if name in language_dict.keys():
                     language_dict[name] += pop
                 else:
                     language_dict[name] = pop
-        #expected_pop = get_population(bioregion)
-        #if expected_pop > pop_total:
-        #    language_dict['No Data'] = expected_pop - pop_total
+        expected_pop = get_population(bioregion)
+        if expected_pop > pop_total:
+            language_dict['No Data'] = expected_pop - pop_total
         language_tuples = [(pop, name) for name,pop in language_dict.items()]
         language_tuples.sort(reverse=True)
         #language_names = [name for (pop, name) in language_tuples]
