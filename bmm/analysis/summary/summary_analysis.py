@@ -162,11 +162,11 @@ def get_languages(bioregion):
                     #name = (language.nam_ansi, language.familyprop)
                     name = language.nam_ansi
                 #area = geometry_area_in_display_units(language.geometry.intersection(bioregion.output_geom))
-                pop_stats = zonal_stats(language_intersection.buffer(0), pop_geom)
-                if pop_stats:
-                    pop = pop_stats.sum
-                else:
-                    pop = 0
+                #pop_stats = zonal_stats(language_intersection.buffer(0), pop_geom)
+                #if pop_stats:
+                #    pop = pop_stats.sum
+                #else:
+                pop = 0
                 #pop = language.lmp_pop1
                 pop_total += pop
                 if name in language_dict.keys():
