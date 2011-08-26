@@ -173,9 +173,9 @@ def get_languages(bioregion):
                     language_dict[name] += pop
                 else:
                     language_dict[name] = pop
-        expected_pop = get_population(bioregion)
-        if expected_pop > pop_total:
-            language_dict['No Data'] = expected_pop - pop_total
+        #expected_pop = get_population(bioregion)
+        #if expected_pop > pop_total:
+        #    language_dict['No Data'] = expected_pop - pop_total
         language_tuples = [(pop, name) for name,pop in language_dict.items()]
         language_tuples.sort(reverse=True)
         #language_names = [name for (pop, name) in language_tuples]
