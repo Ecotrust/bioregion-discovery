@@ -149,6 +149,8 @@ def get_languages(bioregion):
         language_dict = {}
         pop_total = 0 
         for language in languages:
+            import pdb 
+            pdb.set_trace()
             try:
                 #does_intersect = language.geometry.intersects(bioregion.output_geom)
                 language_intersection = language.geometry.intersection(bioregion.output_geom)
