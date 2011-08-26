@@ -147,6 +147,7 @@ def get_languages(bioregion):
         pop_geom = RasterDataset.objects.get(name='population_2005')
         languages = Languages.objects.filter(geometry__bboverlaps=bioregion.output_geom)
         language_dict = {}
+        pop_total = 0 
         for language in languages:
             try:
                 #does_intersect = language.geometry.intersects(bioregion.output_geom)
@@ -156,7 +157,7 @@ def get_languages(bioregion):
                 language_intersection = language.geometry.buffer(0).intersection(bioregion.output_geom)
             if language_intersection.area > 0:
                 if language.nam_ansi is None:
-                    name = 'Areas of No Data'
+                    name = 'No Data'
                 else:
                     #name = (language.nam_ansi, language.familyprop)
                     name = language.nam_ansi
@@ -167,14 +168,18 @@ def get_languages(bioregion):
                 else:
                     pop = 0
                 #pop = language.lmp_pop1
+                pop_total += pop
                 if name in language_dict.keys():
                     language_dict[name] += pop
                 else:
                     language_dict[name] = pop
+        expected_pop = get_population(bioregion)
+        if expected_pop > pop_total:
+            language_dict['No Data'] = expected_pop - pop_total
         language_tuples = [(pop, name) for name,pop in language_dict.items()]
         language_tuples.sort(reverse=True)
         #language_names = [name for (pop, name) in language_tuples]
-        language_names = language_tuples
+        language_names = language_tuples 
         create_report_cache(bioregion, dict(languages=language_names))
         return language_names
        

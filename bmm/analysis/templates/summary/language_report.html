@@ -14,14 +14,17 @@
                 <b>Spoken Languages</b>
                 <sup><a id="displayText" href="javascript:toggleDiv('lang');">Learn More</a><sup>
                 <div id="lang" style="display: none">
-                    <p>Data was obtained from the World Language Mapping System (WLMS), which has locations of the world's 6,900 languages.
+                    <p>Language data was obtained from the World Language Mapping System (WLMS), which has locations of the world's 6,900 languages.
                     <p>For more information on the WLMS can be found <a href="http://www.worldgeodatasets.com/language/" target="_blank">here</a>.
+                    <p>Estimated populations were determined by running a zonal sum on the 
+                       <a href="http://sedac.ciesin.columbia.edu/gpw/documentation.jsp" target="_blank">2005 population data layer</a> 
+                       and the resulting intersections from overlaying the language layer and the bioregion.
                     <p>PLEASE NOTE:  Due to the spatial complexity of language and certain limitations of the data, not all languages from 
                        a given area may be shown.  
                 </div>
             </td>
         </tr>
-        {% if languages.0.1 == 'Areas of No Data' and lang_count == 1 %}
+        {% if languages.0.1 == 'No Data' and lang_count == 1 %}
             <tr>
                 <td colspan='2'>
                     The area within this Bioregion is not covered by the WLMS dataset.
@@ -31,7 +34,10 @@
             {% for language in languages %}
             <tr>
                 <td colspan='2'>
-                    {{language.1}} 
+                    {% if language.1 == 'No Data' %} No Data / Unknown
+                    {% else %} {{language.1}} 
+                    {% endif %}
+                    
                     {% if language.0 %} (Est Pop: {{language.0|floatformat:0|intcomma}})
                     {% else %} (Est Pop: Unknown)
                     {% endif %} 
