@@ -152,12 +152,13 @@ def get_languages(bioregion):
             try:
                 #does_intersect = language.geometry.intersects(bioregion.output_geom)
                 language_intersection = language.geometry.intersection(bioregion.output_geom)
+                area = language_intersection.area
             except:          
                 #does_intersect = language.geometry.buffer(0).intersects(bioregion.output_geom)
                 #the following doesn't work on dev/prod -- giving up for now
                 #language_intersection = language.geometry.buffer(1).intersection(bioregion.output_geom)
-                continue
-            if language_intersection.area > 0:
+                area = 0
+            if area > 0:
                 if language.nam_ansi is None:
                     name = 'No Data'
                 else:

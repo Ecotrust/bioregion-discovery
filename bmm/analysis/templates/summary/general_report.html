@@ -87,9 +87,9 @@
         <tr>
             <td colspan='2'>
                 {% if urban_pop.0 < 1000000 %} 
-                    {{urban_pop.0|intcomma}} 
+                    {{urban_pop.0|floatformat:0|intcomma}} 
                 {% else %}
-                    {{urban_pop.0|intword}}
+                    {{urban_pop.0|floatformat:0|intword}}
                 {% endif %}
                 ({{urban_pop.1|percentage:0}})
             </td>
