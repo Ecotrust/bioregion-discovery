@@ -19,6 +19,7 @@ BIOREGION_SIZES = (
     ('M', 'Medium (20m Hectares)'),
     ('L', 'Large (50m Hectares)'),
     ('VL', 'Very Large (100m Hectares)'),
+    ('VVL', 'Very Very Large (300m Hectares)'),
 )
 
 SIZE_LOOKUP = { # in millions of Hectares
@@ -26,7 +27,8 @@ SIZE_LOOKUP = { # in millions of Hectares
     'S': 5, 
     'M': 20,
     'L': 50,
-    'VL': 100
+    'VL': 100,
+    'VVL': 300,
 }
 
 try:
@@ -65,15 +67,7 @@ class MyBioregion(Analysis):
     def run(self):
         from lingcod.analysistools.grass import Grass
 
-        coords = self.input_starting_point.transform(settings.GEOMETRY_DB_SRID, clone=True)
-        p_temp = self.input_temp_weight
-        p_precip = self.input_precip_weight
-        p_biomass = self.input_biomass_weight
-        p_lang = self.input_lang_weight
-        p_elev = self.input_elev_weight
-        p_marine = self.input_marine_weight
-        #p_dwater = self.input_dwater_weight
-
+        ### Setup
         g = Grass(settings.GRASS_LOCATION,
                 gisbase=settings.GRASS_GISBASE,
                 gisdbase=settings.GRASS_GISDBASE,
@@ -85,53 +79,67 @@ class MyBioregion(Analysis):
         outbase = 'bioregion_%s' % str(time.time()).split('.')[0]
         output = os.path.join(outdir,outbase+'.json')
 
-        # Guess seed value
-        desired_size_mHa = SIZE_LOOKUP[self.input_bioregion_size] #million Hectares
-        desired_size = 10000000000 * desired_size_mHa
-        radius = math.sqrt(desired_size/math.pi) 
-        buff = coords.buffer(radius*5) # to be safe against long skinny bioregions
-
+        ### Input parameteres
+        coords = self.input_starting_point.transform(settings.GEOMETRY_DB_SRID, clone=True)
+        p_temp = self.input_temp_weight
+        p_precip = self.input_precip_weight
+        p_biomass = self.input_biomass_weight
+        p_lang = self.input_lang_weight
+        p_elev = self.input_elev_weight
+        p_marine = self.input_marine_weight
         x = p_temp + p_precip + p_biomass + p_lang + p_elev + p_marine 
-        dist_constant = 0.0
+        p_land = x - p_marine
+        if p_land < 1: p_land = 5.0 
+        if p_marine < 1: p_marine = 5.0 
+
+        ### Guess at initial max_cost to achieve a given size
+        desired_size_mHa = SIZE_LOOKUP[self.input_bioregion_size] #million Hectares
         # regression, R^2 ~ 0.38 for 275 random samples
         intercept = 0 #464070
         max_cost = math.fabs((3162 * x * (desired_size_mHa ** 0.5))+intercept)
-
         self.output_initcost = max_cost
-        if x - p_marine < 1:
-            dist_constant = 2.0
 
-        # set initial region
+        ### Set GRASS region to the smallest window we can
+        desired_size = 10000000000 * desired_size_mHa
+        radius = math.sqrt(desired_size/math.pi) 
+        buff = coords.buffer(radius*5) # to be safe against long skinny bioregions
         g.run('g.region rast=biomass_slope')
         g.run('g.region w=%d s=%d e=%d n=%d' % buff.extent )
+        
+        ### Get values for starting point
         start_values = get_raster_values(g, rasts, coords)
         start_values['ocean_slope'] = get_nearest_ocean_value(g, coords)
-        
-        g.run('r.mapcalc "weighted_land_slope = %s + ' % dist_constant +
-                            '(%s * pow(abs(%s - temp_slope),2))*10 + ' % (p_temp,start_values['temp_slope'])  + 
-                            '(%s * pow(abs(%s - precip_slope),2))*10 + ' % (p_precip,start_values['precip_slope'])  + 
-                            '(%s * pow(abs(%s - biomass_slope),2))*10 + ' % (p_biomass,start_values['biomass_slope'])  + 
-                            '(%s * pow(abs(%s - elev_slope),2))*10 + ' % (p_elev,start_values['elev_slope'])  + 
-                            '(%s * if(%s - lang_slope == 0, 0, 2500))*10' % (p_lang,start_values['lang_slope'])  + 
+
+        ### MAGIC CONSTANTS
+        # Distance constants, increases cost of moving regardless of parameters, increase to make more like a buffer
+        # These are inversely proportional to the ration of land-to-marine (or vice-versa)
+        dist_constant = 100.0
+        land_dist_const = dist_constant / (p_land/p_marine)
+        marine_dist_const = 5 * (dist_constant / (p_marine/p_land))
+        # ocean multiplier, exaggerates differences
+        marine_mult_const = 2500 
+        ocean_mult = marine_mult_const/p_marine
+
+        ### Land cost 
+        g.run('r.mapcalc "weighted_land_slope = %s + ' % land_dist_const +
+                            '(%s * pow(abs(%s - temp_slope),2))*1 + ' % (p_temp,start_values['temp_slope'])  + 
+                            '(%s * pow(abs(%s - precip_slope),2))*1 + ' % (p_precip,start_values['precip_slope'])  + 
+                            '(%s * pow(abs(%s - biomass_slope),2))*1 + ' % (p_biomass,start_values['biomass_slope'])  + 
+                            '(%s * pow(abs(%s - elev_slope),2))*1 + ' % (p_elev,start_values['elev_slope'])  + 
+                            '(%s * if(%s - lang_slope == 0, 0, 2500))*1' % (p_lang,start_values['lang_slope'])  + 
                             '"')
 
+        ### Marine Cost
         if p_marine >= 1:
-            '''
-            We need a distance constant to prevent 'runout' - this needs to be inversely propotional to the marine weighting
-            For the multiplier, normalize to other layers (also inversly prop. to the marine weighting). 
-            '''
-            marine_dist_const = 35000 # increasing this makes distance from shore uniformly more expensive
-            marine_mult_const = 2500 # increasing this multplies the cost surface, making ocean costs higher and exaggerating differences
             g.run('r.mapcalc "weighted_ocean_slope = %s + ' % (marine_dist_const, ) +
-                            '(%s * pow(abs(%s - ocean_slope),2))*10' % (p_marine, start_values['ocean_slope'])  + 
+                            '(%s * pow(abs(%s - ocean_slope),2))*1' % (p_marine, start_values['ocean_slope'])  + 
                             '"')
 
-            #ocean_mult = get_ocean_multiplier() # not complete yet
-            ocean_mult = marine_mult_const/p_marine
+            ### Combined Cost
             g.run('r.mapcalc "weighted_combined_slope = if(isnull(weighted_ocean_slope),0,weighted_ocean_slope * %s) + ' % (ocean_mult,) + 
                   'if(isnull(weighted_land_slope),0,weighted_land_slope)"')
         else:
-            # Don't include the ocean at all, just use the land slope
+            # For Combined Cost - Don't include the ocean at all, just use the land slope
             g.run('g.rename rast=weighted_land_slope,weighted_combined_slope')
 
         g.run('r.colors -n -e map=weighted_combined_slope color=grey')
