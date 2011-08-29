@@ -150,6 +150,22 @@ def get_bioregion(pt):
             the_bio = bio
     return the_bio
 
+def create_bioregion(user, name, g):
+    bio = MyBioregion(user=user, name=name, 
+            input_temp_weight = 50,
+            input_precip_weight = 50,
+            input_biomass_weight = 50,
+            input_lang_weight = 50,
+            input_elev_weight = 50,
+            input_marine_weight = 10,
+            input_starting_point = g,
+            input_bioregion_size= 'L'
+            ) 
+
+    bio.save()
+    if seed:
+        bio.kml_safe
+    return bio
 
 def reports(bio):
     req = HttpRequest()
@@ -170,30 +186,35 @@ def reports(bio):
 
 if __name__ == '__main__':
     public = Group.objects.get(name="Share with Public")
-    #delete()
-    #main()
     a = get_attendees()
     user = User.objects.get(username='pregen')
     folder, created = Folder.objects.get_or_create(name="Bioregions of the Attendees", user=user)
+    folder.delete()
+    folder, created = Folder.objects.get_or_create(name="Bioregions of the Attendees", user=user)
     for name, pt in a.items():
         if pt and len(MyBioregion.objects.filter(user=user, name=name)) < 1:
-            bio = get_bioregion(pt)
-            if bio:
-                bio2 = bio.copy(user)
-                try:
-                    newname = escape(name)
-                except:
-                    print "NOT NAMED", name
-                    newname = bio2.name
-                bio2.name = newname
-                bio2.input_starting_point = pt
-                if seed:
-                    bio2.kml_safe
-                bio2.add_to_collection(folder)
-                bio2.share_with(public)
-                bio2.save(rerun=False)
-                reports(bio2)
-            else:
-                print "NO BIOREGION!", name
-                print name, pt
+            #bio = get_bioregion(pt)
+            bio = create_bioregion(user, name, pt)
+            bio.add_to_collection(folder)
+            bio.save(rerun=False)
+            #reports(bio2)
+
+#            if bio:
+#                bio2 = bio.copy(user)
+#                try:
+#                    newname = escape(name)
+#                except:
+#                    print "NOT NAMED", name
+#                    newname = bio2.name
+#                bio2.name = newname
+#                bio2.input_starting_point = pt
+#                if seed:
+#                    bio2.kml_safe
+#                bio2.add_to_collection(folder)
+#                bio2.share_with(public)
+#                bio2.save(rerun=False)
+#                reports(bio2)
+#            else:
+#                print "NO BIOREGION!", name
+#                print name, pt
 
