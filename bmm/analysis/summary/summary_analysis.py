@@ -151,12 +151,17 @@ def get_languages(bioregion):
         for language in languages:
             try:
                 #does_intersect = language.geometry.intersects(bioregion.output_geom)
-                language_intersection = language.geometry.intersection(bioregion.output_geom)
+                #the following test for validity improves the run-time by neary an order of magnitude (at least in the test case)
+                #buffering everytime takes extra time, and checking for validity after buffering can be very slow for those
+                #cases with difficult geometries, so checking for validity once at the beginning to determine buffering strategy
+                #and then letting it error/exception out if necessary (which may or may not happen anymore...)
+                #provides the quickest run-time
+                if language.geometry.valid:
+                    language_intersection = language.geometry.intersection(bioregion.output_geom)
+                else:
+                    language_intersection = language.geometry.buffer(0).intersection(bioregion.output_geom)
                 area = language_intersection.area
-            except:          
-                #does_intersect = language.geometry.buffer(0).intersects(bioregion.output_geom)
-                #the following doesn't work on dev/prod -- giving up for now
-                #language_intersection = language.geometry.buffer(1).intersection(bioregion.output_geom)
+            except:      
                 area = 0
             if area > 0:
                 if language.nam_ansi is None:
