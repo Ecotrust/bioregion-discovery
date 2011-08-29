@@ -149,6 +149,31 @@ def get_languages(bioregion):
         language_dict = {}
         pop_total = 0 
         for language in languages:
+            #the following conditional tests for geometries that are crashing and not throwing python exception (shows as internal error)
+            #this happens not on my local machine but does happen on ninkasi and dionysus
+            #dionysus is using geos 3.1.0
+            #local machine (which does not crash when intersecting) is using 3.2.2
+            #   select postgis_full_version(); gave me geos version
+            #possible solutions could be to update geos (not really an option) or perhaps django has an update that catches that error...
+            #the following error is output on dionysus when attempting intersection (after buffer(0)) on this/these geometry/ies
+            """
+                GEOS_NOTICE: Self-intersection at or near point 1.36725e+07 -289750
+                bufferOriginalPrecision failed (TopologyException: unable to assign hole to a shell), trying with reduced precision
+                recomputing with precision scale factor = 10000
+                Scaler: offsetX,Y: 0,0 scaleFactor: 10000
+                ReScaler: offsetX,Y: 0,0 scaleFactor: 10000
+                recomputing with precision scale factor = 1000
+                Scaler: offsetX,Y: 0,0 scaleFactor: 1000
+                ReScaler: offsetX,Y: 0,0 scaleFactor: 1000
+                recomputing with precision scale factor = 100
+                Scaler: offsetX,Y: 0,0 scaleFactor: 100
+                ReScaler: offsetX,Y: 0,0 scaleFactor: 100
+                recomputing with precision scale factor = 10
+                Scaler: offsetX,Y: 0,0 scaleFactor: 10
+                python: ../../source/headers/geos/noding/SegmentString.h:175: void geos::noding::SegmentString::testInvariant() const: Assertion `pts->size() > 1' failed.
+            """
+            if language.nam_ansi is None:
+                continue
             try:
                 #does_intersect = language.geometry.intersects(bioregion.output_geom)
                 #the following test for validity improves the run-time by neary an order of magnitude (at least in the test case)
