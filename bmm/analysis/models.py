@@ -19,9 +19,8 @@ class ReportCache(models.Model):
             ReportCache.delete(entry)
         #save the new entry
         super(ReportCache, self).save(*args, **kwargs)
-
-
-class Languages(models.Model):
+ 
+class Language(models.Model):
     nam_label = models.CharField(max_length=40)
     name_prop = models.CharField(max_length=40, null=True, blank=True)
     name2 = models.CharField(max_length=40, null=True, blank=True)

@@ -6,7 +6,7 @@ from lingcod.raster_stats.models import RasterDataset, zonal_stats
 #from settings import *
 from lingcod.unit_converter.models import geometry_area_in_display_units, convert_float_to_area_display_units
 from analysis.utils import convert_sq_km_to_sq_mi, convert_cm_to_in, get_terra_geom, get_oceanic_geom
-from analysis.models import Languages, EcoRegions, LastWild, MarineRegions, Watersheds, WorldMask, UrbanExtent
+from analysis.models import Language, EcoRegions, LastWild, MarineRegions, Watersheds, WorldMask, UrbanExtent
 from analysis.caching.report_caching import *
 from lingcod.common.utils import clean_geometry
 
@@ -145,17 +145,16 @@ def get_languages(bioregion):
         return language_names
     else:
         pop_geom = RasterDataset.objects.get(name='population_2005')
-        languages = Languages.objects.filter(geometry__bboverlaps=bioregion.output_geom)
+        languages = Language.objects.filter(geometry__bboverlaps=bioregion.output_geom)
         language_dict = {}
         pop_total = 0 
         for language in languages:
-            #the following conditional tests for geometries that are crashing and not throwing python exception (shows as internal error)
-            #this happens not on my local machine but does happen on ninkasi and dionysus
+            #noticing issue on ninkasi and dionysus (not on local machine)
             #dionysus is using geos 3.1.0
             #local machine (which does not crash when intersecting) is using 3.2.2
             #   select postgis_full_version(); gave me geos version
             #possible solutions could be to update geos (not really an option) or perhaps django has an update that catches that error...
-            #the following error is output on dionysus when attempting intersection (after buffer(0)) on this/these geometry/ies
+            #the following error is output on dionysus when attempting intersection (after buffer(0)) on some problem geoemetries
             """
                 GEOS_NOTICE: Self-intersection at or near point 1.36725e+07 -289750
                 bufferOriginalPrecision failed (TopologyException: unable to assign hole to a shell), trying with reduced precision
@@ -172,15 +171,7 @@ def get_languages(bioregion):
                 Scaler: offsetX,Y: 0,0 scaleFactor: 10
                 python: ../../source/headers/geos/noding/SegmentString.h:175: void geos::noding::SegmentString::testInvariant() const: Assertion `pts->size() > 1' failed.
             """
-            if language.nam_ansi is None:
-                continue
             try:
-                #does_intersect = language.geometry.intersects(bioregion.output_geom)
-                #the following test for validity improves the run-time by neary an order of magnitude (at least in the test case)
-                #buffering everytime takes extra time, and checking for validity after buffering can be very slow for those
-                #cases with difficult geometries, so checking for validity once at the beginning to determine buffering strategy
-                #and then letting it error/exception out if necessary (which may or may not happen anymore...)
-                #provides the quickest run-time
                 if language.geometry.valid:
                     language_intersection = language.geometry.intersection(bioregion.output_geom)
                 else:
@@ -195,8 +186,12 @@ def get_languages(bioregion):
                     #name = (language.nam_ansi, language.familyprop)
                     name = language.nam_ansi
                 #area = geometry_area_in_display_units(language.geometry.intersection(bioregion.output_geom))
-                pop_stats = zonal_stats(language_intersection.buffer(0), pop_geom)
-                if pop_stats:
+                if language_intersection.valid:
+                    pop_stats = zonal_stats(language_intersection, pop_geom)
+                else:
+                    buffered_intersection = language_intersection.buffer(0)
+                    pop_stats = zonal_stats(buffered_intersection, pop_geom)
+                if pop_stats and pop_stats.sum:
                     pop = pop_stats.sum
                 else:
                     pop = 0
