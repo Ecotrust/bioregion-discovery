@@ -14,6 +14,8 @@
                 <b>Spoken Languages</b>
                 <sup><a id="displayText" href="javascript:toggleDiv('lang');">Learn More</a><sup>
                 <div id="lang" style="display: none">
+                    <p>The languages reported below are ordered by estimated population within the bioregion, with languages estimated 
+                    <p>to have more speakers at the top of the list and languages estimated to have fewer speakers at the bottom.
                     <p>Language data was obtained from the World Language Mapping System (WLMS), which has locations of the world's 6,900 languages.
                     <p>For more information on the WLMS can be found <a href="http://www.worldgeodatasets.com/language/" target="_blank">here</a>.
                     <p>Estimated populations were determined by running a zonal sum on the 
@@ -32,17 +34,11 @@
             </tr>
         {% else %}
             {% for language in languages %}
-            <tr>
-                <td colspan='2'>
-                    {% if language.1 == 'No Data' %} No Data / Unknown
-                    {% else %} {{language.1}} 
-                    {% endif %}
-                    
-                    {% if language.0 %} (Est Pop: {{language.0|floatformat:0|intcomma}})
-                    {% else %} (Est Pop: Unknown)
-                    {% endif %} 
-                </td>
-            </tr>
+                {% if language.1 != 'No Data' %} 
+                <tr>
+                    <td colspan='2'>{{language.1}}</td>
+                </tr>
+                {% endif %}
             {% endfor %}
         {% endif %}
         <tr><td></td><td></td></tr>
