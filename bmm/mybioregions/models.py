@@ -111,28 +111,26 @@ class MyBioregion(Analysis):
         start_values['ocean_slope'] = get_nearest_ocean_value(g, coords)
 
         ### MAGIC CONSTANTS
-        # Distance constants, increases cost of moving regardless of parameters, increase to make more like a buffer
-        # These are inversely proportional to the ration of land-to-marine (or vice-versa)
-        dist_constant = 100.0
+        dist_constant = 150.0 # increases cost of distance regardless of data variation
+        mult_constant = 5 # exaggerates variation
+        # land distance constant is inversely related to the ratio of land:marine (and vice versa for ocean)
         land_dist_const = dist_constant / (p_land/p_marine)
-        marine_dist_const = 5 * (dist_constant / (p_marine/p_land))
-        # ocean multiplier, exaggerates differences
-        marine_mult_const = 2500 
-        ocean_mult = marine_mult_const/p_marine
+        marine_dist_const = mult_constant * dist_constant / (p_marine/p_land)
+        ocean_mult = 50.0 / (p_marine/p_land)
 
         ### Land cost 
         g.run('r.mapcalc "weighted_land_slope = %s + ' % land_dist_const +
-                            '(%s * pow(abs(%s - temp_slope),2))*1 + ' % (p_temp,start_values['temp_slope'])  + 
-                            '(%s * pow(abs(%s - precip_slope),2))*1 + ' % (p_precip,start_values['precip_slope'])  + 
-                            '(%s * pow(abs(%s - biomass_slope),2))*1 + ' % (p_biomass,start_values['biomass_slope'])  + 
-                            '(%s * pow(abs(%s - elev_slope),2))*1 + ' % (p_elev,start_values['elev_slope'])  + 
-                            '(%s * if(%s - lang_slope == 0, 0, 2500))*1' % (p_lang,start_values['lang_slope'])  + 
+                            '(%s * pow(abs(%s - temp_slope),2))*%s + ' % (p_temp,start_values['temp_slope'],mult_constant)  + 
+                            '(%s * pow(abs(%s - precip_slope),2))*%s + ' % (p_precip,start_values['precip_slope'],mult_constant)  + 
+                            '(%s * pow(abs(%s - biomass_slope),2))*%s + ' % (p_biomass,start_values['biomass_slope'],mult_constant)  + 
+                            '(%s * pow(abs(%s - elev_slope),2))*%s + ' % (p_elev,start_values['elev_slope'],mult_constant)  + 
+                            '(%s * if(%s - lang_slope == 0, 0, 2500))*%s' % (p_lang,start_values['lang_slope'],mult_constant)  + 
                             '"')
 
         ### Marine Cost
         if p_marine >= 1:
-            g.run('r.mapcalc "weighted_ocean_slope = %s + ' % (marine_dist_const, ) +
-                            '(%s * pow(abs(%s - ocean_slope),2))*1' % (p_marine, start_values['ocean_slope'])  + 
+            g.run('r.mapcalc "weighted_ocean_slope = %s + ' % marine_dist_const +
+                            '(%s * pow(abs(%s - ocean_slope),2))*%s' % (p_marine, start_values['ocean_slope'],mult_constant)  + 
                             '"')
 
             ### Combined Cost
