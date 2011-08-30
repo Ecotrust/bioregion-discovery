@@ -37,6 +37,8 @@ def display_general_analysis(request, bioregion, template='summary/general_repor
     oceanic_area_km, oceanic_area_mi = get_oceanic_area(bioregion) #2 seconds
     #get current population (for 2005)
     population_2005 = get_population(bioregion) #2 seconds
+    import pdb
+    pdb.set_trace()
     #get urban/rural population percentages (for 2005)
     urban_pop = get_urban_pop(population_2005, bioregion) #23 seconds
     #get projected population (for 2015)

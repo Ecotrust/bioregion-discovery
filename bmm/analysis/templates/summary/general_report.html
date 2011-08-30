@@ -60,15 +60,17 @@
             </td>
         </tr>
         <tr>
+            <td  colspan='2'>
             {% if population_2005 == 0 %}
                 No Data Available
             {% else %}
                 {% if population_2005 < 1000000 %}
-                <td  colspan='2'>{{population_2005|intcomma}}</td>
+                    {{population_2005|intcomma}}
                 {% else %}
-                <td  colspan='2'>{{population_2005|intword}}</td>
+                    {{population_2005|intword}}
                 {% endif %}
             {% endif %}
+            </td>
         </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
@@ -124,20 +126,22 @@
             </td>
         </tr>
         <tr>
+            <td colspan='2' style='width:225px'>
             {% if population_2015 == 0 %}
                 No Data Available
             {% else %}
                 {% if population_2015 < 1000000 %}
-                <td colspan='2' style='width:225px'>{{population_2015|intcomma}}
+                    {{population_2015|intcomma}}
                 {% else %}
-                <td colspan='2' style='width:225px'>{{population_2015|intword}}
+                    {{population_2015|intword}}
                 {% endif %}
                 {% if population_change > 0 %}
-                    (increase of {{population_change|percentage:0}})</td>
+                    (increase of {{population_change|percentage:0}})
                 {% else %}
-                    (decrease of {{population_change|percentage:0}})</td>
+                    (decrease of {{population_change|percentage:0}})
                 {% endif %}
             {% endif %}
+            </td>
         </tr>
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
