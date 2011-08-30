@@ -142,11 +142,17 @@
                 </div>
             </td>
         </tr>
+        {% if not ecoregions.0 %}
+        <tr>
+            <td colspan='2'>None present</td>
+        </tr>
+        {% else %}
         {% for ecoregion in ecoregions %}
         <tr>
             <td colspan='2'>{{ecoregion.0}} ({{ecoregion.1|floatformat:0|intcomma}} km<sup>2</sup> / {{ecoregion.2|floatformat:0|intcomma}} mi<sup>2</sup>)</td>
         </tr>
         {% endfor %}
+        {% endif %}
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
@@ -159,11 +165,17 @@
                 </div>
             </td>
         </tr>
+        {% if not wild_regions.0 %}
+        <tr>
+            <td colspan='2'>None present</td>
+        </tr>
+        {% else %}
         {% for region in wild_regions %}
         <tr>
             <td colspan='2'>{{region.0}} ({{region.1|floatformat:0|intcomma}} km<sup>2</sup> / {{region.2|floatformat:0|intcomma}} mi<sup>2</sup>)</td>
         </tr>
         {% endfor %}
+        {% endif %}
         <tr><td></td><td></td></tr>
         <tr><td></td><td></td></tr>
         <tr class="grey">
