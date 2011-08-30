@@ -180,11 +180,11 @@ def get_languages(bioregion):
             except:      
                 area = 0
             if area > 0:
-                if language.nam_ansi is None:
+                if language.nam_prop is None:
                     name = 'No Data'
                 else:
                     #name = (language.nam_ansi, language.familyprop)
-                    name = language.nam_ansi
+                    name = language.nam_prop
                 #area = geometry_area_in_display_units(language.geometry.intersection(bioregion.output_geom))
                 if language_intersection.valid:
                     pop_stats = zonal_stats(language_intersection, pop_geom)
