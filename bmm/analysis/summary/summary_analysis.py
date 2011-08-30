@@ -49,8 +49,12 @@ def display_general_analysis(request, bioregion, template='summary/general_repor
     #get mean annual temperature
     annual_temp_c, annual_temp_f = get_annual_temp(bioregion) #9 seconds
     #get mean annual temperature range
-    annual_temp_range_c = max_temp_c - min_temp_c
-    annual_temp_range_f = max_temp_f - min_temp_f
+    if max_temp_c == default_value or min_temp_c == default_value:
+        annual_temp_range_c = default_value
+        annual_temp_range_f = default_value
+    else:
+        annual_temp_range_c = max_temp_c - min_temp_c
+        annual_temp_range_f = max_temp_f - min_temp_f
     #get mean annual precipitation
     annual_precip_cm, annual_precip_in = get_annual_precip(bioregion) #9 seconds
     context = {'bioregion': bioregion, 'default_value': default_value, 'area_km': area_km, 'area_mi': area_mi, 'terra_area_km': terra_area_km, 'terra_area_mi': terra_area_mi, 'oceanic_area_km': oceanic_area_km, 'oceanic_area_mi': oceanic_area_mi, 'population_2005': population_2005, 'urban_pop': urban_pop, 'population_2015': population_2015, 'population_change': population_change, 'max_temp_c': max_temp_c, 'max_temp_f': max_temp_f, 'min_temp_c': min_temp_c, 'min_temp_f': min_temp_f, 'annual_temp_c': annual_temp_c, 'annual_temp_f': annual_temp_f, 'annual_temp_range_c': annual_temp_range_c, 'annual_temp_range_f': annual_temp_range_f, 'annual_precip_cm': annual_precip_cm, 'annual_precip_in': annual_precip_in}
@@ -110,7 +114,10 @@ def get_oceanic_area(bioregion):
 def get_population(bioregion):
     pop_geom = RasterDataset.objects.get(name='population_2005')
     pop_stats = zonal_stats(bioregion.output_geom, pop_geom)
-    return int(pop_stats.sum)
+    if pop_stats.sum:
+        return int(pop_stats.sum)
+    else:
+        return 0
     
 def get_urban_pop(pop_2005, bioregion):
     if report_cache_exists(bioregion, 'urban_population'):
@@ -137,7 +144,10 @@ def get_urban_pop(pop_2005, bioregion):
 def get_projected_population(bioregion):
     pop_geom = RasterDataset.objects.get(name='population_2015')
     pop_stats = zonal_stats(bioregion.output_geom, pop_geom)
-    return int(pop_stats.sum)
+    if pop_stats.sum:
+        return int(pop_stats.sum)
+    else
+        return 0
    
 def get_languages(bioregion):
     if report_cache_exists(bioregion, 'languages'):
@@ -213,30 +223,42 @@ def get_languages(bioregion):
 def get_max_temp(bioregion):
     max_temp_geom = RasterDataset.objects.get(name='max_temp')
     max_temp_stats = zonal_stats(bioregion.output_geom, max_temp_geom)
-    max_temp_c = max_temp_stats.avg / 10
-    max_temp_f = max_temp_c * 9 / 5. + 32
-    return max_temp_c, max_temp_f
+    if max_temp_stats.avg:
+        max_temp_c = max_temp_stats.avg / 10
+        max_temp_f = max_temp_c * 9 / 5. + 32
+        return max_temp_c, max_temp_f
+    else:
+        return default_value, default_value
    
 def get_min_temp(bioregion):
     min_temp_geom = RasterDataset.objects.get(name='min_temp')
     min_temp_stats = zonal_stats(bioregion.output_geom, min_temp_geom)
-    min_temp_c = min_temp_stats.avg / 10
-    min_temp_f = min_temp_c * 9 / 5. + 32
-    return min_temp_c, min_temp_f
+    if min_temp_stats.avg:
+        min_temp_c = min_temp_stats.avg / 10
+        min_temp_f = min_temp_c * 9 / 5. + 32
+        return min_temp_c, min_temp_f
+    else:
+        return default_value, default_value
     
 def get_annual_temp(bioregion):
     temp_geom = RasterDataset.objects.get(name='annual_temperature')
     temp_stats = zonal_stats(bioregion.output_geom, temp_geom)
-    temp_c = temp_stats.avg / 10
-    temp_f = temp_c * 9 / 5. + 32
-    return temp_c, temp_f
+    if temp_stats.avg:
+        temp_c = temp_stats.avg / 10
+        temp_f = temp_c * 9 / 5. + 32
+        return temp_c, temp_f
+    else:
+        return default_value, default_value
     
 def get_annual_precip(bioregion):
     precip_geom = RasterDataset.objects.get(name='annual_precipitation')
     precip_stats = zonal_stats(bioregion.output_geom, precip_geom)
-    precip_cm = precip_stats.avg / 10
-    precip_in = convert_cm_to_in(precip_cm)
-    return precip_cm, precip_in
+    if precip_stats.avg:
+        precip_cm = precip_stats.avg / 10
+        precip_in = convert_cm_to_in(precip_cm)
+        return precip_cm, precip_in
+    else:
+        return default_value, default_value
     
 def get_watersheds(bioregion):
     if report_cache_exists(bioregion, 'watersheds'):
