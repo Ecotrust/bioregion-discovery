@@ -65,7 +65,7 @@ def display_general_analysis(request, bioregion, template='summary/general_repor
      
 def display_language_analysis(request, bioregion, template='summary/language_report.html'):
     #get list of spoken languages
-    languages = get_languages(bioregion) #19 seconds
+    languages = get_languages(bioregion) 
     lang_count = len(languages)
     context = {'bioregion': bioregion, 'default_value': default_value, 'languages': languages, 'lang_count': lang_count}
     return render_to_response(template, RequestContext(request, context)) 

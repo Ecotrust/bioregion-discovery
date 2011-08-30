@@ -26,7 +26,7 @@
                 </div>
             </td>
         </tr>
-        {% if languages.0.1 == 'No Data' and lang_count == 1 %}
+        {% if languages.0.1 == 'No Data' or lang_count == 0 %}
             <tr>
                 <td colspan='2'>
                     The area within this Bioregion is not covered by the WLMS dataset.
