@@ -89,8 +89,8 @@ class MyBioregion(Analysis):
         p_marine = self.input_marine_weight
         x = p_temp + p_precip + p_biomass + p_lang + p_elev + p_marine 
         p_land = x - p_marine
-        if p_land < 1: p_land = 5.0 
-        if p_marine < 1: p_marine = 5.0 
+        if p_land < 1: p_land = 0.5 
+        if p_marine < 1: p_marine = 0.1 
 
         ### Guess at initial max_cost to achieve a given size
         desired_size_mHa = SIZE_LOOKUP[self.input_bioregion_size] #million Hectares
