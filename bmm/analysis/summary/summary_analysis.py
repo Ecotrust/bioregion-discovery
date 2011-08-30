@@ -136,7 +136,10 @@ def get_urban_pop(pop_2005, bioregion):
                 pop_stats = zonal_stats(urban_overlap, pop_geom)
                 if pop_stats.sum:
                     urban_pop += pop_stats.sum
-        urban_perc = urban_pop / pop_2005
+        if pop_2005 == 0:
+            urban_perc = 0
+        else:
+            urban_perc = urban_pop / pop_2005
         create_report_cache(bioregion, dict(urban_population=(urban_pop, urban_perc)))
         return (urban_pop, urban_perc)
        
