@@ -170,13 +170,13 @@ class MyBioregion(Analysis):
                 g.run('r.cost --o -k input=weighted_combined_slope output=cost1 coordinate=%s,%s max_cost=%s' % \
                     (coords[0],coords[1],max_cost) )
                 g.run('r.mapcalc "bio_rast=if(cost1 >= 0)"')
-            except:
+            except Exception, e:
                 # should never happen, lets try that again
-                logger.error("Whoa .. Grass failed on the the cost or mapcalc step... i=%s ... trying again" % i)
+                logger.error("Whoa .. Grass failed on the the cost or mapcalc step... \n %s \n ... i=%s ... trying again" % (e,i))
                 max_cost = max_cost * 1.001
-                if i > 5 and old_area:
-                    # this is bad - cost has never been run
-                    raise Exception('The geospatial processing step is broken... please report to application developers')
+                if i > 5 and largest_area == desired_size:
+                    # this is bad - cost has never been run and its tried a few times, bailing
+                    raise e
                 i += 1
                 continue
 

@@ -15,13 +15,6 @@ from lingcod.analysistools.utils import linear_regression
 import random
 
 errors = [
-#    {
-#        'name': 'Ryans polar',
-#        'x': 146.041,
-#        'y': -67.032,
-#        'marine': 44,
-#        'size': 'VL'
-#    },
     {
         'name': 'Ryans polar',
         'x': -135.186,
@@ -34,9 +27,16 @@ errors = [
         'x': 14.7278003692, 'y': 21.2676792145,
         'marine': 0, 'veg': 81, 'temp': 77, 'lang': 23, 'precip': 83, 'size': 'L'
     },
+    {
+        'name': 'tim-test-b',
+        'x': -119.80364990234375, 'y': 51.49445343017578,
+        'marine': 0, 'veg': 1, 'temp': 50, 'lang': 47, 'precip': 0, 'size': 'S'
+    },
 ]
 
 user = User.objects.get(username='demo')
+
+errors = [e for e in errors if e['name'].startswith('tim')]
 
 def delete(): 
     a = Folder.objects.filter(user=user, name="Errors")
