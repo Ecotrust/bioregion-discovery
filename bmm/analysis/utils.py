@@ -24,4 +24,19 @@ def get_oceanic_geom(bioregion):
         terra_mask = WorldMask.objects.get(id=1)
         oceanic_geom = bioregion.output_geom.difference(terra_mask.geometry)
     return oceanic_geom
+
+'''    
+def clean_geometries(model):
+    objects = model.objects.all()
+    num_changes = 0
+    for object in objects:
+        if not object.geometry.valid:
+            import pdb
+            pdb.set_trace()
+            cleaned_geom = object.geometry.buffer(0)
+            object.geometry = cleaned_geom
+            object.save()
+            num_changes += 1
+    print '%s geometries were cleaned' %num_changes
+'''
                
