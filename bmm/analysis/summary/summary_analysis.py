@@ -146,7 +146,7 @@ def get_projected_population(bioregion):
     pop_stats = zonal_stats(bioregion.output_geom, pop_geom)
     if pop_stats.sum:
         return int(pop_stats.sum)
-    else
+    else:
         return 0
    
 def get_languages(bioregion):
