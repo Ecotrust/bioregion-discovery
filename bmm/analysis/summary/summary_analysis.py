@@ -361,7 +361,10 @@ def get_terr_npp_avg(bioregion):
     terra_geom = get_terra_geom(bioregion)
     npp_geom = RasterDataset.objects.get(name='npp_terr')
     npp_stats = zonal_stats(terra_geom, npp_geom)
-    npp_avg = npp_stats.avg / (26064.03459 ** 2)
+    if npp_stats.avg:
+        npp_avg = npp_stats.avg / (26064.03459 ** 2)
+    else:
+        npp_avg = 0
     return npp_avg
 
 def get_ocn_npp_avg(bioregion):
