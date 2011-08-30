@@ -4,16 +4,7 @@
 {% load humanize %}
 {% load analysis_extras %}
 
-<h2>Natural Resources</h2>
-
-<h3>Net Primary Production <sup><small><a id="displayText" href="javascript:toggleDiv('npp');">Learn More</a></small><sup></h3>
-    <div id="npp" style="display: none">
-        <p>
-        According to <a href="http://en.wikipedia.org/wiki/Primary_production" target="_blank">Wikipedia</a>, 
-        Net Primary Production (NPP) is the measure of organic compound production from atmospheric or aquatic carbon dioxide.
-        It is the rate at which all plants in an ecosystem produce net useful chemical energy.  
-        <p>NPP is measured in mass / area / time.  The following reports use a measure of grams of carbon per meter squared per year. 
-    </div>
+<h3>Net Primary Production</h3>
 
 <div class='freetext'>
 <p>
@@ -24,8 +15,12 @@
                 <b>Average Terrestrial Net Primary Production</b> 
                 <sup><a id="displayText" href="javascript:toggleDiv('npp_terr');">Learn More</a><sup>
                 <div id="npp_terr" style="display: none">
-                    <p>In comparison, the average Global Terrestrial NPP is {{avg_terrestrial_npp}} g C/m<sup>2</sup>/yr.
+                    <p><a href="http://en.wikipedia.org/wiki/Primary_production" target="_blank">Wikipedia</a> defines 
+                      Net Primary Production (NPP) as the measure of organic compound production from atmospheric or aquatic carbon dioxide.
+                      It is the rate at which all plants in an ecosystem produce net useful chemical energy.  
+                    <p>NPP is measured in mass / area / time.  The following report uses a measure of grams of carbon per meter squared per year. 
                     <p>More information on the Terrestrial NPP dataset can be found <a href="http://sedac.ciesin.columbia.edu/es/hanpp.html" target="_blank">here</a>.
+                    <p><b>The average global terrestrial NPP is {{avg_terrestrial_npp}} g C/m<sup>2</sup>/year.</b>
                     <p>NOTE:  Many significant land masses were not included within this dataset, such absences are reported as
                        'No Data Available'.  
                 </div>
@@ -47,8 +42,12 @@
                 <b>Average Oceanic Net Primary Production</b> 
                 <sup><a id="displayText" href="javascript:toggleDiv('npp_ocn');">Learn More</a><sup>
                 <div id="npp_ocn" style="display: none">
-                    <p>In comparison, the Average Global Oceanic NPP is {{avg_oceanic_npp}} g C/m<sup>2</sup>/yr, with coastal areas tending higher than deep sea areas.
+                    <p><a href="http://en.wikipedia.org/wiki/Primary_production" target="_blank">Wikipedia</a> defines 
+                      Net Primary Production (NPP) as the measure of organic compound production from atmospheric or aquatic carbon dioxide.
+                      It is the rate at which all plants in an ecosystem produce net useful chemical energy.  
+                    <p>NPP is measured in mass / area / time.  The following report uses a measure of grams of carbon per meter squared per year. 
                     <p>More information on the Oceanic NPP dataset can be found <a href="http://www.science.oregonstate.edu/ocean.productivity/index.php" target="_blank">here</a>.
+                    <p><b>The average global oceanic NPP is {{avg_oceanic_npp}} g C/m<sup>2</sup>/year with coastal areas tending higher than deep sea areas.</b>
                 </div>
             </td>
         </tr>
