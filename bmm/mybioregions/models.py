@@ -19,7 +19,8 @@ BIOREGION_SIZES = (
     ('M', 'Medium (20m Hectares)'),
     ('L', 'Large (50m Hectares)'),
     ('VL', 'Very Large (100m Hectares)'),
-    ('VVL', 'Very Very Large (300m Hectares)'),
+    ('VVL', 'Very Very Large (200m Hectares)'),
+    ('VVVL', 'Very Very Very Large (300m Hectares)'),
 )
 
 SIZE_LOOKUP = { # in millions of Hectares
@@ -28,7 +29,8 @@ SIZE_LOOKUP = { # in millions of Hectares
     'M': 20,
     'L': 50,
     'VL': 100,
-    'VVL': 300,
+    'VVL': 200,
+    'VVVL': 300,
 }
 
 try:
