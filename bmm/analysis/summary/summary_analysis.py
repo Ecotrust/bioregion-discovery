@@ -340,22 +340,28 @@ def get_soil_suitability(bioregion):
     terra_geom = get_terra_geom(bioregion)
     suit_geom = RasterDataset.objects.get(name='soil_suitability')
     suit_stats = zonal_stats(terra_geom, suit_geom)
-    proportion = suit_stats.avg
-    area_km, area_mi = get_size(terra_geom)
-    prop_area_km = area_km * proportion
-    prop_area_mi = area_mi * proportion
-    return (proportion, prop_area_km, prop_area_mi)
+    if suit_stats.avg:
+        proportion = suit_stats.avg
+        area_km, area_mi = get_size(terra_geom)
+        prop_area_km = area_km * proportion
+        prop_area_mi = area_mi * proportion
+        return (proportion, prop_area_km, prop_area_mi)
+    else:
+        return (0, 0, 0)
 
 def get_proportion_equipped_for_irrigation(bioregion):
     terra_geom = get_terra_geom(bioregion)
     irrig_geom = RasterDataset.objects.get(name='irrig_equipped')
     irrig_stats = zonal_stats(terra_geom, irrig_geom)
-    hectares = irrig_stats.sum
-    area_km, area_mi = get_size(terra_geom)
-    proportion = hectares / 100 / area_km
-    prop_area_km = area_km * proportion
-    prop_area_mi = area_mi * proportion
-    return (proportion, prop_area_km, prop_area_mi)
+    if irrig_stats.sum:
+        hectares = irrig_stats.sum
+        area_km, area_mi = get_size(terra_geom)
+        proportion = hectares / 100 / area_km
+        prop_area_km = area_km * proportion
+        prop_area_mi = area_mi * proportion
+        return (proportion, prop_area_km, prop_area_mi)
+    else:
+        return (0, 0, 0)
     
 def get_terr_npp_avg(bioregion):
     terra_geom = get_terra_geom(bioregion)
@@ -373,6 +379,7 @@ def get_ocn_npp_avg(bioregion):
         npp_avg = 0
     else:
         npp_geom = RasterDataset.objects.get(name='npp_ocn')
+        npp_stats = zonal_stats(oceanic_geom, npp_geom)
         #settling on the following to account for lack of overlap
         #(see if statement above which helps with this issue as well)
         try:
@@ -381,8 +388,3 @@ def get_ocn_npp_avg(bioregion):
             npp_avg = 0
     return npp_avg
     
-def get_poverty(bioregion):
-    return default_value
-    poverty_geom = RasterDataset.objects.get(name='poverty')
-    poverty_stats = zonal_stats(bioregion.output_geom, poverty_geom)
-    return poverty_stats.avg
