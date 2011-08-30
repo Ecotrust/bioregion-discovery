@@ -41,7 +41,10 @@ def display_general_analysis(request, bioregion, template='summary/general_repor
     urban_pop = get_urban_pop(population_2005, bioregion) #23 seconds
     #get projected population (for 2015)
     population_2015 = get_projected_population(bioregion) #2 seconds
-    population_change = (float(population_2015) / population_2005) - 1
+    if population_2005 == 0:
+        population_change = default_value
+    else:
+        population_change = (float(population_2015) / population_2005) - 1
     #get median max temperature
     max_temp_c, max_temp_f = get_max_temp(bioregion) #2 seconds
     #get median min temperature
