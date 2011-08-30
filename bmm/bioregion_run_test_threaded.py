@@ -45,8 +45,8 @@ class MyThread (threading.Thread):
         threading.Thread.__init__ ( self )
 
     def run (self):
-        import time
         e = self.e
+        print e
 
         for f in fields:
             if not e.has_key(f):
@@ -71,6 +71,9 @@ class MyThread (threading.Thread):
 def main():
     for e in errors:
         MyThread(e).start()
+        import time
+        time.sleep(2)
+
 
 
 if __name__ == '__main__':

@@ -81,12 +81,12 @@ class MyBioregion(Analysis):
 
         ### Input parameteres
         coords = self.input_starting_point.transform(settings.GEOMETRY_DB_SRID, clone=True)
-        p_temp = self.input_temp_weight
-        p_precip = self.input_precip_weight
-        p_biomass = self.input_biomass_weight
-        p_lang = self.input_lang_weight
-        p_elev = self.input_elev_weight
-        p_marine = self.input_marine_weight
+        p_temp = float(self.input_temp_weight)
+        p_precip = float(self.input_precip_weight)
+        p_biomass = float(self.input_biomass_weight)
+        p_lang = float(self.input_lang_weight)
+        p_elev = float(self.input_elev_weight)
+        p_marine = float(self.input_marine_weight)
         x = p_temp + p_precip + p_biomass + p_lang + p_elev + p_marine 
         p_land = x - p_marine
         if p_land < 1: p_land = 0.5 
@@ -114,6 +114,9 @@ class MyBioregion(Analysis):
         dist_constant = 150.0 # increases cost of distance regardless of data variation
         mult_constant = 5 # exaggerates variation
         # land distance constant is inversely related to the ratio of land:marine (and vice versa for ocean)
+        foo = [p_land, p_marine, (p_land/p_marine)]
+        print foo
+        print [type(f) for f in foo]
         land_dist_const = dist_constant / (p_land/p_marine)
         marine_dist_const = mult_constant * dist_constant / (p_marine/p_land)
         ocean_mult = 50.0 / (p_marine/p_land)
