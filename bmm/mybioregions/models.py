@@ -345,12 +345,15 @@ class MyBioregion(Analysis):
             <visibility>1</visibility>
             <name>%s</name>
             <styleUrl>#%s-default</styleUrl>
+            <ExtendedData>
+                <Data name="desc"><value>%s</value></Data>
+            </ExtendedData>
             <MultiGeometry>
             %s
             %s
             </MultiGeometry>
         </Placemark>
-        """ % (self.kml_style, self.uid, escape(self.name), self.model_uid(),
+        """ % (self.kml_style, self.uid, escape(self.name), self.model_uid(), escape(self.description), 
             asKml(self.output_geom.transform(
                     settings.GEOMETRY_CLIENT_SRID, clone=True),uid=self.uid),
             asKml(self.input_starting_point.transform(
@@ -360,6 +363,13 @@ class MyBioregion(Analysis):
     def kml_style(self):
         return """
         <Style id="%s-default">
+            <BalloonStyle>
+                <bgColor>ffeeeeee</bgColor>
+                <text> <![CDATA[
+                    <font color="#1A3752"><strong>$[name]</strong></font><br />
+                    <p>$[desc]</p>
+                ]]> </text>
+            </BalloonStyle>
             <IconStyle>
                 <color>ffffffff</color>
                 <colorMode>normal</colorMode>
