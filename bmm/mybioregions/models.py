@@ -116,9 +116,6 @@ class MyBioregion(Analysis):
         dist_constant = 150.0 # increases cost of distance regardless of data variation
         mult_constant = 5 # exaggerates variation
         # land distance constant is inversely related to the ratio of land:marine (and vice versa for ocean)
-        foo = [p_land, p_marine, (p_land/p_marine)]
-        print foo
-        print [type(f) for f in foo]
         land_dist_const = dist_constant / (p_land/p_marine)
         marine_dist_const = mult_constant * dist_constant / (p_marine/p_land)
         ocean_mult = 50.0 / (p_marine/p_land)
