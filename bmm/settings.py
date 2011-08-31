@@ -8,6 +8,7 @@ ROOT_URLCONF = 'bmm.urls'
 GEOMETRY_DB_SRID = 54009
 DISPLAY_AREA_UNITS = 'sq_km'
 #KML_SIMPLIFY_TOLERANCE = .0002 #overriding this setting to account for lat/lon db srid
+KML_SIMPLIFY_TOLERANCE_DEGREES = .025 #overriding this setting to account for lat/lon db srid
 KML_ALTITUDEMODE_DEFAULT = 'clampToGround'
 
 TEMPLATE_DIRS = ( os.path.realpath(os.path.join(os.path.dirname(__file__), 'templates').replace('\\','/')), )

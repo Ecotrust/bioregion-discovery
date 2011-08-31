@@ -78,7 +78,7 @@ class MyBioregion(Analysis):
         rasts = g.list()['rast']
 
         outdir = '/tmp'
-        outbase = 'bioregion_%s' % str(time.time()).split('.')[0]
+        outbase = 'bioregion_%s_%s' % (str(time.time()).split('.')[0], self.pk)
         output = os.path.join(outdir,outbase+'.json')
 
         ### Input parameteres
@@ -116,9 +116,6 @@ class MyBioregion(Analysis):
         dist_constant = 150.0 # increases cost of distance regardless of data variation
         mult_constant = 5 # exaggerates variation
         # land distance constant is inversely related to the ratio of land:marine (and vice versa for ocean)
-        foo = [p_land, p_marine, (p_land/p_marine)]
-        print foo
-        print [type(f) for f in foo]
         land_dist_const = dist_constant / (p_land/p_marine)
         marine_dist_const = mult_constant * dist_constant / (p_marine/p_land)
         ocean_mult = 50.0 / (p_marine/p_land)
@@ -179,8 +176,8 @@ class MyBioregion(Analysis):
                 # should never happen, lets try that again
                 logger.error("Whoa .. Grass failed on the the cost or mapcalc step... \n %s \n ... i=%s ... trying again" % (e,i))
                 max_cost = max_cost * 1.001
-                if i > 5 and largest_area == desired_size:
-                    # this is bad - cost has never been run and its tried a few times, bailing
+                if i > 8:
+                    # this is bad
                     raise e
                 i += 1
                 continue
