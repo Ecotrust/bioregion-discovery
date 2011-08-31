@@ -113,3 +113,8 @@ class UrbanExtent(models.Model):
     gridcode = models.IntegerField()
     geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Urban Extent Boundaries")
     objects = models.GeoManager()    
+    
+class PovertyNoData(models.Model):
+    area_sqkm = models.FloatField()
+    geometry = models.MultiPolygonField(srid=settings.GEOMETRY_DB_SRID, null=True, blank=True, verbose_name="Areas Lacking Poverty Data")
+    objects = models.GeoManager()
