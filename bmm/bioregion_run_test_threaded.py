@@ -14,6 +14,7 @@ from lingcod.analysistools.grass import Grass
 from lingcod.analysistools.utils import linear_regression
 import random
 import threading
+import time
 
 fields = ['temp','precip','veg','lang','elev']
 user = User.objects.get(username='demo')
@@ -66,15 +67,14 @@ class MyThread (threading.Thread):
                 ) 
         bio.save()
         bio.add_to_collection(fldr)
+        print "!!! DONE", bio 
         del bio
 
 def main():
-    for e in errors:
-        MyThread(e).start()
-        import time
-        time.sleep(2)
-
-
+    for i in range(5):
+        for e in errors:
+            MyThread(e).start()
+            time.sleep(0.01)
 
 if __name__ == '__main__':
     delete()

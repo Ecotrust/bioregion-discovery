@@ -119,6 +119,6 @@ def summary():
 
 
 if __name__ == '__main__':
-    delete()
-    main()
+    #delete()
+    #main()
     summary()
