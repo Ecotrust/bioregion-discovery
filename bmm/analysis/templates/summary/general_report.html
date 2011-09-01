@@ -93,7 +93,7 @@
         <tr>
             <td colspan='2'>
                 {% if urban_pop.0 == 0 %}
-                    No Data Available
+                    0 (No urban boundaries were reported)
                 {% else %}
                     {% if urban_pop.0 < 1000000 %} 
                         {{urban_pop.0|floatformat:0|intcomma}} 
