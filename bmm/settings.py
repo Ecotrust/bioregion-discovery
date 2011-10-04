@@ -32,7 +32,7 @@ COMPRESS_JS['application']['source_filenames'] += (
 # bioregions.labs.ecotrust.org 
 GOOGLE_API_KEY = 'ABQIAAAAn9EXtJkKOlQBGEfk28CiahQkv7FNjWKr_TVFL7EgIFo2pXN1jRRz4grU7hzFNhpS8coxw1Dz219KfQ'
 # bioregions.labs.ecotrust.org:8000
-#GOOGLE_API_KEY = 'BQIAAAAn9EXtJkKOlQBGEfk28CiahTSuF7m83X3uEERz7nj3jSiHAkiaxQeB-tWbTkStcVCW35ldeO0TwWa5g'
+#GOOGLE_API_KEY = 'ABQIAAAAn9EXtJkKOlQBGEfk28CiahTSuF7m83X3uEERz7nj3jSiHAkiaxQeB-tWbTkStcVCW35ldeO0TwWa5g'
 
 LOG_FILE =  os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'bmm.log'))
 #LOG_FILE = '/usr/local/apps/bioregions/bmm.log'
