@@ -1,6 +1,6 @@
-from lingcod.common import utils
-from lingcod.shapes.views import ShpResponder
-from lingcod.features.views import get_object_for_viewing, get_object_for_editing
+from madrona.common import utils
+from madrona.shapes.views import ShpResponder
+from madrona.features.views import get_object_for_viewing, get_object_for_editing
 from django.http import HttpResponse
 from django.template.defaultfilters import slugify
 

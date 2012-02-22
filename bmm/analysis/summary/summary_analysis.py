@@ -1,14 +1,14 @@
 #from django.http import HttpResponse
 from django.shortcuts import render_to_response#, get_object_or_404
 from django.template import RequestContext
-from lingcod.raster_stats.models import RasterDataset, zonal_stats
+from madrona.raster_stats.models import RasterDataset, zonal_stats
 #from analysis.models import *
 #from settings import *
-from lingcod.unit_converter.models import geometry_area_in_display_units, convert_float_to_area_display_units
+from madrona.unit_converter.models import geometry_area_in_display_units, convert_float_to_area_display_units
 from analysis.utils import convert_sq_km_to_sq_mi, convert_cm_to_in, get_terra_geom, get_oceanic_geom
 from analysis.models import Language, EcoRegions, LastWild, MarineRegions, Watersheds, WorldMask, UrbanExtent
 from analysis.caching.report_caching import *
-from lingcod.common.utils import clean_geometry
+from madrona.common.utils import clean_geometry
 
 default_value = '---'
 global_landmass = 148940000. #sq km -- see table at http://en.wikipedia.org/wiki/Earth

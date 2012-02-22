@@ -14,12 +14,12 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # (r'^admin/', include(admin.site.urls)),
         
-    # Include all lingcod app urls. Any urls above will overwrite the common urls below
-    (r'', include('lingcod.common.urls')),
+    # Include all madrona app urls. Any urls above will overwrite the common urls below
+    (r'', include('madrona.common.urls')),
 
 )
 
 urlpatterns += patterns('',
-    (r'^analysistools/', include('lingcod.analysistools.urls')),
-    (r'^zonal/', include('lingcod.raster_stats.urls')),
+    (r'^analysistools/', include('madrona.analysistools.urls')),
+    (r'^zonal/', include('madrona.raster_stats.urls')),
 )

@@ -1,6 +1,6 @@
-from lingcod.features.forms import FeatureForm, SpatialFeatureForm
+from madrona.features.forms import FeatureForm, SpatialFeatureForm
 from mybioregions.models import MyBioregion, Folder
-from lingcod.analysistools.widgets import SliderWidget, SimplePoint
+from madrona.analysistools.widgets import SliderWidget, SimplePoint
 from django import forms
 from django.utils.safestring import mark_safe
 from django.contrib.gis.geos import fromstr

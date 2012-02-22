@@ -10,7 +10,7 @@ setup_environ(settings)
 from mybioregions.models import *
 from django.contrib.gis.geos import GEOSGeometry 
 from django.contrib.auth.models import User, Group
-from lingcod.analysistools.utils import linear_regression
+from madrona.analysistools.utils import linear_regression
 from django.conf import settings
 from analysis.views import *
 from django.http import HttpRequest

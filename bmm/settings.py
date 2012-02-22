@@ -1,5 +1,5 @@
 # Django settings for bmm project.
-from lingcod.common.default_settings import *
+from madrona.common.default_settings import *
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TIME_ZONE = 'America/Vancouver'
@@ -15,9 +15,9 @@ TEMPLATE_DIRS = ( os.path.realpath(os.path.join(os.path.dirname(__file__), 'temp
 
 INSTALLED_APPS += ( 'mybioregions', 
                     'analysis',
-                    'lingcod.analysistools', #necessary?
+                    'madrona.analysistools', #necessary?
                     'django.contrib.humanize',
-                    'lingcod.raster_stats'
+                    'madrona.raster_stats'
                   )
 
 COMPRESS_CSS['application']['source_filenames'] += (

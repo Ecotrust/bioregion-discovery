@@ -2,11 +2,11 @@ from django.conf import settings
 from django.db import models
 from django.contrib.gis.db import models
 from django.utils.html import escape
-from lingcod.features.models import PolygonFeature, FeatureCollection
-from lingcod.analysistools.models import Analysis
-from lingcod.features import register, alternate
-from lingcod.common.utils import asKml, get_logger
-from lingcod.unit_converter.models import area_in_display_units
+from madrona.features.models import PolygonFeature, FeatureCollection
+from madrona.analysistools.models import Analysis
+from madrona.features import register, alternate
+from madrona.common.utils import asKml, get_logger
+from madrona.unit_converter.models import area_in_display_units
 import os
 import time
 import math
@@ -67,7 +67,7 @@ class MyBioregion(Analysis):
 
     
     def run(self):
-        from lingcod.analysistools.grass import Grass
+        from madrona.analysistools.grass import Grass
 
         ### Setup
         g = Grass(settings.GRASS_LOCATION,

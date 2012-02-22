@@ -10,8 +10,8 @@ setup_environ(settings)
 from mybioregions.models import *
 from django.contrib.gis.geos import GEOSGeometry 
 from django.contrib.auth.models import User, Group
-from lingcod.analysistools.grass import Grass
-from lingcod.analysistools.utils import linear_regression
+from madrona.analysistools.grass import Grass
+from madrona.analysistools.utils import linear_regression
 import random
 import threading
 import time

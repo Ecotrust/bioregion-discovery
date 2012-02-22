@@ -1,6 +1,6 @@
 // Provides an editable instance of kmltree whose behavior is driven by the 
 // contents of a workspace document linked to within the target kml file
-lingcod.features.kmlEditor = (function(){
+madrona.features.kmlEditor = (function(){
     
     // Static Methods
     // ##############
@@ -125,7 +125,7 @@ lingcod.features.kmlEditor = (function(){
             displayDocumentRoot: true,
             displayEnhancedContent: options.enhancedContent || false,
             classname: function(kmlObject){
-                return lingcod.features.model(kmlObject) || '';
+                return madrona.features.model(kmlObject) || '';
             }
         });
         
@@ -191,7 +191,7 @@ lingcod.features.kmlEditor = (function(){
                 return;
             }   
             // tbar.setEnabled(true);
-            that.workspace = lingcod.features.workspace(data);
+            that.workspace = madrona.features.workspace(data);
             populateCreateMenu(create_menu, create_button, that.workspace);
             populateEditMenu(edit_menu, edit_button, that.workspace);
             populateDownloadMenu(download_menu, download_button, that.workspace);
@@ -402,13 +402,13 @@ lingcod.features.kmlEditor = (function(){
                     // component to appropriately handle forms.
                     panelOpts['showCloseButton'] = false;
                     panelOpts['success'] = function(){
-                        lingcod.setupForm = function(){
+                        madrona.setupForm = function(){
                             alert('error:setupForm called after clearing?');
                         };
                     }
                     // set a setupForm function that can be called by content
                     // of the panel
-                    lingcod.setupForm = function(form){
+                    madrona.setupForm = function(form){
                         setupForm(form);
                     }
                     panelOpts['loading_msg'] = 'Loading form';
@@ -455,7 +455,7 @@ lingcod.features.kmlEditor = (function(){
                 });
                 // so this is how it might work:
                 // var manipulations_needed = manipulators.needed(form);
-                var manipulator = new lingcod.Manipulator(gex, form, $('#PanelGeometry'), $('#map_container'));
+                var manipulator = new madrona.Manipulator(gex, form, $('#PanelGeometry'), $('#map_container'));
                 $(manipulator).bind('processing', function(){
                     panel.spin('Processing your shape');
                 });
@@ -526,13 +526,13 @@ lingcod.features.kmlEditor = (function(){
                         };
                         panelOpts['showCloseButton'] = false;
                         panelOpts['success'] = function(){
-                            lingcod.setupForm = function(){
+                            madrona.setupForm = function(){
                                 alert('error:setupForm called after clearing?');
                             };
                         }
                         // set a setupForm function that can be called by content
                         // of the panel
-                        lingcod.setupForm = function(form){
+                        madrona.setupForm = function(form){
                             setupForm(form);
                         }
                         panel.close();
@@ -609,9 +609,9 @@ lingcod.features.kmlEditor = (function(){
 
         function onChange(data, status, xhr){
             unspin();
-            // It's now up to lingcod.js to determine which editor needs to 
+            // It's now up to madrona.js to determine which editor needs to 
             // perform a refresh, selection, etc
-            // Delegating to lingcod.js should give us more flexibility. There
+            // Delegating to madrona.js should give us more flexibility. There
             // is no way to tell kmlEditor whether it is the shared component
             // or the myshapes component. the original design was intended to
             // support flexible numbers of kmleditors to be defined so this

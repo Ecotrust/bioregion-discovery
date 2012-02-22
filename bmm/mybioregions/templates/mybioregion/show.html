@@ -4,7 +4,7 @@
 {% block panel %}
 
 <script type="text/javascript">
-    lingcod.onShow(function(){
+    madrona.onShow(function(){
       {% if instance.satisfied %}
         $('#confirm').hide();
       {% else %}
@@ -25,7 +25,7 @@
                 loading_msg: 'Loading Bioregion Form',
                 showClose: true
             };
-            var panel = lingcod.editors[0].panel;
+            var panel = madrona.editors[0].panel;
 
             function setupForm(form, options){
                 options = options || {};
@@ -60,13 +60,13 @@
                             };
                             panelOpts['showCloseButton'] = false;
                             panelOpts['success'] = function(){
-                                lingcod.setupForm = function(){
+                                madrona.setupForm = function(){
                                     alert('error:setupForm called after clearing?');
                                 };
                             }
                             // set a setupForm function that can be called by content
                             // of the panel
-                            lingcod.setupForm = function(form){
+                            madrona.setupForm = function(form){
                                 setupForm(form);
                             }
                             panel.close();
@@ -80,7 +80,7 @@
                                 tree.refresh();
                                 alert('There was an error saving your feature.');
                             }else{
-                                $(lingcod.editors[0]).trigger('edit', [text, status, req, this]);
+                                $(madrona.editors[0]).trigger('edit', [text, status, req, this]);
                             }
                         }
                     }
@@ -139,7 +139,7 @@
 
             // bind the setupForm function that can be called by content
             // of the panel
-            lingcod.setupForm = function(form){
+            madrona.setupForm = function(form){
                 setupForm(form);
             }
             panel.showUrl(url, panelOpts);
