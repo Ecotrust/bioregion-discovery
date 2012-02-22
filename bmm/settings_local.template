@@ -15,7 +15,7 @@
 
 # You'll want to specify any database connection info here:
 # DATABASE_ENGINE = 'postgresql_psycopg2'
-# DATABASE_NAME = 'oregon-marinemap'
+# DATABASE_NAME = 'bioregions'
 # DATABASE_USER = 'postgres'
 # DATABASE_PASSWORD = 'my-secret-password'
 # I believe that the following is now used instead of those just listed above
@@ -28,7 +28,7 @@
 # }
 
 # This should be a local folder created for use with the install_media command 
-# MEDIA_ROOT = '/usr/local/src/oregon-marinemap-media/media/'
+# MEDIA_ROOT = '/usr/local/src/bioregions-media/media/'
 
 # Uncomment this line to cause MarineMap to go into maintenance mode
 # It will not be accessible without logging in as staff
