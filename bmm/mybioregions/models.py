@@ -419,7 +419,7 @@ class MyBioregion(Analysis):
         return bsf
     
     class Options:
-        verbose_name = 'Bioregion'
+        verbose_name = 'Modeled Bioregion'
         icon_url = 'bmm/img/regions.png'
         form = 'mybioregions.forms.MyBioregionForm'
         form_template = 'mybioregion/form.html'
@@ -433,6 +433,16 @@ class MyBioregion(Analysis):
         )
 
 @register
+class DrawnBioregion(PolygonFeature):
+    description = models.TextField(default="", null=True, blank=True)
+
+    class Options:
+        manipulators = []
+        verbose_name = 'Drawn Bioregion'
+        form = 'mybioregions.forms.DrawnBioregionForm'
+        show_template = 'drawbioregion/show.html'
+
+@register
 class Folder(FeatureCollection):
     #name field is inherited from FeatureCollection
     description = models.TextField(null=True, blank=True)
@@ -441,6 +451,7 @@ class Folder(FeatureCollection):
         form = 'mybioregions.forms.FolderForm'
         #form_template = 'folder/form.html'
         show_template = 'folder/show.html'
+        verbose_name = 'Folder'
         valid_children = (
             'bmm.mybioregions.models.MyBioregion',
             'bmm.mybioregions.models.Folder',
@@ -453,15 +464,6 @@ class Folder(FeatureCollection):
                 type='application/zip',
             ),
         )
-       
-class Placeholder(PolygonFeature):
-    description = models.TextField(default="", null=True, blank=True)
-
-    class Options:
-        manipulators = []
-        verbose_name = 'Bioregion Placeholder'
-        form = 'mybioregions.forms.PlaceholderForm'
-        show_template = 'placeholder/show.html'
       
 class BioregionShapefile(models.Model):
     """
