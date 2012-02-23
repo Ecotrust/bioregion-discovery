@@ -436,11 +436,19 @@ class MyBioregion(Analysis):
 class DrawnBioregion(PolygonFeature):
     description = models.TextField(default="", null=True, blank=True)
 
+    @property
+    def output_geom(self):
+        '''
+        Hack to make drawn bioregions have a similar API to modeled ones
+        '''
+        return self.geometry_final
+
     class Options:
         manipulators = []
         verbose_name = 'Drawn Bioregion'
         form = 'mybioregions.forms.DrawnBioregionForm'
-        show_template = 'drawbioregion/show.html'
+        show_template = 'drawnbioregion/show.html'
+        #form_template = 'drawnbioregion/form.html'
 
 @register
 class Folder(FeatureCollection):

@@ -1,78 +1,34 @@
-from django.http import HttpResponse
-from django.template import RequestContext
-from django.shortcuts import get_object_or_404, render_to_response
-from mybioregions.models import MyBioregion
+from django.http import Http404
+from mybioregions.models import MyBioregion, DrawnBioregion
+from madrona.features import get_feature_by_uid
 
-'''
-Accessed via named url when user selects Summary, General on their bioregion 
-'''
-def overview_analysis(request, bioregion_id):
-    from summary.summary_analysis import display_general_analysis
-    bioregion = get_object_or_404(MyBioregion, pk=bioregion_id)
-    return display_general_analysis(request, bioregion)
-    
-'''
-Accessed via named url when user selects Summary, Language on their bioregion 
-'''
-def language_analysis(request, bioregion_id):
-    from summary.summary_analysis import display_language_analysis
-    bioregion = get_object_or_404(MyBioregion, pk=bioregion_id)
-    return display_language_analysis(request, bioregion)
-    
-'''
-Accessed via named url when user selects Summary, Eco-Regions on their bioregion 
-'''
-def natural_resources_analysis(request, bioregion_id):
-    from summary.summary_analysis import display_resources_analysis
-    bioregion = get_object_or_404(MyBioregion, pk=bioregion_id)
-    return display_resources_analysis(request, bioregion)
-    
-'''
-Accessed via named url when user selects Summary, Agriculture on their bioregion 
-'''
-'''
-def agriculture_analysis(request, bioregion_id):
-    from summary.summary_analysis import display_agriculture_analysis
-    bioregion = get_object_or_404(MyBioregion, pk=bioregion_id)
-    return display_agriculture_analysis(request, bioregion)
-'''    
-'''
-Accessed via named url when user selects Results, Summary on their bioregion 
-'''
-def summary_analysis(request, bioregion_id):
-    from summary.summary_analysis import display_summary_analysis
-    bioregion = get_object_or_404(MyBioregion, pk=bioregion_id)
-    return display_summary_analysis(request, bioregion)
-    
-'''
-Accessed via named url when user selects Vulnerabilities, Climate on their bioregion 
-'''
-def climate_change_analysis(request, bioregion_id):
-    from vulnerability.vulnerability_analysis import display_climate_analysis
-    bioregion = get_object_or_404(MyBioregion, pk=bioregion_id)
-    return display_climate_analysis(request, bioregion)
-    
-'''
-Accessed via named url when user selects Vulnerabilities, Climate on their bioregion 
-'''
-def socioeconomic_analysis(request, bioregion_id):
-    from vulnerability.vulnerability_analysis import display_socioeconomic_analysis
-    bioregion = get_object_or_404(MyBioregion, pk=bioregion_id)
-    return display_socioeconomic_analysis(request, bioregion)
-    
-'''
-Accessed via named url when user selects Vulnerabilities, Climate on their bioregion 
-'''
-def natural_hazards_analysis(request, bioregion_id):
-    from vulnerability.vulnerability_analysis import display_hazards_analysis
-    bioregion = get_object_or_404(MyBioregion, pk=bioregion_id)
-    return display_hazards_analysis(request, bioregion)
-    
-'''
-Accessed via named url when user selects Results, Vulnerabilities on their bioregion 
-'''
-def vulnerability_analysis(request, bioregion_id):
-    from vulnerability.vulnerability_analysis import display_vulnerability_analysis
-    bioregion = get_object_or_404(MyBioregion, pk=bioregion_id)
-    return display_vulnerability_analysis(request, bioregion)
-    
+# Analysis methods
+# should be imported as display_<atype>_analysis function
+from analysis.summary.summary_analysis import display_general_analysis as display_overview_analysis #TODO
+from analysis.summary.summary_analysis import display_language_analysis
+from analysis.summary.summary_analysis import display_resources_analysis
+#from analysis.summary.summary_analysis import display_agriculture_analysis
+from analysis.summary.summary_analysis import display_summary_analysis
+from analysis.vulnerability.vulnerability_analysis import display_climate_analysis
+from analysis.vulnerability.vulnerability_analysis import display_socioeconomic_analysis
+from analysis.vulnerability.vulnerability_analysis import display_hazards_analysis
+#from analysis.vulnerability.vulnerability_analysis import display_vulnerability_analysis
+
+def get_bioregion(uid):
+    '''
+    Gets the bioregions instance for a given uid
+    '''
+    try:
+        return get_feature_by_uid(uid) 
+    except:
+        raise Http404('UID %s does not exist' % uid)
+
+def analysis(request, atype, uid):
+    # Get the function by name
+    # Must be a display_<atype>_analysis function in the scope
+    try:
+        func = globals()['display_%s_analysis' % atype]
+    except KeyError:
+        raise Http404('Analysis method `%s` is unknown' % atype)
+    bioregion = get_bioregion(uid)
+    return func(request, bioregion)

@@ -1,24 +1,86 @@
 {% extends 'common/panel.html' %}
+{% load humanize %}
 {% block title %}{{instance.name}}{% endblock title %}
 {% block panel %}
-    <h1>{{instance.name}}</h1>
-    <div class="tabs">
+
+<script type="text/javascript">
+    madrona.onShow(function(){
+    });
+</script>
+    
+
+<h1>The <em>{{instance.name}}</em> Bioregion</h1>
+
+<style type="text/css">
+    div.box > ul > li { font-size: 12px; }
+</style>
+        
+        <div id="results" class="tabs">
         <ul>
-            <li><a href="#Attributes"><span>Information</span></a></li>
+            <li><a href="#intro"><span>Introduction</span></a></li>
+            <li><a href="#summary"><span>Summary</span></a></li>
+            <li><a href="#vulnerabilities"><span>Vulnerabilities</span></a></li>
         </ul>
-        <div id="Attributes">
-            <ul class="metadata">
-              {% if instance.user.first_name and instance.user.last_name %} 
-                <li class="creator">Created By {{instance.user.first_name}} {{instance.user.last_name}}</li>
-              {% else %}
-                <li class="creator">Created By {{instance.user.username}}</li>
-              {% endif %}
-                <li class="created">Created {{instance.date_created|date:"d M, Y P"}}</li>
-                <li class="modified">Modified {{instance.date_modified|date:"d M, Y P"}}</li>
-                <br class="clear" />
+        <div id="intro">
+            <h2>Reports</h2>
+            <div class="box">
+                <p><strong>Summary:</strong> provides information such as population, poverty, and resource endowments related to your bioregion.</p>
+                <p><strong>Vulnerabilities:</strong> provides information related to climate change, development pressure, water resource limitations, and food scarcity.</p>
+            </div>
+
+            {% if instance.description %}
+            <h2>Description</h2>
+            <div class="box">
+                <p>{{instance.description}}</p>
+            </div>
+            {% endif %}
+
+            <h2>Input Parameters</h2>
+            <div class="box">
+                <ul>
+                    <li> Starting Point (lat, lon): {{ instance.input_starting_point.1|floatformat:3 }}, {{ instance.input_starting_point.0|floatformat:3 }}</li>
+                    <li> Temperature Relative Weighting: {{ instance.input_temp_weight|floatformat:0 }} / 100</li>
+                    <li> Precipitation Relative Weighting: {{ instance.input_precip_weight|floatformat:0 }} / 100</li>
+                    <li> Vegetation Relative Weighting: {{ instance.input_biomass_weight|floatformat:0 }} / 100</li>
+                    <li> Language Relative Weighting: {{ instance.input_lang_weight|floatformat:0 }} / 100</li>
+                    <li> Elevation Relative Weighting: {{ instance.input_elev_weight|floatformat:0 }} / 100</li>
+                    <li> Marine Relative Weighting: {{ instance.input_marine_weight|floatformat:0 }} / 100</li>
+                    <li> Bioregion Size: {% if instance.input_bioregion_size == 'VS' %} Very Small (2m Hectares) {% else %} {% if instance.input_bioregion_size == 'S' %} Small (5m Hectares) {% else %} {% if instance.input_bioregion_size == 'M' %} Medium (20m Hectares) {% else %} {% if instance.input_bioregion_size == 'L' %} Large (50m Hectares) {% else %} {% if instance.input_bioregion_size == 'VL' %} Very Large (100m Hectares) {% endif %}{% endif %}{% endif %}{% endif %}{% endif %}</li>
+                </ul>
+            </div>
+        </div>
+        <div id="summary" class="tabs">
+            <ul>
+                <li><a href="#summary_intro"><span>Intro</span></a></li>
+                <li><a href="{% url analysis 'overview' instance.uid %}"><span>Overview</span></a></li>
+                <li><a href="{% url analysis 'language' instance.uid %}"><span>Language</span></a></li>
+                <li><a href="{% url analysis 'resources' instance.uid %}"><span>Natural Resources</span></a></li>
             </ul>
-            <h2>Other Information</h2>
-            <p><strong>Placeholder ID:</strong> {{instance.pk}}</p>
+            <div id="summary_intro">
+                <h2>Summary Reports</h2>
+                <div class="box">
+                    <p><strong>Overview: </strong> provides estimates of size, population, temperature, and precipitation for your bioregion.</p>
+                    <p><strong>Language:</strong> provides information related to what languages are currently spoken within your bioregion and what languages have historically been spoken.</p>
+                    <p><strong>Natural Resources:</strong> provides information related to primary productivity, agriculture, and existing ecoregions.</p>
+                </div>
+            </div>
+        </div>
+        <div id="vulnerabilities" class="tabs">
+            <ul>
+                <li><a href="#vulnerabilities_intro"><span>Intro</span></a></li>
+                <li><a href="{% url analysis 'climate' instance.uid %}"><span>Climate Change</span></a></li>
+                <li><a href="{% url analysis 'socioeconomic' instance.uid %}"><span>Socio-Economic</span></a></li>
+                <li><a href="{% url analysis 'hazards' instance.uid %}"><span>Natural Hazards</span></a></li>
+            </ul>
+            <div id="vulnerabilities_intro">
+                <h2>Vulnerabilities Reports</h2>
+                <div class="box">
+                    <p><strong>Climate Change:</strong> provides information related to impacts on agriculture, water, and land loss due to sea level rise.</p>
+                    <p><strong>Socio-Economic:</strong> provides information related to human impacts, human needs, social equity, and cultural pressures.</p>
+                    <p><strong>Natural Hazards:</strong> provides information related to potential natural hazards and their economic costs.</p>
+                </div>
+            </div>
         </div>
     </div>
+
 {% endblock panel %}
