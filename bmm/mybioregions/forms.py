@@ -43,6 +43,6 @@ class FolderForm(FeatureForm):
     class Meta(FeatureForm.Meta):
         model = Folder
     
-class PlaceholderForm(SpatialFeatureForm):
+class DrawnBioregionForm(SpatialFeatureForm):
     class Meta(SpatialFeatureForm.Meta):
-        model = Placeholder
+        model = DrawnBioregion
