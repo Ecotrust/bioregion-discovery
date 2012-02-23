@@ -448,6 +448,7 @@ class DrawnBioregion(PolygonFeature):
         verbose_name = 'Drawn Bioregion'
         form = 'mybioregions.forms.DrawnBioregionForm'
         show_template = 'drawnbioregion/show.html'
+        icon_url = 'bmm/img/aoi.png'
         #form_template = 'drawnbioregion/form.html'
 
 @register
@@ -460,6 +461,7 @@ class Folder(FeatureCollection):
         #form_template = 'folder/form.html'
         show_template = 'folder/show.html'
         verbose_name = 'Folder'
+        icon_url = 'bmm/img/folder.png'
         valid_children = (
             'bmm.mybioregions.models.MyBioregion',
             'bmm.mybioregions.models.Folder',

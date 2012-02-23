@@ -179,8 +179,8 @@ madrona.features.kmlEditor = (function(){
                     alert('error loading workspace document');
                 }
             });
-            // var a = that.kmlEl.find('> .marinemap-tree-category > a');
-            // that.kmlEl.find('> .marinemap-tree-category > span.badges').remove();
+            // var a = that.kmlEl.find('> .madrona-tree-category > a');
+            // that.kmlEl.find('> .madrona-tree-category > span.badges').remove();
             // that.el.find('h1').text(a.text());        
             // a.hide();
         }
@@ -215,9 +215,18 @@ madrona.features.kmlEditor = (function(){
                 button.setVisible(true);
                 // button.setEnabled(true);
                 jQuery.each(createActions, function(i, action){
+                    var img = 'http://wp.hestia.ecotrust.org/media/common/images/watershed.png'; 
+                    var cls = action.links[0].featureClass.id;
                     var item = new goog.ui.MenuItem(action.title);
-                    item.action = action;
-                    menu.addItem(item);
+                    item.addClassName(cls);
+                    // SPECIAL CASE
+                    // Bookmarks, though they can be registered as a feature,
+                    // should not show up in the Create New menu since there is
+                    // a built-in UI element to create them
+                    if (item.content_ != 'Bookmark'){
+                        item.action = action;
+                        menu.addItem(item);
+                    }
                 });              
             }   
         }
@@ -457,7 +466,14 @@ madrona.features.kmlEditor = (function(){
                 // var manipulations_needed = manipulators.needed(form);
                 var manipulator = new madrona.Manipulator(gex, form, $('#PanelGeometry'), $('#map_container'));
                 $(manipulator).bind('processing', function(){
-                    panel.spin('Processing your shape');
+                  //////////////////////////////
+                  // BEGIN CUSTOM 
+                  //  Note: also change this string in the setupForm function
+                  //  in mybioregions/templates/mybioregion/show.html
+                  panel.spin('Please wait while we determine the shape of your bioregion.');
+                  // END CUSTOM 
+                  //////////////////////////////
+                  //panel.spin('Processing your shape');
                 });
                 $(manipulator).bind('doneprocessing', function(){
                     panel.stopSpinning();            
@@ -502,13 +518,7 @@ madrona.features.kmlEditor = (function(){
                             manipulator.destroy();
                         }
                     }
-                    //////////////////////////////
-                    // BEGIN CUSTOM 
-                    //  Note: also change this string in the setupForm function
-                    //  in mybioregions/templates/mybioregion/show.html
-                    panel.spin('Please wait while we determine the shape of your bioregion.');
-                    // END CUSTOM 
-                    //////////////////////////////
+                    panel.spin('Saving changes');
                     $(that).trigger('saving', ["Saving changes"]);
                     return true;
                 },
@@ -601,10 +611,10 @@ madrona.features.kmlEditor = (function(){
         }
         
         var to_concat = [
-            'X-MarineMap-Select', 
-            'X-MarineMap-Toggle', 
-            'X-MarineMap-Untoggle', 
-            'X-MarineMap-Parent-Hint'
+            'X-Madrona-Select', 
+            'X-Madrona-Toggle', 
+            'X-Madrona-Untoggle', 
+            'X-Madrona-Parent-Hint'
         ];
 
         function onChange(data, status, xhr){

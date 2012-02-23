@@ -13,4 +13,4 @@ env/*
 *.log
 data.tar.gz
 bmm/ids
-
+cache/*
