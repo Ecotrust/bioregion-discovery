@@ -202,9 +202,9 @@
         <div id="summary" class="tabs">
             <ul>
                 <li><a href="#summary_intro"><span>Intro</span></a></li>
-                <li><a href="{% url overview_analysis instance.uid %}"><span>Overview</span></a></li>
-                <li><a href="{% url language_analysis instance.uid %}"><span>Language</span></a></li>
-                <li><a href="{% url natural_resources_analysis instance.uid %}"><span>Natural Resources</span></a></li>
+                <li><a href="{% url analysis 'overview' instance.uid %}"><span>Overview</span></a></li>
+                <li><a href="{% url analysis 'language' instance.uid %}"><span>Language</span></a></li>
+                <li><a href="{% url analysis 'resources' instance.uid %}"><span>Natural Resources</span></a></li>
             </ul>
             <div id="summary_intro">
                 <h2>Summary Reports</h2>
@@ -218,9 +218,9 @@
         <div id="vulnerabilities" class="tabs">
             <ul>
                 <li><a href="#vulnerabilities_intro"><span>Intro</span></a></li>
-                <li><a href="{% url climate_change_analysis instance.uid %}"><span>Climate Change</span></a></li>
-                <li><a href="{% url socioeconomic_analysis instance.uid %}"><span>Socio-Economic</span></a></li>
-                <li><a href="{% url natural_hazards_analysis instance.uid %}"><span>Natural Hazards</span></a></li>
+                <li><a href="{% url analysis 'climate' instance.uid %}"><span>Climate Change</span></a></li>
+                <li><a href="{% url analysis 'socioeconomic' instance.uid %}"><span>Socio-Economic</span></a></li>
+                <li><a href="{% url analysis 'hazards' instance.uid %}"><span>Natural Hazards</span></a></li>
             </ul>
             <div id="vulnerabilities_intro">
                 <h2>Vulnerabilities Reports</h2>
