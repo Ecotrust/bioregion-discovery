@@ -465,7 +465,7 @@ class Folder(FeatureCollection):
         valid_children = (
             'bmm.mybioregions.models.MyBioregion',
             'bmm.mybioregions.models.Folder',
-            'bmm.mybioregions.models.Placeholder',
+            'bmm.mybioregions.models.DrawnBioregion',
         )
         links = (
             alternate('Shapefile',
