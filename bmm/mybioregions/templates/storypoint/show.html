@@ -1,0 +1,20 @@
+{% extends 'common/panel.html' %}
+{% load humanize %}
+{% block title %}{{instance.name}}{% endblock title %}
+{% block panel %}
+
+<h1>{{instance.name}}</h1>
+<div>
+    <div class="box">
+        <p>{{instance.full}}</p>
+
+        {% if instance.url %}
+        <a href="{{instance.url}}">More information</a>
+        {% endif %}
+        <p style="float:right; padding-top:25px;">Filed under: <strong>{{instance.get_theme_display}}</strong></p>
+    </div>
+
+</div>
+<p style="font-size:9pt;"><em>{{instance.geom_desc}}</em></p>
+
+{% endblock panel %}

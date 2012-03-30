@@ -1,8 +1,9 @@
+# This Python file uses the following encoding: utf-8
 from django.conf import settings
 from django.db import models
 from django.contrib.gis.db import models
 from django.utils.html import escape
-from madrona.features.models import PolygonFeature, FeatureCollection
+from madrona.features.models import PolygonFeature, FeatureCollection, PointFeature
 from madrona.analysistools.models import Analysis
 from madrona.features import register, alternate
 from madrona.common.utils import asKml, get_logger
@@ -452,6 +453,38 @@ class DrawnBioregion(PolygonFeature):
         #form_template = 'drawnbioregion/form.html'
 
 @register
+class StoryPoint(PointFeature):
+    THEME_CHOICES = (
+        ('INV', 'Investment'),
+        ('INO', 'Innovation'),
+        ('INS', 'Inspiration'),
+    )
+    theme = models.CharField(max_length=3, choices=THEME_CHOICES, verbose_name="Theme or Topic")
+    full = models.TextField(default="", null=True, blank=True, verbose_name="Tell your story...")
+    url = models.URLField(null=True, blank=True, verbose_name="Link to more information")
+
+    class Options:
+        manipulators = []
+        verbose_name = 'Story Point'
+        form = 'mybioregions.forms.StoryPointForm'
+        show_template = 'storypoint/show.html'
+        icon_url = 'bmm/img/poi.png'
+
+    @property
+    def geom_desc(self):
+        g1 = self.geometry_final
+        g1.transform(4326)
+
+        def dd2dms(dd):
+            mnt,sec = divmod(dd*3600,60)
+            deg,mnt = divmod(mnt,60)
+            return deg,mnt,sec
+
+        lat = dd2dms(g1[1])
+        lon = dd2dms(g1[0])
+        return "Latitude %d° %d', Longitude %d° %d'" %  (lat[0], lat[1], lon[0], lon[1])
+
+@register
 class Folder(FeatureCollection):
     #name field is inherited from FeatureCollection
     description = models.TextField(null=True, blank=True)
@@ -578,8 +611,6 @@ def get_raster_univar(g, rast):
         except:
             pass
     return univar
-
-
 
 def get_ocean_multiplier(g):
     # Adjust ocean to match Land['mean'] within 2 std deviations

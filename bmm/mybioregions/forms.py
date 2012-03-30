@@ -46,3 +46,7 @@ class FolderForm(FeatureForm):
 class DrawnBioregionForm(SpatialFeatureForm):
     class Meta(SpatialFeatureForm.Meta):
         model = DrawnBioregion
+
+class StoryPointForm(SpatialFeatureForm):
+    class Meta(SpatialFeatureForm.Meta):
+        model = StoryPoint
