@@ -499,6 +499,7 @@ class Folder(FeatureCollection):
             'bmm.mybioregions.models.MyBioregion',
             'bmm.mybioregions.models.Folder',
             'bmm.mybioregions.models.DrawnBioregion',
+            'bmm.mybioregions.models.StoryPoint',
         )
         links = (
             alternate('Shapefile',
