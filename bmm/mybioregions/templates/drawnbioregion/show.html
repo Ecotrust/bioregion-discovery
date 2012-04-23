@@ -34,20 +34,6 @@
                 <p>{{instance.description}}</p>
             </div>
             {% endif %}
-
-            <h2>Input Parameters</h2>
-            <div class="box">
-                <ul>
-                    <li> Starting Point (lat, lon): {{ instance.input_starting_point.1|floatformat:3 }}, {{ instance.input_starting_point.0|floatformat:3 }}</li>
-                    <li> Temperature Relative Weighting: {{ instance.input_temp_weight|floatformat:0 }} / 100</li>
-                    <li> Precipitation Relative Weighting: {{ instance.input_precip_weight|floatformat:0 }} / 100</li>
-                    <li> Vegetation Relative Weighting: {{ instance.input_biomass_weight|floatformat:0 }} / 100</li>
-                    <li> Language Relative Weighting: {{ instance.input_lang_weight|floatformat:0 }} / 100</li>
-                    <li> Elevation Relative Weighting: {{ instance.input_elev_weight|floatformat:0 }} / 100</li>
-                    <li> Marine Relative Weighting: {{ instance.input_marine_weight|floatformat:0 }} / 100</li>
-                    <li> Bioregion Size: {% if instance.input_bioregion_size == 'VS' %} Very Small (2m Hectares) {% else %} {% if instance.input_bioregion_size == 'S' %} Small (5m Hectares) {% else %} {% if instance.input_bioregion_size == 'M' %} Medium (20m Hectares) {% else %} {% if instance.input_bioregion_size == 'L' %} Large (50m Hectares) {% else %} {% if instance.input_bioregion_size == 'VL' %} Very Large (100m Hectares) {% endif %}{% endif %}{% endif %}{% endif %}{% endif %}</li>
-                </ul>
-            </div>
         </div>
         <div id="summary" class="tabs">
             <ul>
