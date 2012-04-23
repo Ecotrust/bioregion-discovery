@@ -5,16 +5,20 @@
 
 <h1>{{instance.name}}</h1>
 <div>
-    <div class="box">
+    <div class="box" {% if instance.img %}style="min-height: 216px;"{% endif %}>
+        {% if instance.img %}
+        <a href="/media/{{instance.img}}" target="_blank" >
+            <img style="padding: 4px; margin: 4px; margin-right: 12px; ; display: block; float:left; max-width:150px; max-height:200px;"src="/media/{{instance.img}}"/>
+        </a>
+        {% endif %}
         <p>{{instance.full}}</p>
-
         {% if instance.url %}
         <a href="{{instance.url}}">More information</a>
         {% endif %}
-        <p style="float:right; padding-top:25px;">Filed under: <strong>{{instance.get_theme_display}}</strong></p>
     </div>
 
 </div>
 <p style="font-size:9pt;"><em>{{instance.geom_desc}}</em></p>
+<p style="float:right;">Filed under: <strong>{{instance.get_theme_display}}</strong></p>
 
 {% endblock panel %}

@@ -461,6 +461,7 @@ class StoryPoint(PointFeature):
     )
     theme = models.CharField(max_length=3, choices=THEME_CHOICES, verbose_name="Theme or Topic")
     full = models.TextField(default="", null=True, blank=True, verbose_name="Tell your story...")
+    img = models.ImageField(upload_to="uploads/images", max_length=200, null=True, blank=True)
     url = models.URLField(null=True, blank=True, verbose_name="Link to more information")
 
     class Options:
