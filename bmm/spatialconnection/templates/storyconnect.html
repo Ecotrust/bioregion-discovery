@@ -1,7 +1,19 @@
-<div style="font-size: 150%">
-<ul>
-{% for bio in hits %}
-<li>{{bio.name}} by <a href="#">{{bio.user.username}}</a></li>
+<div style="font-size:130%">
+{% for instance in hits %}
+<strong>{{instance.name}}<strong> by <a href="#">{{instance.user.username}}</a>
+
+    <div class="box" {% if instance.img %}style="min-height: 216px;"{% endif %}>
+        {% if instance.img %}
+        <a href="/media/{{instance.img}}" target="_blank" >
+            <img style="padding: 4px; margin: 4px; margin-right: 12px; display: block; float:left; max-width:150px; max-height:200px;"src="/media/{{instance.img}}"/>
+        </a>
+        {% endif %}
+        <p>{{instance.full}}</p>
+        {% if instance.url %}
+        <a href="{{instance.url}}" target="_blank">More information</a>
+        {% endif %}
+    </div>
+
 {% endfor %}
-</ul>
 </div>
+
