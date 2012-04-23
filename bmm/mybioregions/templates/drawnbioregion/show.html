@@ -20,6 +20,7 @@
             <li><a href="#intro"><span>Introduction</span></a></li>
             <li><a href="#summary"><span>Summary</span></a></li>
             <li><a href="#vulnerabilities"><span>Vulnerabilities</span></a></li>
+            <li><a href="#shared"><span>Shared Connections</span></a></li>
         </ul>
         <div id="intro">
             <h2>Reports</h2>
@@ -64,6 +65,24 @@
                     <p><strong>Climate Change:</strong> provides information related to impacts on agriculture, water, and land loss due to sea level rise.</p>
                     <p><strong>Socio-Economic:</strong> provides information related to human impacts, human needs, social equity, and cultural pressures.</p>
                     <p><strong>Natural Hazards:</strong> provides information related to potential natural hazards and their economic costs.</p>
+                </div>
+            </div>
+        </div>
+        <div id="shared" class="tabs">
+            <ul>
+                <li><a href="#shared_intro"><span>Intro</span></a></li>
+                <li><a href="{% url bioregion-connection instance.uid %}"><span>Bioregions</span></a></li>
+                <li><a href="{% url story-connection instance.uid %}"><span>Stories</span></a></li>
+            </ul>
+            <div id="shared_intro">
+                <h2>Spatial connections shared by our community</h2>
+                <div class="box">
+                    <p><strong>Bioregions:</strong> 
+                    This report will outline the bioregions of other community members that intersect with yours.
+                    </p>
+                    <p><strong>Stories:</strong> 
+                    Find interesting stories from other community members in your part of the world.
+                    </p>
                 </div>
             </div>
         </div>

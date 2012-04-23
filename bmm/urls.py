@@ -7,6 +7,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Include bioregions app urls
     (r'^mybioregions/', include('mybioregions.urls')),
+    (r'^spatialconnection/', include('spatialconnection.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),

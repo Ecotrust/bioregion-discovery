@@ -1,0 +1,7 @@
+<div style="font-size: 150%">
+<ul>
+{% for bio in hits %}
+<li>{{bio.name}} by <a href="#">{{bio.user.username}}</a></li>
+{% endfor %}
+</ul>
+</div>

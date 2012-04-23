@@ -15,6 +15,7 @@ TEMPLATE_DIRS = ( os.path.realpath(os.path.join(os.path.dirname(__file__), 'temp
 
 INSTALLED_APPS += ( 'mybioregions', 
                     'analysis',
+                    'spatialconnection',
                     'madrona.analysistools', #necessary?
                     'django.contrib.humanize',
                     'madrona.raster_stats'
