@@ -298,6 +298,14 @@ class MyBioregion(Analysis):
                         break
         super(MyBioregion, self).save(rerun=rerun)
 
+    def geojson(self, srid):
+        import json
+        from madrona.common.jsonutils import get_properties_json, get_feature_json
+        props = get_properties_json(self)
+        props.pop('output_geom')
+        json_geom = self.output_geom.transform(srid, clone=True).json
+        return get_feature_json(json_geom, json.dumps(props))
+
     @classmethod
     def mapnik_geomfield(self):
         return "output_geom"
