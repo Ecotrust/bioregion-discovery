@@ -463,9 +463,13 @@ class DrawnBioregion(PolygonFeature):
 @register
 class StoryPoint(PointFeature):
     THEME_CHOICES = (
-        ('INV', 'Investment'),
-        ('INO', 'Innovation'),
-        ('INS', 'Inspiration'),
+        ('CC', 'Climate change'),
+        ('IR', 'Indigenous rights'),
+        ('DEV', 'Development'),
+        ('MAR', 'Marine'),
+        ('FOR', 'Forests and de-forestation'),
+        ('FD', 'Food and food security'),
+        ('BR', 'Bio-regionalism'),
     )
     theme = models.CharField(max_length=3, choices=THEME_CHOICES, verbose_name="Theme or Topic")
     full = models.TextField(default="", null=True, blank=True, verbose_name="Tell your story...")
